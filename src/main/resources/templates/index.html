@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+<div sec:authorize="isAuthenticated()" style="color: white; font-size: 16px;">
+    <p th:text="${DataUser}"></p>
+    <p> <span>Usiario: </span> <span th:text="${Nombre}"></span></p>
+    <p> <span>Roles: </span> <span th:text="${Roles}"></span></p>
+</div>
+<div sec:authorize="hasRole('administrador')">
+    <a th:href="@{/admin}">Admin</a>
+</div>
+<div sec:authorize="hasRole('usuario')">
+    <a th:href="@{basic/rrhh}">RR.HH</a>
+    <a th:href="@{/basic/almacen}">Almacen</a>
+    <a th:href="@{/basic/marketing}">Marketing</a>
+</div>
+<form th:action="@{/logout}" method="POST" id="logoutForm">
+    <a href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar</a>
+</form>
+
+
+</body>
+</html>
