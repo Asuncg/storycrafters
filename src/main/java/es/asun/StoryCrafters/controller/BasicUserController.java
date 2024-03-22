@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/basic")
 public class BasicUserController {
 
-    @GetMapping(value= {"/rrhh"})
-    public String rrhh() {
-        return "views/rrhh";
-    }
+
 
     @GetMapping(value= {"/almacen"})
     public String almacen() {

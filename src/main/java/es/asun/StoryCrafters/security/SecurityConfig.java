@@ -1,61 +1,54 @@
 package es.asun.StoryCrafters.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-    public static InMemoryUserDetailsManager inMemory;
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/css/**").permitAll()
-                        .requestMatchers("/ayuda").permitAll()
-                        .requestMatchers("/admin").hasRole("administrador")
-                        .requestMatchers("/basic/**").hasRole("usuario")
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(withDefaults())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/logginprocess")
-                        .permitAll()
-                )
-                .logout((logout) -> logout.logoutSuccessUrl("/login?logout").permitAll());
-
-        return http.build();
+    public static PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    InMemoryUserDetailsManager userDetailsService() {
-        @SuppressWarnings("deprecation")
-        UserDetails user1 = User.withDefaultPasswordEncoder()
-                .username("pepito")
-                .password("pepito")
-                .roles("usuario")
-                .build();
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((authorize) ->
+                        authorize.requestMatchers("/registro/**").permitAll()
+                                .requestMatchers("/users").hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                ).formLogin(
+                        form -> form
+                                .loginPage("/login")
+                                .loginProcessingUrl("/login")
+                                .defaultSuccessUrl("/index", true)
+                                .permitAll()
+                ).logout(
+                        logout -> logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .permitAll()
+                );
+        return http.build();
+    }
 
-        @SuppressWarnings("deprecation")
-        UserDetails user2 = User.withDefaultPasswordEncoder()
-                .username("pepita")
-                .password("pepita")
-                .roles("usuario","administrador")
-                .build();
-
-        inMemory = new InMemoryUserDetailsManager();
-        inMemory.createUser(user1);
-        inMemory.createUser(user2);
-        return inMemory;
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
 
 }

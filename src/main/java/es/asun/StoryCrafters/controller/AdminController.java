@@ -35,7 +35,6 @@ public class AdminController {
                     .password(password)
                     .build();
 
-            SecurityConfig.inMemory.createUser(user1);
 
             try {
                 request.logout();

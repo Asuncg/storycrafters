@@ -1,13 +1,14 @@
 package es.asun.StoryCrafters.service;
 
-import es.asun.StoryCrafters.model.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import es.asun.StoryCrafters.entity.User;
+import es.asun.StoryCrafters.model.UserDto;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> findall();
+    void saveUser(UserDto userDto);
 
-    User findAllByNombre(String nombre);
+    User findUserByEmail(String email);
 
+    List<UserDto> findAllUsers();
 }

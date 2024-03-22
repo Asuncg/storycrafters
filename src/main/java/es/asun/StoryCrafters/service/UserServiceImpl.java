@@ -1,29 +1,74 @@
 package es.asun.StoryCrafters.service;
 
-import es.asun.StoryCrafters.model.User;
+
+import es.asun.StoryCrafters.entity.Role;
+import es.asun.StoryCrafters.entity.User;
+import es.asun.StoryCrafters.model.UserDto;
+import es.asun.StoryCrafters.repository.RoleRepository;
 import es.asun.StoryCrafters.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class UserServiceImpl implements UserService{
-    private final UserRepository userRepository;
+public class UserServiceImpl implements UserService {
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository,
+                           RoleRepository roleRepository,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public List<User> findall() {
-        return userRepository.findAll();
+    public void saveUser(UserDto userDto) {
+        User user = new User();
+        user.setFirstName(userDto.getFirstName() + " " + userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        // encrypt the password using spring security
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        Role role = roleRepository.findByName("ROLE_ADMIN");
+        if(role == null){
+            role = checkRoleExist();
+        }
+        user.setRoles(Arrays.asList(role));
+        userRepository.save(user);
     }
 
     @Override
-    public User findAllByNombre(String nombre) {
-        return null;
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
+    @Override
+    public List<UserDto> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map((user) -> mapToUserDto(user))
+                .collect(Collectors.toList());
+    }
 
+    private UserDto mapToUserDto(User user){
+        UserDto userDto = new UserDto();
+        String[] str = user.getFirstName().split(" ");
+        userDto.setFirstName(str[0]);
+        userDto.setLastName(str[1]);
+        userDto.setEmail(user.getEmail());
+        return userDto;
+    }
+
+    private Role checkRoleExist(){
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        return roleRepository.save(role);
+    }
 }
