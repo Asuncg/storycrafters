@@ -25,11 +25,17 @@ public class User {
     @Column(name = "last_name", length = 60)
     private String lastName;
 
+    @Column(name = "firma", length = 60)
+    private String firmaAutor;
+
     @Column(nullable = false, name = "email", unique = true, length = 50)
     private String email;
 
     @Column(nullable = false, length = 64)
     private String password;
+
+    @Column(name = "activo", length = 1, columnDefinition = "int default 1")
+    private boolean activo;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(

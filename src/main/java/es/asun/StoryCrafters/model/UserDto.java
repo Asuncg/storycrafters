@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserDto
 {
-    private Long id;
+    private int id;
     @NotEmpty
     private String firstName;
     @NotEmpty
@@ -23,4 +23,8 @@ public class UserDto
     private String email;
     @NotEmpty(message = "Password should not be empty")
     private String password;
+
+    private String firmaAutor;
+
+    private boolean activo;
 }

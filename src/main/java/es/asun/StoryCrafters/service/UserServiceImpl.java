@@ -50,6 +50,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUser(UserDto user) {
+        updateValidation();
+        userRepository.save(user);
+    }
+
+    private void updateValidation() {
+    }
+
+    @Override
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
@@ -59,11 +68,20 @@ public class UserServiceImpl implements UserService {
 
     private UserDto mapToUserDto(User user){
         UserDto userDto = new UserDto();
-        String[] str = user.getFirstName().split(" ");
-        userDto.setFirstName(str[0]);
-        userDto.setLastName(str[1]);
+
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());
+        userDto.setFirmaAutor(user.getFirmaAutor());
         return userDto;
+    }
+
+    private User mapToUser(UserDto userDto) {
+        User user = new User();
+        user.setId(userDto.getId());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setFirmaAutor(userDto.getFirmaAutor());
     }
 
     private Role checkRoleExist(){

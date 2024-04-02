@@ -6,6 +6,8 @@ import es.asun.StoryCrafters.repository.UserRepository;
 import es.asun.StoryCrafters.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -66,18 +68,7 @@ public class AuthController {
         return "redirect:/registro?success";
     }
 
-    // handler method to handle list of users
-    @GetMapping("/users")
-    public String users(Model model){
-        List<UserDto> users = userService.findAllUsers();
-        model.addAttribute("users", users);
-        return "users";
-    }
 
-    @GetMapping(value= {"/profile"})
-    public String viewprofile() {
-        return "profile";
-    }
 }
 
 
