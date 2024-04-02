@@ -1,6 +1,6 @@
 package es.asun.StoryCrafters.controller;
 
-import es.asun.StoryCrafters.entity.User;
+import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserDto;
 import es.asun.StoryCrafters.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +35,11 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        // Obtener el objeto User del usuario autenticado (puedes ajustar esto según tu implementación)
-        User user = userService.findUserByEmail(username);
+        // Obtener el objeto Usuario del usuario autenticado (puedes ajustar esto según tu implementación)
+        Usuario usuario = userService.findUserByEmail(username);
 
         // Pasar la información del usuario al modelo
-        model.addAttribute("user", user);
+        model.addAttribute("user", usuario);
 
         return "views/profile";
     }
@@ -50,10 +50,10 @@ public class UserController {
         // Obtener el usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        User user = userService.findUserByEmail(username);
+        Usuario usuario = userService.findUserByEmail(username);
 
         // Pasar el usuario al modelo
-        model.addAttribute("user", user);
+        model.addAttribute("user", usuario);
 
         // Retornar la vista de edición de perfil
         return "edit-profile";

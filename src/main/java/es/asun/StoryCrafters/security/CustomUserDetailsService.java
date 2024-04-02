@@ -2,7 +2,7 @@ package es.asun.StoryCrafters.security;
 
 
 import es.asun.StoryCrafters.entity.Role;
-import es.asun.StoryCrafters.entity.User;
+import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,12 +27,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+        Usuario usuario = userRepository.findByEmail(email);
 
-        if (user != null) {
-            return new org.springframework.security.core.userdetails.User(user.getEmail(),
-                    user.getPassword(),
-                    mapRolesToAuthorities(user.getRoles()));
+        if (usuario != null) {
+            return new org.springframework.security.core.userdetails.User(usuario.getEmail(),
+                    usuario.getPassword(),
+                    mapRolesToAuthorities(usuario.getRoles()));
         }else{
             throw new UsernameNotFoundException("Invalid username or password.");
         }

@@ -1,13 +1,11 @@
 package es.asun.StoryCrafters.controller;
 
-import es.asun.StoryCrafters.entity.User;
+import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserDto;
 import es.asun.StoryCrafters.repository.UserRepository;
 import es.asun.StoryCrafters.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
-import java.util.List;
 
 
 @Controller
@@ -52,9 +48,9 @@ public class AuthController {
     public String registration(@Valid @ModelAttribute("user") UserDto userDto,
                                BindingResult result,
                                Model model){
-        User existingUser = userService.findUserByEmail(userDto.getEmail());
+        Usuario existingUsuario = userService.findUserByEmail(userDto.getEmail());
 
-        if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
+        if(existingUsuario != null && existingUsuario.getEmail() != null && !existingUsuario.getEmail().isEmpty()){
             result.rejectValue("email", null,
                     "There is already an account registered with the same email");
         }

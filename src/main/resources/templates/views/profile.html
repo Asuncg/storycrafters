@@ -18,9 +18,9 @@
         <div class="col py-3">
             <div sec:authorize="isAuthenticated()">
                 <h1>Perfil de Usuario</h1>
-                <p>Bienvenido, <span th:text="${user.firstName}"></span> <span th:text="${user.lastName}"></span>!</p>
-                <p>Email: <span th:text="${user.email}"></span></p>
-                <a class="btn btn-dark" th:href="@{user/edit}" role="button">Editar Perfil</a>
+                <p>Bienvenido, <span th:text="${usuario.firstName}"></span> <span th:text="${usuario.lastName}"></span>!</p>
+                <p>Email: <span th:text="${usuario.email}"></span></p>
+                <a class="btn btn-dark" th:href="@{usuario/edit}" role="button">Editar Perfil</a>
             </div>
         </div>
     </div>

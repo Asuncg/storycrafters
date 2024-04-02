@@ -11,18 +11,18 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "Users")
-public class User {
+@Table(name = "Usuarios")
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private int id;
 
-    @Column(nullable = false, name = "first_name", length = 60)
+    @Column(nullable = false, name = "nombre", length = 60)
     private String firstName;
 
-    @Column(name = "last_name", length = 60)
+    @Column(name = "apellidos", length = 60)
     private String lastName;
 
     @Column(name = "firma", length = 60)
@@ -44,6 +44,6 @@ public class User {
             inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
     private List<Role> roles = new ArrayList<>();
 
-    public User(String nombre, String password) {
+    public Usuario(String nombre, String password) {
     }
 }

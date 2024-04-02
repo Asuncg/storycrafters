@@ -2,7 +2,7 @@ package es.asun.StoryCrafters.service;
 
 
 import es.asun.StoryCrafters.entity.Role;
-import es.asun.StoryCrafters.entity.User;
+import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserDto;
 import es.asun.StoryCrafters.repository.RoleRepository;
 import es.asun.StoryCrafters.repository.UserRepository;
@@ -30,29 +30,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(UserDto userDto) {
-        User user = new User();
-        user.setFirstName(userDto.getFirstName() + " " + userDto.getLastName());
-        user.setEmail(userDto.getEmail());
+        Usuario usuario = new Usuario();
+        usuario.setFirstName(userDto.getFirstName() + " " + userDto.getLastName());
+        usuario.setEmail(userDto.getEmail());
         // encrypt the password using spring security
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        usuario.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         Role role = roleRepository.findByName("ROLE_ADMIN");
         if(role == null){
             role = checkRoleExist();
         }
-        user.setRoles(Arrays.asList(role));
-        userRepository.save(user);
+        usuario.setRoles(Arrays.asList(role));
+        userRepository.save(usuario);
     }
 
     @Override
-    public User findUserByEmail(String email) {
+    public Usuario findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     @Override
     public void updateUser(UserDto user) {
         updateValidation();
-        userRepository.save(user);
+        Usuario usuarioMapped = mapToUser(user);
+        userRepository.save(usuarioMapped);
     }
 
     private void updateValidation() {
@@ -60,28 +61,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
+        List<Usuario> usuarios = userRepository.findAll();
+        return usuarios.stream()
                 .map((user) -> mapToUserDto(user))
                 .collect(Collectors.toList());
     }
 
-    private UserDto mapToUserDto(User user){
+    private UserDto mapToUserDto(Usuario usuario){
         UserDto userDto = new UserDto();
 
-        userDto.setFirstName(user.getFirstName());
-        userDto.setLastName(user.getLastName());
-        userDto.setEmail(user.getEmail());
-        userDto.setFirmaAutor(user.getFirmaAutor());
+        userDto.setFirstName(usuario.getFirstName());
+        userDto.setLastName(usuario.getLastName());
+        userDto.setEmail(usuario.getEmail());
+        userDto.setFirmaAutor(usuario.getFirmaAutor());
         return userDto;
     }
 
-    private User mapToUser(UserDto userDto) {
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setFirmaAutor(userDto.getFirmaAutor());
+    private Usuario mapToUser(UserDto userDto) {
+        Usuario usuario = new Usuario();
+        usuario.setId(userDto.getId());
+        usuario.setFirstName(userDto.getFirstName());
+        usuario.setLastName(userDto.getLastName());
+        usuario.setFirmaAutor(userDto.getFirmaAutor());
+        return usuario;
     }
 
     private Role checkRoleExist(){

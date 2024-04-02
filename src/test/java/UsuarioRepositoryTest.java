@@ -1,6 +1,6 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
-import es.asun.StoryCrafters.entity.User;
+import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.test.annotation.Rollback;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @Rollback(false)
-public class UserRepositoryTest {
+public class UsuarioRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -23,17 +23,17 @@ public class UserRepositoryTest {
 
     @Test
     public void testCreateUser() {
-        User user = new User();
-        user.setEmail("ravikumar@gmail.com");
-        user.setPassword("ravi2020");
-        user.setFirstName("Ravi");
-        user.setLastName("Kumar");
+        Usuario usuario = new Usuario();
+        usuario.setEmail("ravikumar@gmail.com");
+        usuario.setPassword("ravi2020");
+        usuario.setFirstName("Ravi");
+        usuario.setLastName("Kumar");
 
-        User savedUser = repo.save(user);
+        Usuario savedUsuario = repo.save(usuario);
 
-        User existUser = entityManager.find(User.class, savedUser.getId());
+        Usuario existUsuario = entityManager.find(Usuario.class, savedUsuario.getId());
 
-        assertThat(user.getEmail()).isEqualTo(existUser.getEmail());
+        assertThat(usuario.getEmail()).isEqualTo(existUsuario.getEmail());
 
     }
 }

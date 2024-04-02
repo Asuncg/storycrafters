@@ -17,7 +17,7 @@
     </div>
     <div class="col py-3">
       <h1>Editar Perfil</h1>
-      <form action="#" th:action="@{/profile/edit}" th:object="${user}" method="post">
+      <form action="#" th:action="@{/profile/edit}" th:object="${usuario}" method="post">
         <div class="form-group">
           <label for="firstName">Nombre:</label>
           <input type="text" class="form-control" id="firstName" th:field="*{firstName}">
