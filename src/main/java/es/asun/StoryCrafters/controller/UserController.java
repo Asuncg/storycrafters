@@ -39,7 +39,7 @@ public class UserController {
         Usuario usuario = userService.findUserByEmail(username);
 
         // Pasar la información del usuario al modelo
-        model.addAttribute("user", usuario);
+        model.addAttribute("usuario", usuario);
 
         return "views/profile";
     }

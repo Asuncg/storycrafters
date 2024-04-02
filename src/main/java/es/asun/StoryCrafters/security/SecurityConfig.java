@@ -28,7 +28,6 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/registro/**").permitAll()
-                                .requestMatchers("/users").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 ).formLogin(
                         form -> form

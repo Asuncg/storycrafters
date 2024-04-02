@@ -6,35 +6,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Relatos")
-public class Relato {
-
+@Table(name = "Grupos")
+public class Grupo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @Column(name = "titulo", length = 100)
-    private String titulo;
+    @Column(nullable = false, name = "titulo", length = 50)
+    private String nombre;
 
-    @Column(name = "texto", length = 4000)
-    private String texto;
-
-    @ManyToMany
-    private List<Categoria> categorias;
-
-    @Column(name = "firmaAutor", length = 60)
-    private String firmaAutor;
+    @Column(name = "descripcion", length = 500)
+    private String descripcion;
 
 }
-

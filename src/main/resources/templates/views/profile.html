@@ -16,12 +16,12 @@
         <div class="col-auto col-md-2 col-xl-2 px-sm-2 px-0 bg-dark" th:insert="fragments/sidebar.html :: sidebar">
         </div>
         <div class="col py-3">
-            <div sec:authorize="isAuthenticated()">
+
                 <h1>Perfil de Usuario</h1>
                 <p>Bienvenido, <span th:text="${usuario.firstName}"></span> <span th:text="${usuario.lastName}"></span>!</p>
                 <p>Email: <span th:text="${usuario.email}"></span></p>
                 <a class="btn btn-dark" th:href="@{usuario/edit}" role="button">Editar Perfil</a>
-            </div>
+
         </div>
     </div>
 </div>

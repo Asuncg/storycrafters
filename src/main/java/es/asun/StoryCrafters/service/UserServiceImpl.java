@@ -1,10 +1,8 @@
 package es.asun.StoryCrafters.service;
 
 
-import es.asun.StoryCrafters.entity.Role;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserDto;
-import es.asun.StoryCrafters.repository.RoleRepository;
 import es.asun.StoryCrafters.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,14 +15,11 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
-                           RoleRepository roleRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -36,11 +31,6 @@ public class UserServiceImpl implements UserService {
         // encrypt the password using spring security
         usuario.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Role role = roleRepository.findByName("ROLE_ADMIN");
-        if(role == null){
-            role = checkRoleExist();
-        }
-        usuario.setRoles(Arrays.asList(role));
         userRepository.save(usuario);
     }
 
@@ -86,9 +76,4 @@ public class UserServiceImpl implements UserService {
         return usuario;
     }
 
-    private Role checkRoleExist(){
-        Role role = new Role();
-        role.setName("ROLE_ADMIN");
-        return roleRepository.save(role);
-    }
 }
