@@ -11,7 +11,7 @@
 	<groupId>es.asun</groupId>
 	<artifactId>StoryCrafters</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+
 	<name>StoryCrafters</name>
 	<description>storycrafters project for Spring Boot</description>
 	<properties>
