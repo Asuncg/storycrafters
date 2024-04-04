@@ -1,7 +1,8 @@
 package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Usuario;
-import es.asun.StoryCrafters.model.UserDto;
+import es.asun.StoryCrafters.model.UserRegisterDto;
+import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,7 +26,7 @@ public class UserController {
     // handler method to handle list of users
     @GetMapping("/listusers")
     public String users(Model model){
-        List<UserDto> users = userService.findAllUsers();
+        List<UserRegisterDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
         return "users";
     }
@@ -40,6 +41,7 @@ public class UserController {
 
         // Pasar la información del usuario al modelo
         model.addAttribute("usuario", usuario);
+        model.addAttribute("userDto", new UserRegisterDto()); // Añadir un UserRegisterDto vacío al modelo
 
         return "views/profile";
     }
@@ -53,18 +55,19 @@ public class UserController {
         Usuario usuario = userService.findUserByEmail(username);
 
         // Pasar el usuario al modelo
-        model.addAttribute("user", usuario);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("userDto", new UserRegisterDto(usuario)); // Pasar un UserUpdateDto con los datos del usuario al modelo
 
         // Retornar la vista de edición de perfil
-        return "edit-profile";
+        return "views/edit-profile";
     }
 
     @PostMapping("/profile/edit")
-    public String editProfile(@ModelAttribute("user") UserDto userDto) {
+    public String editProfile(@ModelAttribute("user") UserUpdateDto userDto) {
         // Actualizar los datos del usuario
         userService.updateUser(userDto);
 
         // Redirigir a la página de perfil después de la edición
-        return "redirect:/profile";
+        return "redirect:/user/profile";
     }
 }

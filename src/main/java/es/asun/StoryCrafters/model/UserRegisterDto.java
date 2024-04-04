@@ -1,5 +1,6 @@
 package es.asun.StoryCrafters.model;
 
+import es.asun.StoryCrafters.entity.Usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto
+public class UserRegisterDto
 {
     private int id;
     @NotEmpty
@@ -27,4 +28,7 @@ public class UserDto
     private String firmaAutor;
 
     private boolean activo;
+
+    public UserRegisterDto(Usuario usuario) {
+    }
 }

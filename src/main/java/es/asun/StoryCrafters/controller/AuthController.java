@@ -1,7 +1,7 @@
 package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Usuario;
-import es.asun.StoryCrafters.model.UserDto;
+import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.repository.UserRepository;
 import es.asun.StoryCrafters.service.UserService;
 import jakarta.validation.Valid;
@@ -38,17 +38,17 @@ public class AuthController {
     @GetMapping(value = {"/registro"})
     public String showRegistrationForm(Model model) {
         // create model object to store form data
-        UserDto user = new UserDto();
+        UserRegisterDto user = new UserRegisterDto();
         model.addAttribute("usuario", user);
         return "registro";
     }
 
     // handler method to handle user registration form submit request
     @PostMapping("/registro/save")
-    public String registration(@Valid @ModelAttribute("user") UserDto userDto,
+    public String registration(@Valid @ModelAttribute("user") UserRegisterDto userRegisterDto,
                                BindingResult result,
                                Model model){
-        Usuario existingUsuario = userService.findUserByEmail(userDto.getEmail());
+        Usuario existingUsuario = userService.findUserByEmail(userRegisterDto.getEmail());
 
         if(existingUsuario != null && existingUsuario.getEmail() != null && !existingUsuario.getEmail().isEmpty()){
             result.rejectValue("email", null,
@@ -56,11 +56,11 @@ public class AuthController {
         }
 
         if(result.hasErrors()){
-            model.addAttribute("user", userDto);
+            model.addAttribute("user", userRegisterDto);
             return "/registro";
         }
 
-        userService.saveUser(userDto);
+        userService.saveUser(userRegisterDto);
         return "redirect:/registro?success";
     }
 

@@ -2,12 +2,14 @@ package es.asun.StoryCrafters.service;
 
 
 import es.asun.StoryCrafters.entity.Usuario;
-import es.asun.StoryCrafters.model.UserDto;
+import es.asun.StoryCrafters.model.UserRegisterDto;
+import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,12 +26,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(UserDto userDto) {
+    public void saveUser(UserRegisterDto userRegisterDto) {
         Usuario usuario = new Usuario();
-        usuario.setFirstName(userDto.getFirstName() + " " + userDto.getLastName());
-        usuario.setEmail(userDto.getEmail());
+        usuario.setFirstName(userRegisterDto.getFirstName() + " " + userRegisterDto.getLastName());
+        usuario.setEmail(userRegisterDto.getEmail());
         // encrypt the password using spring security
-        usuario.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        usuario.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
 
         userRepository.save(usuario);
     }
@@ -40,39 +42,53 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserDto user) {
+    public void updateUser(UserUpdateDto user) {
         updateValidation();
-        Usuario usuarioMapped = mapToUser(user);
-        userRepository.save(usuarioMapped);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userRepository.findByEmail(username);
+        if (usuario != null) {
+            if (user.getFirstName() != null) {
+                usuario.setFirstName(user.getFirstName());
+            }
+            if (user.getLastName() != null) {
+                usuario.setLastName(user.getLastName());
+            }
+            if (user.getFirmaAutor() != null) {
+                usuario.setFirmaAutor(user.getFirmaAutor());
+            }
+            userRepository.save(usuario);
+        }
     }
+
 
     private void updateValidation() {
     }
 
     @Override
-    public List<UserDto> findAllUsers() {
+    public List<UserRegisterDto> findAllUsers() {
         List<Usuario> usuarios = userRepository.findAll();
         return usuarios.stream()
                 .map((user) -> mapToUserDto(user))
                 .collect(Collectors.toList());
     }
 
-    private UserDto mapToUserDto(Usuario usuario){
-        UserDto userDto = new UserDto();
+    private UserRegisterDto mapToUserDto(Usuario usuario){
+        UserRegisterDto userRegisterDto = new UserRegisterDto();
 
-        userDto.setFirstName(usuario.getFirstName());
-        userDto.setLastName(usuario.getLastName());
-        userDto.setEmail(usuario.getEmail());
-        userDto.setFirmaAutor(usuario.getFirmaAutor());
-        return userDto;
+        userRegisterDto.setFirstName(usuario.getFirstName());
+        userRegisterDto.setLastName(usuario.getLastName());
+        userRegisterDto.setEmail(usuario.getEmail());
+        userRegisterDto.setFirmaAutor(usuario.getFirmaAutor());
+        return userRegisterDto;
     }
 
-    private Usuario mapToUser(UserDto userDto) {
+    private Usuario mapToUser(UserRegisterDto userRegisterDto) {
         Usuario usuario = new Usuario();
-        usuario.setId(userDto.getId());
-        usuario.setFirstName(userDto.getFirstName());
-        usuario.setLastName(userDto.getLastName());
-        usuario.setFirmaAutor(userDto.getFirmaAutor());
+        usuario.setId(userRegisterDto.getId());
+        usuario.setFirstName(userRegisterDto.getFirstName());
+        usuario.setLastName(userRegisterDto.getLastName());
+        usuario.setFirmaAutor(userRegisterDto.getFirmaAutor());
         return usuario;
     }
 
