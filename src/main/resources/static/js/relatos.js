@@ -13,21 +13,17 @@ function justificarTexto(alineacion) {
 document.addEventListener('DOMContentLoaded', function () {
     var textoCuento = document.getElementById('texto-cuento');
     if (textoCuento) {
-        textoCuento.addEventListener('input', function() {
+        textoCuento.addEventListener('input', function () {
             var caracteresEscritos = this.textContent.length;
             document.getElementById('caracteres-escritos').textContent = caracteresEscritos;
         });
     }
 });
 
-function getContent(){
-document.getElementById('form-relato').addEventListener('submit', function() {
+function guardarRelato() {
     console.log('Formulario enviado');
-    debugger;
-    document.getElementById('titulo-hidden').value = document.getElementById('titulo-relato').innerText;
-    document.getElementById('texto-hidden').value = document.getElementById('texto-relato').innerText;
-    titulo = document.getElementById('titulo-hidden').value;
-    texto = document.getElementById('texto-hidden').value;
-    const llamada = {titulo, texto};
-    console.log(llamada);
-});}
+    document.getElementById('titulo-hidden').value = document.getElementById('titulo-relato').innerHTML;
+    document.getElementById('texto-hidden').value = document.getElementById('texto-relato').innerHTML;
+
+    document.getElementById('form-relato').submit();
+}

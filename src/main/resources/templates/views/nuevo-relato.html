@@ -21,7 +21,7 @@
         <!-- Contenido principal -->
         <div class="editor-container">
             <div class="editor-bar">
-                <button type="submit" onclick="document.getElementById('form-relato').submit()" >Guardar</button>
+                <button onclick="guardarRelato()">Guardar</button>
                 <button onclick="negritaTexto()">Negrita</button>
                 <button onclick="cursivaTexto()">Cursiva</button>
                 <button onclick="justificarTexto('left')">Izquierda</button>
@@ -29,19 +29,19 @@
                 <button onclick="justificarTexto('right')">Derecha</button>
             </div>
             <div class="editor-text">
-                <form id="form-relato" th:object="${relato}" th:action="@{/relato/guardar-relato}" onsubmit="getContent()" method="post">
-                    <input type="hidden" name="firmaAutor" th:value="${firma}">
-                    <input type="hidden" id="titulo-hidden" name="titulo">
-                    <input type="hidden" id="texto-hidden" name="texto">
-                    <input type="text" id="texto-cuento" name="texto">
-                    <div contenteditable="true" id="titulo-relato" placeholder="Título del cuento">titulo</div>
-                    <div>Caracteres: <span id="caracteres-escritos">0</span>/4000</div>
-                    <div contenteditable="true" id="texto-relato" placeholder="Escribe tu cuento aquí">texto</div>
-                </form>
+                <div contenteditable="true" id="titulo-relato" placeholder="Título del cuento">titulo</div>
+                <div>Caracteres: <span id="caracteres-escritos">0</span>/4000</div>
+                <div contenteditable="true" id="texto-relato" placeholder="Escribe tu cuento aquí">texto</div>
+
                 <div>Firma: <span th:text="${firma}"></span></div>
             </div>
         </div>
     </div>
+    <form id="form-relato" th:object="${relato}" th:action="@{/relato/guardar-relato}" method="post">
+        <input type="hidden" name="firmaAutor" th:value="${firma}">
+        <input type="hidden" id="titulo-hidden" name="titulo">
+        <input type="hidden" id="texto-hidden" name="texto">
+    </form>
 </div>
 </body>
 </html>
