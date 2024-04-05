@@ -1,0 +1,44 @@
+.editor-container {
+    margin:auto;
+    width: 50%;
+}
+
+.editor-bar {
+    background-color: #f0f0f0;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editor-text {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 200px;
+}
+
+/* Estilos para el título */
+#titulo-cuento {
+    min-height: 100px;
+    font-size: 24px;
+}
+
+/* Estilos para el texto */
+    #texto-cuento {
+        min-height: 800px
+    }
+
+/* Estilos para los elementos div editables */
+.editor-text div[contenteditable="true"] {
+    margin: 0 auto;
+    width: 90%;
+    border: 1px solid #454546;
+    border-radius: 8px;
+    background-color: #e5e7ea;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para el borde inferior del último elemento */
+.editor-text div[contenteditable="true"]:last-child {
+    margin-bottom: 0; /* Elimina el margen inferior del último elemento */
+}
