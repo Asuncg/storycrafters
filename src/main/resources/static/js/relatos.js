@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function guardarRelato() {
     // Obtener el título y el texto del relato
-    document.getElementById('titulo-hidden').value = document.getElementById('titulo-relato').innerText;
-    document.getElementById('texto-hidden').value = document.getElementById('texto-relato').innerText;
+    document.getElementById('titulo-hidden').value = document.getElementById('titulo-relato').innerHTML;
+    document.getElementById('texto-hidden').value = document.getElementById('texto-relato').innerHTML;
 
     // Encuentra todos los checkboxes de categorías que fueron seleccionados
     const categoriasSeleccionadas = document.querySelectorAll('input[name="categorias"]:checked');

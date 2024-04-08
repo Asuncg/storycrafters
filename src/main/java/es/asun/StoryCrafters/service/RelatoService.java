@@ -11,4 +11,6 @@ public interface RelatoService {
     void guardarRelato(Relato relato, List<Integer> idCategorias);
 
     List<Relato> findAllRelatosByUsuario(Usuario usuario);
+
+    Relato findRelatoById(int id);
 }

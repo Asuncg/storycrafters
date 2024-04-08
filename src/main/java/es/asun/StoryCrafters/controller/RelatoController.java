@@ -43,6 +43,16 @@ public class RelatoController {
         return "views/mis-relatos";
     }
 
+    @GetMapping("/ver-relato/{id}")
+    public String verRelato(Model model,  @PathVariable String id) {
+
+        int idRelato = Integer.parseInt(id);
+        Relato vistaRelato = relatoService.findRelatoById(idRelato);
+
+        model.addAttribute("relato", vistaRelato);
+        return "views/vista-relato";
+    }
+
 
     @GetMapping("/nuevo-relato")
     public String nuevoRelato(Model model) {

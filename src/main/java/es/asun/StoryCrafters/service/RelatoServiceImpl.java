@@ -51,4 +51,11 @@ private CategoriaRepository categoriaRepository;
     public List<Relato> findAllRelatosByUsuario(Usuario usuario) {
         return relatoRepository.findByUsuario(usuario);
     }
+
+    @Override
+    public Relato findRelatoById(int id) {
+        return relatoRepository.findById(id);
+    }
+
+
 }

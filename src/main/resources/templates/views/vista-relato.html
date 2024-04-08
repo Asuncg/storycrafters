@@ -18,25 +18,17 @@
         </div>
         <!-- Contenido principal -->
         <div class="col py-3">
-            <h1>Mis Relatos</h1>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <th:block th:each="relato : ${relatos}">
-                    <tr>
-                        <td><a th:utext="${relato.titulo}" th:href="@{'/relato/ver-relato/' + ${relato.id}}"></a></td>
-                        <td>
-                            <a th:href="@{'/relato/editar/' + ${relato.id}}" class="btn btn-primary">Modificar</a>
-                        </td>
-                    </tr>
-                </th:block>
-                </tbody>
-            </table>
+            <h1>Detalles del Relato</h1>
+            <div>
+                <strong>Título:</strong> <span th:utext="${relato.titulo}"></span>
+            </div>
+            <div>
+                <strong>Texto:</strong>
+                <div th:utext="${relato.texto}"></div>
+            </div>
+            <div>
+                <strong>Firma del Autor:</strong> <span th:text="${relato.firmaAutor}"></span>
+            </div>
         </div>
     </div>
 </div>
