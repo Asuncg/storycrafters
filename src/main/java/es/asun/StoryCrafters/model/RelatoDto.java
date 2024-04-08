@@ -25,7 +25,7 @@ public class RelatoDto {
     private String titulo;
     @Size(max = 4000)
     private String texto;
-    private List<Categoria> categorias;
+    private List<Integer> categorias;
     @Size(max = 60)
     private String firmaAutor;
 }

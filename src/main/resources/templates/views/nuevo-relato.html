@@ -29,6 +29,12 @@
                 <button onclick="justificarTexto('right')">Derecha</button>
             </div>
             <div class="editor-text">
+                <div class="categorias">
+                    <th:block th:each="categoria : ${categorias}">
+                        <input type="checkbox" th:id="${'categoria' + categoria.id}" name="categorias" th:value="${categoria.id}">
+                        <label th:for="${'categoria' + categoria.id}" th:text="${categoria.nombre}"></label><br>
+                    </th:block>
+                </div>
                 <div contenteditable="true" id="titulo-relato" placeholder="Título del cuento">titulo</div>
                 <div>Caracteres: <span id="caracteres-escritos">0</span>/4000</div>
                 <div contenteditable="true" id="texto-relato" placeholder="Escribe tu cuento aquí">texto</div>
@@ -41,7 +47,11 @@
         <input type="hidden" name="firmaAutor" th:value="${firma}">
         <input type="hidden" id="titulo-hidden" name="titulo">
         <input type="hidden" id="texto-hidden" name="texto">
+        <!-- Input hidden para almacenar las categorías seleccionadas -->
+        <input type="hidden" id="categorias-seleccionadas" name="idsCategoriasSeleccionadas">
+
     </form>
+
 </div>
 </body>
 </html>

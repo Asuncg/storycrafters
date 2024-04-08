@@ -21,9 +21,22 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function guardarRelato() {
-    console.log('Formulario enviado');
-    document.getElementById('titulo-hidden').value = document.getElementById('titulo-relato').innerHTML;
-    document.getElementById('texto-hidden').value = document.getElementById('texto-relato').innerHTML;
+    // Obtener el título y el texto del relato
+    document.getElementById('titulo-hidden').value = document.getElementById('titulo-relato').innerText;
+    document.getElementById('texto-hidden').value = document.getElementById('texto-relato').innerText;
 
+    // Encuentra todos los checkboxes de categorías que fueron seleccionados
+    const categoriasSeleccionadas = document.querySelectorAll('input[name="categorias"]:checked');
+
+    // Obtener los IDs de las categorías seleccionadas y almacenarlos en un array
+    const idsCategoriasSeleccionadas = [];
+    categoriasSeleccionadas.forEach(categoria => {
+        idsCategoriasSeleccionadas.push(categoria.value);
+    });
+
+    // Asignar los IDs de categorías seleccionadas al input hidden
+    document.getElementById('categorias-seleccionadas').value = idsCategoriasSeleccionadas.join(',');
+
+    // Envía el formulario
     document.getElementById('form-relato').submit();
 }
