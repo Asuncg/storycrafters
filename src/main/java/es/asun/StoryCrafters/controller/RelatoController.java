@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,12 +90,15 @@ public class RelatoController {
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
 
+
+
         // Mapear los datos del DTO al objeto Relato
         Relato relato = new Relato();
         relato.setUsuario(usuario);
         relato.setTitulo(relatoDto.getTitulo());
         relato.setTexto(relatoDto.getTexto());
         relato.setFirmaAutor(relatoDto.getFirmaAutor());
+        relato.setFechaCreacion(new Date());
 
         // Convertir la cadena de IDs en una lista de enteros
         List<Integer> idsCategoriasSeleccionadas = Arrays.stream(idsCategoriasSeleccionadasStr.split(","))

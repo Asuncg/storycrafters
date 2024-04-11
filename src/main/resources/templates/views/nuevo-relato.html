@@ -32,7 +32,8 @@
             <div class="editor-text">
                 <div class="categorias">
                     <th:block th:each="categoria : ${categorias}">
-                        <input type="checkbox" th:id="${'categoria' + categoria.id}" name="categorias" th:value="${categoria.id}">
+                        <input type="checkbox" th:id="${'categoria' + categoria.id}" name="categorias"
+                               th:value="${categoria.id}">
                         <label th:for="${'categoria' + categoria.id}" th:text="${categoria.nombre}"></label><br>
                     </th:block>
                 </div>

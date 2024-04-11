@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -24,17 +25,25 @@ public class Relato {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @Column(name = "titulo", length = 100)
+    @Column(name = "titulo", length = 150)
     private String titulo;
 
-    @Column(name = "texto", length = 4000)
+    @Column(name = "texto", length = 4500)
     private String texto;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "categoria_relato",
+            joinColumns = @JoinColumn(name = "relato_id"),
+            inverseJoinColumns = @JoinColumn(name = "categoria_id")
+    )
     private List<Categoria> categorias;
 
     @Column(name = "firmaAutor", length = 60)
     private String firmaAutor;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_creacion")
+    private Date fechaCreacion;
 }
 
