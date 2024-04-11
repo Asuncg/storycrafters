@@ -29,6 +29,12 @@
             <div>
                 <strong>Firma del Autor:</strong> <span th:text="${relato.firmaAutor}"></span>
             </div>
+            <div>
+                <strong>Categorías:</strong>
+                <ul>
+                    <li th:each="categoria : ${relato.categorias}" th:text="${categoria.nombre}"></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

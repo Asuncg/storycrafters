@@ -6,6 +6,7 @@ import es.asun.StoryCrafters.repository.UserRepository;
 import es.asun.StoryCrafters.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,8 +48,11 @@ public class AuthController {
     @PostMapping("/registro/save")
     public String registration(@Valid @ModelAttribute("user") UserRegisterDto userRegisterDto,
                                BindingResult result,
-                               Model model){
+                               Model model,
+                               CsrfToken csrfToken){
         Usuario existingUsuario = userService.findUserByEmail(userRegisterDto.getEmail());
+
+        String csrfTokenValue = csrfToken.getToken();
 
         if(existingUsuario != null && existingUsuario.getEmail() != null && !existingUsuario.getEmail().isEmpty()){
             result.rejectValue("email", null,
@@ -57,11 +61,11 @@ public class AuthController {
 
         if(result.hasErrors()){
             model.addAttribute("user", userRegisterDto);
-            return "/registro";
+            return "redirect:/registro?error&_csrf="+csrfTokenValue;
         }
 
         userService.saveUser(userRegisterDto);
-        return "redirect:/registro?success";
+        return "redirect:/registro?success&_csrf="+csrfTokenValue;
     }
 
 

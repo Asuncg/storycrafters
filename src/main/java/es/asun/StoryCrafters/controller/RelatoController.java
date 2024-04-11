@@ -39,19 +39,34 @@ public class RelatoController {
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
         List<Relato> relatos = relatoService.findAllRelatosByUsuario(usuario);
+
+        List<Categoria> listaCategorias = categoriaService.findAllCategories();
+        model.addAttribute("listaCategorias", listaCategorias);
         model.addAttribute("relatos", relatos);
         return "views/mis-relatos";
     }
 
-    @GetMapping("/ver-relato/{id}")
-    public String verRelato(Model model,  @PathVariable String id) {
+    @GetMapping("/relatos/{id}")
+    public String verRelato(Model model, @PathVariable String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+        int idUsuario = usuario.getId();
 
         int idRelato = Integer.parseInt(id);
         Relato vistaRelato = relatoService.findRelatoById(idRelato);
 
-        model.addAttribute("relato", vistaRelato);
-        return "views/vista-relato";
+        // Ahora las categorías están cargadas con el relato
+        List<Categoria> listaCategoriasRelato = vistaRelato.getCategorias();
+
+        if (idUsuario != vistaRelato.getUsuario().getId()) {
+            return "views/no-acceso";
+        } else {
+            model.addAttribute("relato", vistaRelato);
+            return "views/vista-relato";
+        }
     }
+
 
 
     @GetMapping("/nuevo-relato")

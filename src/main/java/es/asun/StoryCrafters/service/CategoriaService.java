@@ -10,4 +10,5 @@ public interface CategoriaService {
 
     List<Categoria> findAllCategories();
 
+    Categoria findCategoryById(int id);
 }

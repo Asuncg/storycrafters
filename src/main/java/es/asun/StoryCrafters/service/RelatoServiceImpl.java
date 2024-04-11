@@ -54,7 +54,7 @@ private CategoriaRepository categoriaRepository;
 
     @Override
     public Relato findRelatoById(int id) {
-        return relatoRepository.findById(id);
+        return relatoRepository.findRelatoById(id);
     }
 
 

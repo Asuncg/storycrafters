@@ -9,6 +9,7 @@
           rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -35,7 +36,12 @@
             </div>
             <div th:if="${param.success}">
                 <div class="alert alert-info">
-                    You have successfully registered our app!
+                    Te has registrado correctamente!
+                </div>
+            </div>
+            <div th:if="${param.error}">
+                <div class="alert alert-info">
+                    Esta email ya está registrado.
                 </div>
             </div>
             <div class="card-body">
@@ -54,6 +60,7 @@
                                 placeholder="Enter first name"
                                 th:field="*{firstName}"
                                 type="text"
+                                required
                         />
                         <p th:errors = "*{firstName}" class="text-danger"
                            th:if="${#fields.hasErrors('firstName')}"></p>
@@ -82,6 +89,7 @@
                                 placeholder="Enter email address"
                                 th:field="*{email}"
                                 type="email"
+                                required
                         />
                         <p th:errors = "*{email}" class="text-danger"
                            th:if="${#fields.hasErrors('email')}"></p>
@@ -96,6 +104,7 @@
                                 placeholder="Enter password"
                                 th:field="*{password}"
                                 type="password"
+                                required
                         />
                         <p th:errors = "*{password}" class="text-danger"
                            th:if="${#fields.hasErrors('password')}"></p>

@@ -7,6 +7,8 @@
           rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
+    <script src="/js/filtro.js"></script>
+
 </head>
 <body>
 <div class="container-fluid">
@@ -19,6 +21,19 @@
         <!-- Contenido principal -->
         <div class="col py-3">
             <h1>Mis Relatos</h1>
+            <!-- Formulario de filtro por categorías -->
+            <div class="mb-3">
+                <label for="categoria" class="form-label">Filtrar por categoría:</label>
+                <select id="categoria" name="categoria" class="form-select">
+                    <option value="">Selecciona una categoría</option>
+                    <!-- Iterar sobre las categorías disponibles -->
+                    <th:block th:each="categoria : ${listaCategorias}">
+                        <option th:value="${categoria.nombre}" th:text="${categoria.nombre}"></option>
+                    </th:block>
+                </select>
+            </div>
+
+            <!-- Tabla de relatos -->
             <table class="table">
                 <thead>
                 <tr>
@@ -28,10 +43,16 @@
                 </thead>
                 <tbody>
                 <th:block th:each="relato : ${relatos}">
-                    <tr>
-                        <td><a th:utext="${relato.titulo}" th:href="@{'/relato/ver-relato/' + ${relato.id}}"></a></td>
+                    <tr class="relatoRow">
                         <td>
-                            <a th:href="@{'/relato/editar/' + ${relato.id}}" class="btn btn-primary">Modificar</a>
+                            <p><a th:utext="${relato.titulo}" th:href="@{'/relato/relatos/' + ${relato.id}}"></a></p>
+                            <p>Categorías:</p>
+                            <ul>
+                                <li th:each="categoria : ${relato.categorias}" th:text="${categoria.nombre}"></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <a th:href="@{'/relato/editar/' + ${relato.id}}" class="btn btn-primary">Editar</a>
                         </td>
                     </tr>
                 </th:block>
