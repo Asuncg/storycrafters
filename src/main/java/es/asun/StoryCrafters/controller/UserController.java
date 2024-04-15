@@ -23,13 +23,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // handler method to handle list of users
-    @GetMapping("/listusers")
-    public String users(Model model){
-        List<UserRegisterDto> users = userService.findAllUsers();
-        model.addAttribute("users", users);
-        return "users";
-    }
 
     @GetMapping(value= {"/profile"})
     public String viewprofile(Model model) {

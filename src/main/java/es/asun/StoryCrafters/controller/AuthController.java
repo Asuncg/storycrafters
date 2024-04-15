@@ -27,7 +27,9 @@ public class AuthController {
     private UserService userService;
 
     @GetMapping(value = {"/", "/index"})
-    public String home() {
+    public String home(Model model) {
+        String content= "views/home";
+        model.addAttribute("content", content);
         return "index";
     }
 

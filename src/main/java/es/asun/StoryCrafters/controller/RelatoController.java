@@ -34,17 +34,20 @@ public class RelatoController {
     @Autowired
     private CategoriaService categoriaService;
 
+    private String content = "";
     @GetMapping("/mis-relatos")
     public String misRelatos(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
         List<Relato> relatos = relatoService.findAllRelatosByUsuario(usuario);
-
         List<Categoria> listaCategorias = categoriaService.findAllCategories();
+        content = "views/mis-relatos";
+
+        model.addAttribute("content", content);
         model.addAttribute("listaCategorias", listaCategorias);
         model.addAttribute("relatos", relatos);
-        return "views/mis-relatos";
+        return "index";
     }
 
     @GetMapping("/relatos/{id}")
@@ -78,10 +81,13 @@ public class RelatoController {
         String firma = usuario.getFirmaAutor();
         List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
+        content = "views/nuevo-relato";
+
+        model.addAttribute("content", content);
         model.addAttribute("categorias", listaCategorias);
         model.addAttribute("firma", firma);
         model.addAttribute("relato", new RelatoDto()); // Agregar un objeto RelatoDto vacío al modelo
-        return "views/nuevo-relato";
+        return "index";
     }
 
     @PostMapping("/guardar-relato")
