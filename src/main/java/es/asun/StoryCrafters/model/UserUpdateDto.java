@@ -31,5 +31,8 @@ public class UserUpdateDto {
     private String firmaAutor;
 
     public UserUpdateDto(Usuario usuario) {
+        firstName = usuario.getFirstName();
+        lastName = usuario.getLastName();
+        firmaAutor = usuario.getFirmaAutor();
     }
 }

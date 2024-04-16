@@ -28,7 +28,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(UserRegisterDto userRegisterDto) {
         Usuario usuario = new Usuario();
-        usuario.setFirstName(userRegisterDto.getFirstName() + " " + userRegisterDto.getLastName());
+        usuario.setFirstName(userRegisterDto.getFirstName());
+        usuario.setLastName(userRegisterDto.getLastName());
         usuario.setEmail(userRegisterDto.getEmail());
         // encrypt the password using spring security
         usuario.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));

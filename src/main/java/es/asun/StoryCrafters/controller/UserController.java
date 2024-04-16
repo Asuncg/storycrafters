@@ -23,44 +23,40 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private String content = "";
 
     @GetMapping(value= {"/profile"})
     public String viewprofile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Obtener el objeto Usuario del usuario autenticado (puedes ajustar esto según tu implementación)
         Usuario usuario = userService.findUserByEmail(username);
+        content = "views/profile";
 
-        // Pasar la información del usuario al modelo
+        model.addAttribute("content", content);
         model.addAttribute("usuario", usuario);
         model.addAttribute("userDto", new UserRegisterDto()); // Añadir un UserRegisterDto vacío al modelo
 
-        return "views/profile";
+        return "index";
     }
 
 
     @GetMapping("/edit")
     public String showEditProfileForm(Model model) {
-        // Obtener el usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
+        content = "views/edit-profile";
 
-        // Pasar el usuario al modelo
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("userDto", new UserRegisterDto(usuario)); // Pasar un UserUpdateDto con los datos del usuario al modelo
+        model.addAttribute("content", content);
+        model.addAttribute("userDto", new UserUpdateDto(usuario)); // Pasar un UserUpdateDto con los datos del usuario al modelo
 
-        // Retornar la vista de edición de perfil
-        return "views/edit-profile";
+        return "index";
     }
 
     @PostMapping("/profile/edit")
-    public String editProfile(@ModelAttribute("user") UserUpdateDto userDto) {
-        // Actualizar los datos del usuario
+    public String editProfile(@ModelAttribute("user") UserUpdateDto userDto, Model model) {
         userService.updateUser(userDto);
 
-        // Redirigir a la página de perfil después de la edición
         return "redirect:/user/profile";
     }
 }
