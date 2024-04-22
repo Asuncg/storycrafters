@@ -57,3 +57,4 @@ function guardarRelato() {
     // Envía el formulario
     document.getElementById('form-relato').submit();
 }
+

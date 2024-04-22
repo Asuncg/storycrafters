@@ -1,12 +1,14 @@
 package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Categoria;
+import es.asun.StoryCrafters.entity.Imagenes;
 import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.RelatoDto;
 import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.CategoriaService;
+import es.asun.StoryCrafters.service.ImagenesService;
 import es.asun.StoryCrafters.service.RelatoService;
 import es.asun.StoryCrafters.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class RelatoController {
 
     @Autowired
     private CategoriaService categoriaService;
+
+    @Autowired
+    private ImagenesService imagenesService;
 
     private String content = "";
     @GetMapping("/mis-relatos")
@@ -71,21 +76,36 @@ public class RelatoController {
         }
     }
 
+    @GetMapping("/nuevo-relato-imagen")
+    public String nuevoRelatoImagen(Model model) {
 
+        List<Imagenes> listaImagenes = imagenesService.findAllImagenes();
+
+        content = "views/nuevo-relato-imagen";
+
+        model.addAttribute("content", content);
+        model.addAttribute("imagenes", listaImagenes);
+        return "index";
+    }
 
     @GetMapping("/nuevo-relato")
-    public String nuevoRelato(Model model) {
+    public String nuevoRelato(Model model, @RequestParam("idImagenSeleccionada") int idImagenSeleccionada) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
         String firma = usuario.getFirmaAutor();
         List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
+        Imagenes imagen = imagenesService.findImageById(idImagenSeleccionada);
+
+        String urlImagen = imagen.getUrl();
+
         content = "views/nuevo-relato";
 
         model.addAttribute("content", content);
         model.addAttribute("categorias", listaCategorias);
         model.addAttribute("firma", firma);
+        model.addAttribute("urlImagen", urlImagen);
         model.addAttribute("relato", new RelatoDto()); // Agregar un objeto RelatoDto vacío al modelo
         return "index";
     }

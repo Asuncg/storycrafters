@@ -15,10 +15,4 @@ public class CategoriaServiceImpl implements CategoriaService{
 
         return categoriaRepository.findAll();
     }
-
-    @Override
-    public Categoria findCategoryById(int id) {
-        return categoriaRepository.findById(id);
-    }
-
 }
