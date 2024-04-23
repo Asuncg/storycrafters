@@ -1,44 +1,64 @@
-.editor-container {
-    margin:auto;
-    width: 50%;
+#editor-text {
+    box-shadow: 5px 5px 10px -5px rgba(0, 0, 0, 0.75);
+    border-radius: .5rem;
 }
 
 .editor-bar {
-    background-color: #f0f0f0;
-    padding: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    top: 0;
+    z-index: 1;
+    background-color: #1693a5;
 }
 
-.editor-text {
-    border: 1px solid #ccc;
-    padding: 10px;
-    min-height: 200px;
+
+
+#titulo-relato {
+    min-height: 250px;
+    background-color: #EBEDEF;
+    font-size: 32px;
+    background-size: cover;
+    background-position: center;
+    color: black;
+    margin-top: 20px;
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
 }
 
-/* Estilos para el título */
-#titulo-cuento {
-    min-height: 100px;
-    font-size: 24px;
+#texto-relato {
+    min-height: 500px;
+    background-color: #EBEDEF;
+    text-align: left;
+    font-size: 16px;
+    border-bottom-left-radius: .5rem;
+    border-bottom-right-radius: .5rem;
 }
 
-/* Estilos para el texto */
-    #texto-cuento {
-        min-height: 800px
-    }
+#info-relato {
+    padding: 15px;
+    min-height: 50px;
+}
+
+#caracteres {
+    text-align: left;
+}
+
+#firma-autor {
+    text-align: right;
+}
 
 /* Estilos para los elementos div editables */
 .editor-text div[contenteditable="true"] {
     margin: 0 auto;
-    width: 90%;
-    border: 1px solid #454546;
-    border-radius: 8px;
     background-color: #e5e7ea;
-    padding: 10px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    padding-top: 20px;
 }
 
 /* Estilos para el borde inferior del último elemento */
 .editor-text div[contenteditable="true"]:last-child {
     margin-bottom: 0; /* Elimina el margen inferior del último elemento */
+}
+
+[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    pointer-events: none;
+    display: block;
 }

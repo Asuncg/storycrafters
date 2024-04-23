@@ -1,0 +1,9 @@
+/* Estilo para el efecto de hover */
+.gallery-img:hover img {
+    border: 2px solid #007bff; /* Cambia el color del borde al pasar el ratón por encima */
+}
+
+/* Estilo para la imagen seleccionada */
+.gallery-img.selected img {
+    border: 2px solid #28a745; /* Cambia el color del borde cuando la imagen está seleccionada */
+}

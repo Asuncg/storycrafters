@@ -11,6 +11,7 @@ import es.asun.StoryCrafters.service.CategoriaService;
 import es.asun.StoryCrafters.service.ImagenesService;
 import es.asun.StoryCrafters.service.RelatoService;
 import es.asun.StoryCrafters.service.UserService;
+import es.asun.StoryCrafters.utilidades.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -116,15 +117,7 @@ public class RelatoController {
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
 
-
-
-        // Mapear los datos del DTO al objeto Relato
-        Relato relato = new Relato();
-        relato.setUsuario(usuario);
-        relato.setTitulo(relatoDto.getTitulo());
-        relato.setTexto(relatoDto.getTexto());
-        relato.setFirmaAutor(relatoDto.getFirmaAutor());
-        relato.setFechaCreacion(new Date());
+        Relato relato = Mappings.mapToRelato(relatoDto, usuario);
 
         // Convertir la cadena de IDs en una lista de enteros
         List<Integer> idsCategoriasSeleccionadas = Arrays.stream(idsCategoriasSeleccionadasStr.split(","))

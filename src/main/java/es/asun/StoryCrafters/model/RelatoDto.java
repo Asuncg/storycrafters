@@ -28,4 +28,5 @@ public class RelatoDto {
     private List<Integer> categorias;
     @Size(max = 60)
     private String firmaAutor;
+    private String urlImagen;
 }

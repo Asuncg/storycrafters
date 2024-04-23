@@ -31,6 +31,9 @@ public class Relato {
     @Column(name = "texto", length = 4500)
     private String texto;
 
+    @Column(name = "imagen")
+    private String urlImagen;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "categoria_relato",

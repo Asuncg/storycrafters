@@ -2776,38 +2776,38 @@ fieldset:disabled a.btn {
 
 .btn-primary {
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #1693a5;
+    border-color: #1693a5;
 }
 
 .btn-primary:hover {
     color: #fff;
-    background-color: #0069d9;
-    border-color: #0062cc;
+    background-color: #1693a5;
+    border-color: #1693a5;
 }
 
 .btn-primary:focus, .btn-primary.focus {
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
-    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+   /* -webkit-box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);*/
 }
 
 .btn-primary.disabled, .btn-primary:disabled {
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #1693a5;
+    border-color: #1693a5;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
 .show > .btn-primary.dropdown-toggle {
     color: #fff;
-    background-color: #0062cc;
-    border-color: #005cbf;
+    background-color: #1693a5;
+    border-color: #1693a5;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
 .show > .btn-primary.dropdown-toggle:focus {
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
-    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    /*-webkit-box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);*/
 }
 
 .btn-secondary {
@@ -11683,48 +11683,7 @@ a[data-toggle="collapse"] {
     width: 80px;
 }
 
-[contenteditable=true]:empty:before {
-    content: attr(placeholder);
-    pointer-events: none;
-    display: block; /* For Firefox */
-}
 
-#titulo-relato {
-    min-height: 250px;
-    border-radius: 15px;
-    background-color: #EBEDEF;
-    font-size: 32px;
-    -webkit-box-shadow: 2px 2px 10px 2px rgba(77, 77, 77, 1);
-    -moz-box-shadow: 2px 2px 10px 2px rgba(77, 77, 77, 1);
-    box-shadow: 2px 2px 10px 2px rgba(77, 77, 77, 1);
-    background-size: cover;
-    background-position: center;
-    color: black;
-}
-
-#texto-relato {
-    min-height: 500px;
-    border-radius: 15px;
-    background-color: #EBEDEF;
-    text-align: left;
-    font-size: 16px;
-    -webkit-box-shadow: 2px 2px 10px 2px rgba(77, 77, 77, 1);
-    -moz-box-shadow: 2px 2px 10px 2px rgba(77, 77, 77, 1);
-    box-shadow: 2px 2px 10px 2px rgba(77, 77, 77, 1);
-}
-
-#info-relato {
-    padding: 15px;
-    min-height: 50px;
-}
-
-#caracteres {
-    text-align: left;
-}
-
-#firma-autor {
-    text-align: right;
-}
 
 .started-col {
     background: #fff;
@@ -11743,11 +11702,7 @@ a[data-toggle="collapse"] {
     color: #fff;
 }
 
-.editor-bar {
-    top: 0;
-    z-index: 1;
-    background-color: #1693a5;
-}
+
 
 .gallery-img img {
     border-radius: 15px;

@@ -1,18 +1,21 @@
-    <form action="/relato/nuevo-relato" method="get">
-        <div class="container text-center">
-            <div class="col py-3">
-                <h1 class="text-center">Elige una imagen para tu relato</h1>
-                <div class="row">
-                    <!-- Recorremos la lista de imágenes y las mostramos -->
-                    <div class="col-md-3 mb-3" th:each="imagen : ${imagenes}">
-                        <div class="gallery-img">
-                            <input type="radio" name="idImagenSeleccionada" th:value="${imagen.id}">
-                            <img th:src="${imagen.url}" class="img-fluid" alt="Imagen">
-                        </div>
-                    </div>
+<link rel="stylesheet" href="/css/galeria.css">
+<form action="/relato/nuevo-relato" method="get">
+    <div class="container text-center">
+        <div class="col py-3">
+            <h1 class="text-center">Elige una imagen para tu relato</h1>
+            <div class="row">
+                <!-- Recorremos la lista de imágenes y las mostramos -->
+                <div class="col-md-3 mb-3" th:each="imagen : ${imagenes}">
+                    <!-- Utilizamos un label para envolver la imagen -->
+                    <label class="gallery-img">
+                        <!-- Input de radio oculto -->
+                        <input type="radio" name="idImagenSeleccionada" th:value="${imagen.id}" style="display: none;">
+                        <!-- Imagen -->
+                        <img th:src="${imagen.url}" class="img-fluid" alt="Imagen" onclick="selectImage(this)">
+                    </label>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Continuar</button>
         </div>
-    </form>
-
+        <button type="submit" class="btn btn-primary">Continuar</button>
+    </div>
+</form>
