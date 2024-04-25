@@ -1,18 +1,18 @@
 package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Categoria;
-import es.asun.StoryCrafters.entity.Imagenes;
+import es.asun.StoryCrafters.entity.Imagen;
 import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.RelatoDto;
-import es.asun.StoryCrafters.model.UserRegisterDto;
-import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.CategoriaService;
 import es.asun.StoryCrafters.service.ImagenesService;
 import es.asun.StoryCrafters.service.RelatoService;
 import es.asun.StoryCrafters.service.UserService;
 import es.asun.StoryCrafters.utilidades.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +40,7 @@ public class RelatoController {
     private ImagenesService imagenesService;
 
     private String content = "";
+
     @GetMapping("/mis-relatos")
     public String misRelatos(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -66,21 +66,21 @@ public class RelatoController {
         int idRelato = Integer.parseInt(id);
         Relato vistaRelato = relatoService.findRelatoById(idRelato);
 
-        // Ahora las categorías están cargadas con el relato
-        List<Categoria> listaCategoriasRelato = vistaRelato.getCategorias();
-
         if (idUsuario != vistaRelato.getUsuario().getId()) {
-            return "views/no-acceso";
+            content = "views/no-acceso";
         } else {
             model.addAttribute("relato", vistaRelato);
-            return "views/vista-relato";
+            content = "views/vista-relato";
+
         }
+        model.addAttribute("content", content);
+        return "index";
     }
 
     @GetMapping("/nuevo-relato-imagen")
     public String nuevoRelatoImagen(Model model) {
 
-        List<Imagenes> listaImagenes = imagenesService.findAllImagenes();
+        List<Imagen> listaImagenes = imagenesService.findAllImagenes();
 
         content = "views/nuevo-relato-imagen";
 
@@ -97,38 +97,97 @@ public class RelatoController {
         String firma = usuario.getFirmaAutor();
         List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
-        Imagenes imagen = imagenesService.findImageById(idImagenSeleccionada);
-
-        String urlImagen = imagen.getUrl();
+        Imagen imagen = imagenesService.findImageById(idImagenSeleccionada);
 
         content = "views/nuevo-relato";
 
         model.addAttribute("content", content);
         model.addAttribute("categorias", listaCategorias);
         model.addAttribute("firma", firma);
-        model.addAttribute("urlImagen", urlImagen);
+        model.addAttribute("imagen", imagen);
         model.addAttribute("relato", new RelatoDto()); // Agregar un objeto RelatoDto vacío al modelo
         return "index";
     }
 
-    @PostMapping("/guardar-relato")
-    public String guardarRelato(@ModelAttribute("relato") RelatoDto relatoDto, @RequestParam("idsCategoriasSeleccionadas") String idsCategoriasSeleccionadasStr) {
+    @GetMapping("/editar-relato/{id}")
+    public String editarRelato(Model model, @PathVariable String id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
+        String firma = usuario.getFirmaAutor();
+        List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
-        Relato relato = Mappings.mapToRelato(relatoDto, usuario);
+        int idUsuario = usuario.getId();
 
-        // Convertir la cadena de IDs en una lista de enteros
-        List<Integer> idsCategoriasSeleccionadas = Arrays.stream(idsCategoriasSeleccionadasStr.split(","))
-                .map(Integer::valueOf)
-                .collect(Collectors.toList());
+        int idRelato = Integer.parseInt(id);
+        Relato vistaRelato = relatoService.findRelatoById(idRelato);
 
-        // Guardar el relato con las categorías
-        relatoService.guardarRelato(relato, idsCategoriasSeleccionadas);
+        if (idUsuario != vistaRelato.getUsuario().getId()) {
+            content = "views/no-acceso";
+        } else {
+            content = "views/editar-relato";
+            model.addAttribute("firma", firma);
+            model.addAttribute("relato", vistaRelato);
+            model.addAttribute("categorias", listaCategorias);
+        }
 
-        return "redirect:/index"; // Redirigir a la página principal después de guardar el relato
+        model.addAttribute("content", content);
+        return "index";
     }
 
+
+
+
+//    @PostMapping("/guardar-relato-salir")
+//    public String guardarRelatoSalir(@ModelAttribute("relato") RelatoDto relatoDto, @RequestParam("idsCategoriasSeleccionadas") String idsCategoriasSeleccionadasStr) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//        Usuario usuario = userService.findUserByEmail(username);
+//
+//        Relato relato = Mappings.mapToRelato(relatoDto, usuario);
+//
+//        // Convertir la cadena de IDs en una lista de enteros
+//        List<Integer> idsCategoriasSeleccionadas = Arrays.stream(idsCategoriasSeleccionadasStr.split(","))
+//                .map(Integer::valueOf)
+//                .collect(Collectors.toList());
+//
+//        // Guardar el relato con las categorías
+//        relatoService.guardarRelato(relato, idsCategoriasSeleccionadas);
+//
+//        return "redirect:/index"; // Redirigir a la página principal después de guardar el relato
+//    }
+
+    @PostMapping("/guardar-relato")
+    public ResponseEntity<String> guardarRelato(@RequestBody RelatoDto relatoDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+        Imagen imagen = imagenesService.findImageById(relatoDto.getIdImagen());
+        relatoDto.setFirmaAutor(usuario.getFirmaAutor());
+
+        Relato relato = Mappings.mapToRelato(relatoDto, usuario, imagen);
+
+        // Guardar el relato con las categorías
+        relatoService.guardarRelato(relato, relatoDto.getCategorias());
+
+        String mensajeExito = "El relato se ha guardado correctamente.";
+        return new ResponseEntity<>(mensajeExito, HttpStatus.OK);
+    }
+
+    @PutMapping("/actualizar-relato")
+    public ResponseEntity<String> actualizarRelato(@RequestBody RelatoDto relatoDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+        Imagen imagen = imagenesService.findImageById(relatoDto.getIdImagen());
+
+        int idRelato = relatoDto.getId();
+
+        Relato relato = Mappings.mapToRelato(relatoDto, usuario, imagen);
+
+        relatoService.actualizarRelato(idRelato,relato,relatoDto.getCategorias());
+
+        return ResponseEntity.ok("Relato actualizado exitosamente");
+    }
 
 }

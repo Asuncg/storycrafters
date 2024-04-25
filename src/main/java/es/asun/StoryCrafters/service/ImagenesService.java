@@ -1,11 +1,11 @@
 package es.asun.StoryCrafters.service;
 
-import es.asun.StoryCrafters.entity.Imagenes;
+import es.asun.StoryCrafters.entity.Imagen;
 
 import java.util.List;
 
 public interface ImagenesService {
-    List<Imagenes> findAllImagenes();
+    List<Imagen> findAllImagenes();
 
-    Imagenes findImageById(int id);
+    Imagen findImageById(int id);
 }

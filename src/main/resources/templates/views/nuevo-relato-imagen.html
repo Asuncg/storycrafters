@@ -3,6 +3,9 @@
     <div class="container text-center">
         <div class="col py-3">
             <h1 class="text-center">Elige una imagen para tu relato</h1>
+            <div class="col-md-auto m-3">
+                <button type="submit" class="btn btn-primary">Continuar</button>
+            </div>
             <div class="row">
                 <!-- Recorremos la lista de imágenes y las mostramos -->
                 <div class="col-md-3 mb-3" th:each="imagen : ${imagenes}">
@@ -16,6 +19,5 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Continuar</button>
     </div>
 </form>

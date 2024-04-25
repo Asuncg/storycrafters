@@ -48,6 +48,32 @@ private CategoriaRepository categoriaRepository;
     }
 
     @Override
+    public void actualizarRelato(int idRelato, Relato relatoActualizado, List<Integer> idCategorias) {
+        // Obtener el relato existente por su ID
+        Optional<Relato> relatoOptional = relatoRepository.findById(idRelato);
+        if (relatoOptional.isPresent()) {
+            Relato relatoExistente = relatoOptional.get();
+
+            // Actualizar los campos del relato con los datos del relato actualizado
+            relatoExistente.setTitulo(relatoActualizado.getTitulo());
+            relatoExistente.setTexto(relatoActualizado.getTexto());
+
+            // Actualizar las categorías asociadas al relato
+            List<Categoria> categorias = new ArrayList<>();
+            for (Integer idCategoria : idCategorias) {
+                Optional<Categoria> categoriaOptional = categoriaRepository.findById(idCategoria);
+                categoriaOptional.ifPresent(categorias::add);
+            }
+            relatoExistente.setCategorias(categorias);
+
+            // Guardar el relato actualizado en la base de datos
+            relatoRepository.save(relatoExistente);
+        } else {
+            throw new RuntimeException("No se encontró el relato con ID: " + idRelato);
+        }
+    }
+
+    @Override
     public List<Relato> findAllRelatosByUsuario(Usuario usuario) {
         return relatoRepository.findByUsuario(usuario);
     }

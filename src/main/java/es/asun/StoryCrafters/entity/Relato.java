@@ -31,8 +31,9 @@ public class Relato {
     @Column(name = "texto", length = 4500)
     private String texto;
 
-    @Column(name = "imagen")
-    private String urlImagen;
+    @ManyToOne
+    @JoinColumn(name = "id_imagen")
+    private Imagen imagen;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

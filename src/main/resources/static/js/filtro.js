@@ -1,22 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
     const categoriaSelect = document.getElementById('categoria');
-    const relatoCards = document.querySelectorAll('.card');
+    const relatosContainer = document.getElementById('relatos');
 
     categoriaSelect.addEventListener('change', function() {
-
         const categoriaSeleccionada = categoriaSelect.value;
+        const relatos = Array.from(relatosContainer.children);
 
-        relatoCards.forEach(function(card) {
-            const categoriasRelato = Array.from(card.querySelectorAll('.card-text span')).map(span => span.textContent.trim());
+        relatos.forEach(function(relato) {
+            const categoriasRelato = Array.from(relato.querySelectorAll('.categorias')).map(input => input.value);
+            const coincide = categoriaSeleccionada === '' || categoriasRelato.includes(categoriaSeleccionada);
 
-            const coincide = categoriasRelato.includes(categoriaSeleccionada);
-
-            if (categoriaSeleccionada === '' || coincide) {
-                card.style.display = 'block';
+            if (coincide) {
+                relato.style.display = 'block'; // Asegúrate de que el relato sea visible
             } else {
-                card.style.display = 'none';
+                relato.style.display = 'none'; // Oculta el relato que no coincide
             }
         });
     });
 });
-

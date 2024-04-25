@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-function guardarRelato() {
+function guardarRelatoSalir() {
 
     // Obtener el título y el texto del relato
     document.getElementById('titulo-hidden').value = document.getElementById('titulo-relato').innerHTML;
@@ -56,5 +56,115 @@ function guardarRelato() {
 
     // Envía el formulario
     document.getElementById('form-relato').submit();
+}
+
+
+function guardarRelato() {
+    // Obtener los datos del formulario
+    var titulo = document.getElementById('titulo-relato').innerHTML;
+    var texto = document.getElementById('texto-relato').innerHTML;
+    var idImagen = document.getElementById('idImagen').value;
+
+    // Obtener las categorías seleccionadas
+    var categoriasSeleccionadas = obtenerCategoriasSeleccionadas();
+
+    // Crear un objeto relatoDto
+    var relatoDto = {
+        titulo: titulo,
+        texto: texto,
+        idImagen: idImagen,
+        categorias: categoriasSeleccionadas
+    };
+
+    // Realizar la petición Ajax
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/relato/guardar-relato', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            cambiosPendientes = false;
+            // Mostrar el modal de éxito
+            $('#modalExito').modal('show');
+            // Ocultar el modal después de 3 segundos
+            setTimeout(function(){
+                $('#modalExito').modal('hide');
+            }, 3000);
+        } else {
+            // Mostrar el modal de error
+            $('#modalError').modal('show');
+        }
+    };
+
+    xhr.send(JSON.stringify(relatoDto));
+}
+
+function obtenerCategoriasSeleccionadas() {
+    var categoriasSeleccionadas = [];
+    document.querySelectorAll('input[name="categorias"]:checked').forEach(function (categoria) {
+        categoriasSeleccionadas.push(categoria.value);
+    });
+    return categoriasSeleccionadas;
+}
+
+// Variable para controlar si se han realizado cambios
+var cambiosPendientes = false;
+
+// Detectar cambios en el editor
+document.getElementById('titulo-relato').addEventListener('input', function() {
+    cambiosPendientes = true;
+});
+
+document.getElementById('texto-relato').addEventListener('input', function() {
+    cambiosPendientes = true;
+});
+
+window.addEventListener('beforeunload', function(e) {
+    if (cambiosPendientes) {
+        e.returnValue = true;
+    }
+});
+
+
+//ACTUALIZACION DE RELATO
+
+function actualizarRelato() {
+    // Obtener los datos del formulario
+    var idRelato = document.getElementById('idRelato').value;
+    var titulo = document.getElementById('titulo-relato').innerHTML;
+    var texto = document.getElementById('texto-relato').innerHTML;
+    var idImagen = document.getElementById('idImagen').value;
+
+    // Obtener las categorías seleccionadas
+    var categoriasSeleccionadas = obtenerCategoriasSeleccionadas();
+
+    // Crear un objeto relatoDto
+    var relatoDto = {
+        id: idRelato,
+        titulo: titulo,
+        texto: texto,
+        idImagen: idImagen,
+        categorias: categoriasSeleccionadas
+    };
+
+    // Realizar la petición Ajax para actualizar el relato
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', '/relato/actualizar-relato', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            cambiosPendientes = false;
+            // Mostrar el modal de éxito
+            $('#modalExito').modal('show');
+            // Ocultar el modal después de 3 segundos
+            setTimeout(function(){
+                $('#modalExito').modal('hide');
+            }, 3000);
+        } else {
+            // Mostrar el modal de error
+            $('#modalError').modal('show');
+        }
+    };
+
+    xhr.send(JSON.stringify(relatoDto));
 }
 

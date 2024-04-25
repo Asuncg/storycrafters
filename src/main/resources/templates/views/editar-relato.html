@@ -5,7 +5,7 @@
         <div class="col-sm-10 position-fixed editor-bar">
             <div class="row justify-content-sm-center">
                 <div class="col-sm-auto">
-                    <button type="button" class="btn btn-primary" onclick="guardarRelato()">
+                    <button type="button" class="btn btn-primary" onclick="actualizarRelato()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-floppy" viewBox="0 0 16 16">
                             <path d="M11 2H9v3h2z"></path>
@@ -39,7 +39,6 @@
                             <path fill-rule="evenodd"
                                   d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"></path>
                         </svg>
-
                     </button>
                     <button type="button" class="btn btn-primary" onclick="justificarTexto('center')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -47,7 +46,6 @@
                             <path fill-rule="evenodd"
                                   d="M4 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"></path>
                         </svg>
-
                     </button>
                     <button type="button" class="btn btn-primary" onclick="justificarTexto('right')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -67,27 +65,27 @@
         <th:block th:each="categoria : ${categorias}">
             <div class="form-check form-check-inline m-2">
                 <input class="form-check-input" type="checkbox" th:id="${'categoria' + categoria.id}" name="categorias"
-                       th:value="${categoria.id}">
+                       th:value="${categoria.id}" th:checked="${relato.categorias.contains(categoria)}">
                 <label class="form-check-label" th:for="${'categoria' + categoria.id}"
                        th:text="${categoria.nombre}"></label>
             </div>
         </th:block>
+
     </div>
-
-
     <div class="row justify-content-md-center">
         <div class="col-md-10">
             <div class="editor-text">
                 <div class="col-md-12 justify-content-center align-items-center" contenteditable="true"
-                     id="titulo-relato" th:style="'background-image: url(' + ${imagen.url} + '); opacity: 0.5;'"
-                     placeholder="Título del relato"></div>
-
-                <div class="col-md-12" contenteditable="true" id="texto-relato" placeholder="Comienza tu relato"></div>
+                     id="titulo-relato" th:style="'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.5;'"
+                     th:utext="${relato.titulo}"></div>
+                <div class="col-md-12" contenteditable="true" id="texto-relato" th:utext="${relato.texto}"></div>
             </div>
             <div class="row" id="info-relato">
-                <div class="col-md-auto" id="firma-autor">Firma de Autor: <span th:text="${firma}"></span></div>
+                <div class="col-md-auto" id="firma-autor">Firma de Autor: <span
+                        th:text="${firma}"></span></div>
             </div>
-            <input type="hidden" id="idImagen" th:value="${imagen.id}">
+            <input type="hidden" id="idImagen" th:value="${relato.imagen.id}">
+            <input type="hidden" id="idRelato" th:value="${relato.id}">
         </div>
     </div>
     <!-- Modal de éxito -->
@@ -100,7 +98,6 @@
             </div>
         </div>
     </div>
-
     <!-- Modal de error -->
     <div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -112,6 +109,3 @@
         </div>
     </div>
 </div>
-
-
-

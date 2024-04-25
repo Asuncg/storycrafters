@@ -1,6 +1,7 @@
 package es.asun.StoryCrafters.model;
 
 import es.asun.StoryCrafters.entity.Categoria;
+import es.asun.StoryCrafters.entity.Imagen;
 import es.asun.StoryCrafters.entity.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -28,5 +29,5 @@ public class RelatoDto {
     private List<Integer> categorias;
     @Size(max = 60)
     private String firmaAutor;
-    private String urlImagen;
+    private int idImagen;
 }

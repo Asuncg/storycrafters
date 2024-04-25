@@ -62,3 +62,45 @@
     pointer-events: none;
     display: block;
 }
+
+.card-relatos {
+    border-radius: .5rem;
+    position: relative;
+}
+
+.vista-relato {
+    background-color: white;
+    border: 1px solid;
+    border-radius: .5rem;
+}
+.vista-relato-separador {
+    border-right: 1px;
+}
+.vista-titulo-relato {
+    min-height: 250px;
+    background-size: cover;
+    background-position: center;
+    font-size: 32px;
+    color: black;
+}
+
+.vista-texto-relato {
+    padding: 25px;
+    font-size: 16px;
+    min-height: 500px;
+    border-bottom-left-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+}
+
+.vista-detalles-relato {
+    background-color: #dfedf1;
+    border-top-right-radius: .5rem;
+}
+
+.vista-detalles-relato img {
+    width: 50%;
+}
+
+.boton-editar-relato {
+    right: 0;
+}
