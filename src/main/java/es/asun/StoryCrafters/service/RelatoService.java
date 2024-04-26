@@ -8,9 +8,8 @@ import java.util.List;
 
 public interface RelatoService {
 
-    void guardarRelato(Relato relato, List<Integer> idCategorias);
+    int guardarRelato(Relato relato, List<Integer> idCategorias);
 
-    void actualizarRelato(int idRelato, Relato relatoActualizado, List<Integer> idCategorias);
 
 
     List<Relato> findAllRelatosByUsuario(Usuario usuario);

@@ -136,29 +136,8 @@ public class RelatoController {
     }
 
 
-
-
-//    @PostMapping("/guardar-relato-salir")
-//    public String guardarRelatoSalir(@ModelAttribute("relato") RelatoDto relatoDto, @RequestParam("idsCategoriasSeleccionadas") String idsCategoriasSeleccionadasStr) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//        Usuario usuario = userService.findUserByEmail(username);
-//
-//        Relato relato = Mappings.mapToRelato(relatoDto, usuario);
-//
-//        // Convertir la cadena de IDs en una lista de enteros
-//        List<Integer> idsCategoriasSeleccionadas = Arrays.stream(idsCategoriasSeleccionadasStr.split(","))
-//                .map(Integer::valueOf)
-//                .collect(Collectors.toList());
-//
-//        // Guardar el relato con las categorías
-//        relatoService.guardarRelato(relato, idsCategoriasSeleccionadas);
-//
-//        return "redirect:/index"; // Redirigir a la página principal después de guardar el relato
-//    }
-
     @PostMapping("/guardar-relato")
-    public ResponseEntity<String> guardarRelato(@RequestBody RelatoDto relatoDto) {
+    public ResponseEntity<Integer> guardarRelato(@RequestBody RelatoDto relatoDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
@@ -166,28 +145,10 @@ public class RelatoController {
         relatoDto.setFirmaAutor(usuario.getFirmaAutor());
 
         Relato relato = Mappings.mapToRelato(relatoDto, usuario, imagen);
+        // Guardar el relato con las categorías y obtener su ID
+        int idRelato = relatoService.guardarRelato(relato, relatoDto.getCategorias());
 
-        // Guardar el relato con las categorías
-        relatoService.guardarRelato(relato, relatoDto.getCategorias());
-
-        String mensajeExito = "El relato se ha guardado correctamente.";
-        return new ResponseEntity<>(mensajeExito, HttpStatus.OK);
-    }
-
-    @PutMapping("/actualizar-relato")
-    public ResponseEntity<String> actualizarRelato(@RequestBody RelatoDto relatoDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
-        Imagen imagen = imagenesService.findImageById(relatoDto.getIdImagen());
-
-        int idRelato = relatoDto.getId();
-
-        Relato relato = Mappings.mapToRelato(relatoDto, usuario, imagen);
-
-        relatoService.actualizarRelato(idRelato,relato,relatoDto.getCategorias());
-
-        return ResponseEntity.ok("Relato actualizado exitosamente");
+        return new ResponseEntity<>(idRelato, HttpStatus.CREATED);
     }
 
 }
