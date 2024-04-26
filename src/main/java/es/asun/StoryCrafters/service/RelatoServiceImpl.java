@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,15 +37,40 @@ public class RelatoServiceImpl implements RelatoService {
         relato.setUsuario(usuario);
 
         // Obtener las categorías asociadas con los IDs proporcionados
-        List<Categoria> categorias = categoriaRepository.findAllById(idCategorias);
+        List<Categoria> categorias = new ArrayList<>();
+        for (Integer idCategoria : idCategorias) {
+            Optional<Categoria> categoriaOptional = categoriaRepository.findById(idCategoria);
+            categoriaOptional.ifPresent(categorias::add);
+        }
         relato.setCategorias(categorias);
 
-        // Guardar o actualizar el relato en la base de datos
-        Relato relatoGuardado = relatoRepository.save(relato);
+        //Relato relato = new Relato();
 
-        return relatoGuardado.getId();
+        if (relato.getId() == 0) {
+            // Guardar el relato en la base de datos
+            relato.setFechaCreacion(new Date());
+        } else {
+            // Obtener el relato existente por su ID
+            Optional<Relato> relatoOptional = relatoRepository.findById(relato.getId());
+            if (relatoOptional.isPresent()) {
+                relato = relatoOptional.get();
+
+                // Actualizar los campos del relato con los datos del relato actualizado
+                relato.setTitulo(relato.getTitulo());
+                relato.setTexto(relato.getTexto());
+                relato.setFechaActualizacion(relato.getFechaActualizacion());
+
+                relato.setCategorias(categorias);
+
+                // Guardar el relato actualizado en la base de datos
+                //relatoRepository.save(relato);
+
+            }
+            relatoRepository.save(relato);
+
+        }
+        return relato.getId();
     }
-
 
     @Override
     public List<Relato> findAllRelatosByUsuario(Usuario usuario) {

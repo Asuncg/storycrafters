@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -30,4 +31,5 @@ public class RelatoDto {
     @Size(max = 60)
     private String firmaAutor;
     private int idImagen;
+    private Date fechaActualizacion;
 }

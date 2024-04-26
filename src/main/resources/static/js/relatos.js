@@ -35,30 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
-
-function guardarRelatoSalir() {
-
-    // Obtener el título y el texto del relato
-    document.getElementById('titulo-hidden').value = document.getElementById('titulo-relato').innerHTML;
-    document.getElementById('texto-hidden').value = document.getElementById('texto-relato').innerHTML;
-    // Encuentra todos los checkboxes de categorías que fueron seleccionados
-    const categoriasSeleccionadas = document.querySelectorAll('input[name="categorias"]:checked');
-
-    // Obtener los IDs de las categorías seleccionadas y almacenarlos en un array
-    const idsCategoriasSeleccionadas = [];
-    categoriasSeleccionadas.forEach(categoria => {
-        idsCategoriasSeleccionadas.push(categoria.value);
-    });
-
-    // Asignar los IDs de categorías seleccionadas al input hidden
-    document.getElementById('categorias-seleccionadas').value = idsCategoriasSeleccionadas.join(',');
-
-    // Envía el formulario
-    document.getElementById('form-relato').submit();
-}
-
-
 function guardarRelato() {
     // Obtener los datos del formulario
     var titulo = document.getElementById('titulo-relato').innerHTML;
@@ -117,18 +93,21 @@ function obtenerCategoriasSeleccionadas() {
 // Variable para controlar si se han realizado cambios
 var cambiosPendientes = false;
 
-// Detectar cambios en el editor
-document.getElementById('titulo-relato').addEventListener('input', function() {
-    cambiosPendientes = true;
-});
+document.addEventListener('DOMContentLoaded', function () {
+    // Detectar cambios en el editor
+    var tituloRelato = document.getElementById('titulo-relato');
+    var textoRelato = document.getElementById('texto-relato');
 
-document.getElementById('texto-relato').addEventListener('input', function() {
-    cambiosPendientes = true;
-});
+    if (tituloRelato) {
+        tituloRelato.addEventListener('input', function() {
+            cambiosPendientes = true;
+        });
+    }
 
-window.addEventListener('beforeunload', function(e) {
-    if (cambiosPendientes) {
-        e.returnValue = true;
+    if (textoRelato) {
+        textoRelato.addEventListener('input', function() {
+            cambiosPendientes = true;
+        });
     }
 });
 
@@ -136,3 +115,4 @@ window.addEventListener('beforeunload', function(e) {
 function handleGuardarRelatoResponse(idRelato) {
     document.getElementById('idRelato').value = idRelato;
 }
+

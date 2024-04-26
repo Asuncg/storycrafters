@@ -49,5 +49,9 @@ public class Relato {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_creacion")
     private Date fechaCreacion;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_actualizacion")
+    private Date fechaActualizacion;
 }
 
