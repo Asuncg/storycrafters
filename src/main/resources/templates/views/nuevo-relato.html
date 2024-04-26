@@ -85,7 +85,7 @@
                 <div class="col-md-12" contenteditable="true" id="texto-relato" placeholder="Comienza tu relato"></div>
             </div>
             <div class="row" id="info-relato">
-                <div class="col-md-auto" id="firma-autor">Firma de Autor: <span th:text="${firma}"></span></div>
+                <div class="col-md-auto" id="firma-autor">Firma de Autor: <span id="firma-relato" th:text="${firma}"></span></div>
             </div>
             <input type="hidden" id="idImagen" th:value="${imagen.id}">
             <input type="hidden" id="idRelato" th:value="${idRelato}">

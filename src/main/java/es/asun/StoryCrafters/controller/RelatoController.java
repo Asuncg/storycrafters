@@ -19,8 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -58,21 +57,27 @@ public class RelatoController {
 
     @GetMapping("/relatos/{id}")
     public String verRelato(Model model, @PathVariable String id) {
+        int idRelato = Integer.parseInt(id);
+        Optional<Relato> relatoOptional = relatoService.findRelatoById(idRelato);
+
+        if (relatoOptional.isEmpty()) {
+            model.addAttribute("content", "views/no-acceso");
+            return "index";
+        }
+        Relato relato = relatoOptional.get();
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
-        int idUsuario = usuario.getId();
 
-        int idRelato = Integer.parseInt(id);
-        Relato vistaRelato = relatoService.findRelatoById(idRelato);
-
-        if (idUsuario != vistaRelato.getUsuario().getId()) {
-            content = "views/no-acceso";
-        } else {
-            model.addAttribute("relato", vistaRelato);
-            content = "views/vista-relato";
-
+        if (usuario.getId() != relato.getUsuario().getId()) {
+            model.addAttribute("content", "views/no-acceso");
+            return "index";
         }
+
+        model.addAttribute("relato", relato);
+        content = "views/vista-relato";
+
         model.addAttribute("content", content);
         return "index";
     }
@@ -111,44 +116,87 @@ public class RelatoController {
 
     @GetMapping("/editar-relato/{id}")
     public String editarRelato(Model model, @PathVariable String id) {
+        int idRelato = Integer.parseInt(id);
+        Optional<Relato> relatoOptional = relatoService.findRelatoById(idRelato);
+
+        if (relatoOptional.isEmpty()) {
+            model.addAttribute("content", "views/no-acceso");
+            return "index";
+        }
+
+        Relato relato = relatoOptional.get();
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
-        String firma = usuario.getFirmaAutor();
-        List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
-        int idUsuario = usuario.getId();
-
-        int idRelato = Integer.parseInt(id);
-        Relato vistaRelato = relatoService.findRelatoById(idRelato);
-
-        if (idUsuario != vistaRelato.getUsuario().getId()) {
-            content = "views/no-acceso";
-        } else {
-            content = "views/editar-relato";
-            model.addAttribute("firma", firma);
-            model.addAttribute("relato", vistaRelato);
-            model.addAttribute("categorias", listaCategorias);
+        if (usuario.getId() != relato.getUsuario().getId()) {
+            model.addAttribute("content", "views/no-acceso");
+            return "index";
         }
 
-        model.addAttribute("content", content);
+        model.addAttribute("firma", usuario.getFirmaAutor());
+        model.addAttribute("relato", relato);
+        model.addAttribute("categorias", categoriaService.findAllCategories());
+
+        model.addAttribute("content", "views/editar-relato");
         return "index";
     }
 
-
     @PostMapping("/guardar-relato")
     public ResponseEntity<Integer> guardarRelato(@RequestBody RelatoDto relatoDto) {
+
+        if (!validarRelatoDTO(relatoDto)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Relato relato;
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
-        Imagen imagen = imagenesService.findImageById(relatoDto.getIdImagen());
-        relatoDto.setFirmaAutor(usuario.getFirmaAutor());
 
-        Relato relato = Mappings.mapToRelato(relatoDto, usuario, imagen);
-        // Guardar el relato con las categorías y obtener su ID
-        int idRelato = relatoService.guardarRelato(relato, relatoDto.getCategorias());
+        // Obtener las categorías asociadas con los IDs proporcionados
+        List<Categoria> categorias = new ArrayList<>();
+        for (Integer idCategoria : relatoDto.getCategorias()) {
+            Optional<Categoria> categoriaOptional = categoriaService.findById(idCategoria);
+            categoriaOptional.ifPresent(categorias::add);
+        }
 
-        return new ResponseEntity<>(idRelato, HttpStatus.CREATED);
+        if (relatoDto.getId() == 0) {
+            Imagen imagen = imagenesService.findImageById(relatoDto.getIdImagen());
+
+            relato = Mappings.mapToRelato(relatoDto, imagen);
+
+            relato.setUsuario(usuario);
+            relato.setCategorias(categorias);
+            relato.setFechaCreacion(new Date());
+        } else {
+            Optional<Relato> relatoOptional = relatoService.findRelatoById(relatoDto.getId());
+
+            if (relatoOptional.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            if (relatoOptional.get().getUsuario().getId() != usuario.getId()) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            relato = relatoOptional.get();
+
+            // Actualizar los campos del relato con los datos del relato actualizado
+            relato.setTitulo(relatoDto.getTitulo());
+            relato.setTexto(relatoDto.getTexto());
+            relato.setFechaActualizacion(new Date());
+            relato.setCategorias(categorias);
+        }
+
+        int idRelato = relatoService.guardarRelato(relato);
+        return new ResponseEntity<>(idRelato, HttpStatus.OK);
+    }
+
+    private boolean validarRelatoDTO(RelatoDto relatoDto) {
+        return true;
     }
 
 }

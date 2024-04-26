@@ -27,48 +27,8 @@ public class RelatoServiceImpl implements RelatoService {
     private CategoriaRepository categoriaRepository;
 
     @Override
-    public int guardarRelato(Relato relato, List<Integer> idCategorias) {
-        // Obtener el usuario autenticado
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userRepository.findByEmail(username);
-
-        // Asignar el usuario al relato
-        relato.setUsuario(usuario);
-
-        // Obtener las categorías asociadas con los IDs proporcionados
-        List<Categoria> categorias = new ArrayList<>();
-        for (Integer idCategoria : idCategorias) {
-            Optional<Categoria> categoriaOptional = categoriaRepository.findById(idCategoria);
-            categoriaOptional.ifPresent(categorias::add);
-        }
-        relato.setCategorias(categorias);
-
-        //Relato relato = new Relato();
-
-        if (relato.getId() == 0) {
-            // Guardar el relato en la base de datos
-            relato.setFechaCreacion(new Date());
-        } else {
-            // Obtener el relato existente por su ID
-            Optional<Relato> relatoOptional = relatoRepository.findById(relato.getId());
-            if (relatoOptional.isPresent()) {
-                relato = relatoOptional.get();
-
-                // Actualizar los campos del relato con los datos del relato actualizado
-                relato.setTitulo(relato.getTitulo());
-                relato.setTexto(relato.getTexto());
-                relato.setFechaActualizacion(relato.getFechaActualizacion());
-
-                relato.setCategorias(categorias);
-
-                // Guardar el relato actualizado en la base de datos
-                //relatoRepository.save(relato);
-
-            }
-            relatoRepository.save(relato);
-
-        }
+    public int guardarRelato(Relato relato) {
+        relatoRepository.save(relato);
         return relato.getId();
     }
 
@@ -78,7 +38,7 @@ public class RelatoServiceImpl implements RelatoService {
     }
 
     @Override
-    public Relato findRelatoById(int id) {
+    public Optional<Relato> findRelatoById(int id) {
         return relatoRepository.findRelatoById(id);
     }
 

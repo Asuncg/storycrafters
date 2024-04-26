@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RelatoRepository extends JpaRepository<Relato, Integer> {
     List<Relato> findByUsuario(Usuario usuario);
 
     @Query("SELECT r FROM Relato r LEFT JOIN FETCH r.categorias WHERE r.id = :id")
-    Relato findRelatoById(@Param("id") int id);
+    Optional<Relato> findRelatoById(@Param("id") int id);
 }

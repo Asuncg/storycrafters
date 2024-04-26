@@ -41,6 +41,7 @@ function guardarRelato() {
     var texto = document.getElementById('texto-relato').innerHTML;
     var idImagen = document.getElementById('idImagen').value;
     var idRelato = document.getElementById('idRelato').value; // Obtener el ID del relato, si está presente
+    var firmaAutor = document.getElementById('firma-relato').innerText;
 
     // Obtener las categorías seleccionadas
     var categoriasSeleccionadas = obtenerCategoriasSeleccionadas();
@@ -51,6 +52,7 @@ function guardarRelato() {
         titulo: titulo,
         texto: texto,
         idImagen: idImagen,
+        firmaAutor: firmaAutor,
         categorias: categoriasSeleccionadas
     };
 
@@ -62,7 +64,7 @@ function guardarRelato() {
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function () {
-        if (xhr.status === 201) {
+        if (xhr.status === 200) {
             var idRelato = xhr.responseText; // Obtener el ID del relato desde la respuesta
             handleGuardarRelatoResponse(idRelato); // Actualizar el valor del input
             cambiosPendientes = false;
