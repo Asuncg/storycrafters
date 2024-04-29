@@ -21,10 +21,6 @@ public class RelatoServiceImpl implements RelatoService {
 
     @Autowired
     private RelatoRepository relatoRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CategoriaRepository categoriaRepository;
 
     @Override
     public int guardarRelato(Relato relato) {

@@ -12,11 +12,12 @@
                     <!-- Utilizamos un label para envolver la imagen -->
                     <label class="gallery-img">
                         <!-- Input de radio oculto -->
-                        <input type="radio" name="idImagenSeleccionada" th:value="${imagen.id}" style="display: none;">
+                        <input type="radio" name="idImagenSeleccionada" th:value="${imagen.id}" style="display: none;" required>
                         <!-- Imagen -->
                         <img th:src="${imagen.url}" class="img-fluid" alt="Imagen" onclick="selectImage(this)">
                     </label>
                 </div>
+
             </div>
         </div>
     </div>

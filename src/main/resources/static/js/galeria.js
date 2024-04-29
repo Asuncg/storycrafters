@@ -13,3 +13,4 @@ function selectImage(image) {
     // Agregamos la clase 'selected' a la imagen seleccionada
     image.parentNode.classList.add('selected');
 }
+

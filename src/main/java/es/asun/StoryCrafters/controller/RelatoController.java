@@ -104,6 +104,10 @@ public class RelatoController {
 
         Imagen imagen = imagenesService.findImageById(idImagenSeleccionada);
 
+        if (imagen.getId() == 01) {
+            imagen.setUrl("");
+        }
+
         content = "views/nuevo-relato";
 
         model.addAttribute("content", content);

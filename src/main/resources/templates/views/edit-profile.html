@@ -6,6 +6,15 @@
           <h1>Editar Perfil</h1>
         </div>
         <div class="card-body">
+          <div class="row">
+            <div class="col profile-custom text-center text-white">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                   alt="Avatar" class="img-fluid my-5">
+              </div>
+            <div class="col">
+              <a class="btn btn-primary mr-2" href="#" role="button"> Cambiar Avatar</a>
+            </div>
+          </div>
           <form th:object="${userDto}" th:action="@{/user/profile/edit}" method="post">
             <!-- Campos de edición -->
             <div class="mb-3">

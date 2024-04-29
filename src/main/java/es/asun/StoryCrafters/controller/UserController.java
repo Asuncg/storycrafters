@@ -1,8 +1,10 @@
 package es.asun.StoryCrafters.controller;
 
+import es.asun.StoryCrafters.entity.Imagen;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
+import es.asun.StoryCrafters.service.ImagenesService;
 import es.asun.StoryCrafters.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ImagenesService imagenesService;
+
 
     private String content = "";
 
@@ -52,6 +58,8 @@ public class UserController {
 
         return "index";
     }
+
+
 
     @PostMapping("/profile/edit")
     public String editProfile(@ModelAttribute("user") UserUpdateDto userDto, Model model) {

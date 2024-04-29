@@ -1,9 +1,7 @@
 package es.asun.StoryCrafters.utilidades;
 
-import es.asun.StoryCrafters.entity.Categoria;
-import es.asun.StoryCrafters.entity.Imagen;
-import es.asun.StoryCrafters.entity.Relato;
-import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.entity.*;
+import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.RelatoDto;
 
 import java.util.ArrayList;
@@ -25,4 +23,12 @@ public class Mappings {
 
         return relato;
     }
+
+    public static Grupo mapToGrupo(GrupoDto grupoDto) {
+        Grupo grupo = new Grupo();
+        grupo.setNombre(grupoDto.getNombre());
+        grupo.setDescripcion(grupoDto.getDescripcion());
+        return grupo;
+    }
+
 }
