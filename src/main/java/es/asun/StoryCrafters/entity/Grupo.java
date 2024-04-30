@@ -17,7 +17,7 @@ import java.util.List;
 public class Grupo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -36,5 +36,8 @@ public class Grupo {
             inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private List<Usuario> usuarios;
+
+    @Column(nullable = false, unique = true, length = 15)
+    private String codigoAcceso;
 
 }

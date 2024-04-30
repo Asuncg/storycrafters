@@ -6,8 +6,10 @@ import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
+import es.asun.StoryCrafters.service.EmailService;
 import es.asun.StoryCrafters.service.GrupoService;
 import es.asun.StoryCrafters.service.UserService;
+import es.asun.StoryCrafters.utilidades.CodigoIngresoGenerator;
 import es.asun.StoryCrafters.utilidades.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,6 +31,8 @@ public class GruposController {
     @Autowired
     private GrupoService grupoService;
 
+    @Autowired
+    private EmailService emailService;
     private String content = "";
 
     @GetMapping("/mis-grupos")
@@ -36,10 +40,13 @@ public class GruposController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
+        List<Grupo> grupos = grupoService.findAllGruposByUsuario(usuario);
 
         content = "views/grupos/mis-grupos";
 
+        model.addAttribute("grupos", grupos);
         model.addAttribute("content", content);
+        model.addAttribute("idUsuarioActual", usuario.getId());
         return "index";
     }
 
@@ -59,16 +66,33 @@ public class GruposController {
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
 
-        Grupo grupo;
+        Grupo grupo = new Grupo();
 
         List<Usuario> listaUsuarios = new ArrayList<>();
         listaUsuarios.add(usuario);
 
+        String codigoAcceso = CodigoIngresoGenerator.generarCodigoIngreso();
+
         grupo = Mappings.mapToGrupo(grupoDto);
         grupo.setUsuario(usuario);
         grupo.setUsuarios(listaUsuarios);
+        grupo.setCodigoAcceso(codigoAcceso);
+
+        String destinatario = "ansuncg@gmail.com";
+        String asunto = "Asunto del correo";
+        String mensaje = "Este es un ejemplo de mensaje.";
+
+        emailService.sendEmail(destinatario, asunto, mensaje);
         grupoService.guardarGrupo(grupo);
 
         return "redirect:/grupos/mis-grupos";
+    }
+
+    @GetMapping("/eliminar-grupo/{id}")
+    public String eliminarGrupo(Model model, @PathVariable String id) {
+        int idGrupo = Integer.parseInt(id);
+        content = "views/grupos/mis-grupos";
+        grupoService.deleteGrupoById(idGrupo);
+        return "index";
     }
 }

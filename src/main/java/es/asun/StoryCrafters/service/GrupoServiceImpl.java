@@ -20,6 +20,11 @@ public class GrupoServiceImpl  implements GrupoService{
     @Override
     public List<Grupo> findAllGruposByUsuario(Usuario usuario) {
 
-        return null;
+        return grupoRepository.findAllByUsuario(usuario);
+    }
+
+    @Override
+    public void deleteGrupoById(int idGrupo) {
+        grupoRepository.deleteById(idGrupo);
     }
 }

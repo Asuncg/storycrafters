@@ -36,8 +36,8 @@ public class Usuario {
     @Column(name = "activo", length = 1, columnDefinition = "int default 1")
     private boolean activo = true;
 
-    @ManyToMany
-    private List<Grupo> grupos;
+//    @ManyToMany
+//    private List<Grupo> grupos;
 
     public Usuario(String nombre, String password) {
     }

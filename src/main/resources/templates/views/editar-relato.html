@@ -81,7 +81,7 @@
                 <div class="col-md-12" contenteditable="true" id="texto-relato" th:utext="${relato.texto}"></div>
             </div>
             <div class="row" id="info-relato">
-                <div class="col-md-auto" id="firma-autor">Firma de Autor: <span
+                <div class="col-md-auto" id="firma-autor">Firma de Autor: <span id="firma-relato"
                         th:text="${firma}"></span></div>
             </div>
             <input type="hidden" id="idImagen" th:value="${relato.imagen.id}">

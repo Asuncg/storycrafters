@@ -9,4 +9,6 @@ public interface GrupoService {
     void guardarGrupo(Grupo grupo);
 
     List<Grupo> findAllGruposByUsuario(Usuario usuario);
+
+     void deleteGrupoById(int idGrupo);
 }
