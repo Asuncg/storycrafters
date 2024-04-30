@@ -29,7 +29,7 @@ public class Grupo {
     @Column(name = "descripcion", length = 500)
     private String descripcion;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "usuario_grupo",
             joinColumns = @JoinColumn(name = "grupo_id"),

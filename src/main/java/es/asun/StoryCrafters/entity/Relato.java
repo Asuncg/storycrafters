@@ -35,7 +35,7 @@ public class Relato {
     @JoinColumn(name = "id_imagen")
     private Imagen imagen;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "categoria_relato",
             joinColumns = @JoinColumn(name = "relato_id"),

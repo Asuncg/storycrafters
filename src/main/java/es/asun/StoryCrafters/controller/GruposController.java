@@ -93,6 +93,6 @@ public class GruposController {
         int idGrupo = Integer.parseInt(id);
         content = "views/grupos/mis-grupos";
         grupoService.deleteGrupoById(idGrupo);
-        return "index";
+        return "redirect:/index";
     }
 }
