@@ -12,8 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GrupoDto {
 
-    private int id;
-    private int idUsario;
+    private int idGrupo;
+    private int idUsuario;
     @Size(max = 50)
     private String nombre;
     @Size(max = 500)

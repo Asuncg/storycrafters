@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/grupos")
@@ -66,7 +67,7 @@ public class GruposController {
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
 
-        Grupo grupo = new Grupo();
+        Grupo grupo;
 
         List<Usuario> listaUsuarios = new ArrayList<>();
         listaUsuarios.add(usuario);
@@ -88,11 +89,111 @@ public class GruposController {
         return "redirect:/grupos/mis-grupos";
     }
 
+
     @GetMapping("/eliminar-grupo/{id}")
     public String eliminarGrupo(Model model, @PathVariable String id) {
         int idGrupo = Integer.parseInt(id);
-        content = "views/grupos/mis-grupos";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+        if (grupoOptional.isEmpty()) {
+            model.addAttribute("content", "views/no-acceso");
+            return "index";
+        }
+
+        if (usuario.getId() != grupoOptional.get().getUsuario().getId()) {
+            model.addAttribute("content", "views/no-acceso");
+            return "index";
+        }
+
         grupoService.deleteGrupoById(idGrupo);
-        return "redirect:/index";
+        return "redirect:/grupos/mis-grupos";
+    }
+
+
+    @GetMapping("/editar-grupo/{id}")
+    public String editarGrupo(Model model, @PathVariable String id) {
+        int idGrupo = Integer.parseInt(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+        if (grupoOptional.isEmpty()) {
+            content = "views/no-acceso";
+            return "index";
+        }
+        Grupo grupo = grupoOptional.get();
+
+        if (usuario.getId() != grupo.getUsuario().getId()) {
+            content = "views/no-acceso";
+            return "index";
+        }
+
+        content = "views/grupos/editar-grupo";
+
+        GrupoDto grupoDto = new GrupoDto();
+        model.addAttribute("grupo", grupo);
+        model.addAttribute("grupoDto", grupoDto);
+        model.addAttribute("content", content);
+
+        return "index";
+    }
+
+    @PostMapping("actualizar-grupo/{id}")
+    public String actualizarGrupo(Model model, @PathVariable String id, GrupoDto grupoDto) {
+        int idGrupo = Integer.parseInt(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+        if (grupoOptional.isEmpty()) {
+            content = "views/no-acceso";
+            return "index";
+        }
+        Grupo grupo = grupoOptional.get();
+
+        if (usuario.getId() != grupo.getUsuario().getId()) {
+            content = "views/no-acceso";
+            return "index";
+        }
+
+        grupo.setNombre(grupoDto.getNombre());
+        grupo.setDescripcion(grupoDto.getDescripcion());
+        grupoService.guardarGrupo(grupo);
+
+        return "redirect:/grupos/mis-grupos";
+
+    }
+
+    @GetMapping("invitar-usuarios/{id}")
+    public String invitarUsuarios(Model model, @PathVariable String id) {
+        int idGrupo = Integer.parseInt(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+        if (grupoOptional.isEmpty()) {
+            content = "views/no-acceso";
+            return "index";
+        }
+        Grupo grupo = grupoOptional.get();
+
+        if (usuario.getId() != grupo.getUsuario().getId()) {
+            content = "views/no-acceso";
+            return "index";
+        }
+        content = "views/grupos/invitar-usuarios";
+        model.addAttribute("content", content);
+        return "index";
     }
 }
+

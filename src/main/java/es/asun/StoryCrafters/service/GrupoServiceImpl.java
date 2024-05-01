@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class GrupoServiceImpl  implements GrupoService{
 
@@ -26,5 +28,10 @@ public class GrupoServiceImpl  implements GrupoService{
     @Override
     public void deleteGrupoById(int idGrupo) {
         grupoRepository.deleteById(idGrupo);
+    }
+
+    @Override
+    public Optional<Grupo> findGrupoById(int grupoId) {
+        return grupoRepository.findById(grupoId);
     }
 }

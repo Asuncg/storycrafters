@@ -13,9 +13,9 @@
     <!-- Botones para crear y unirse a grupos -->
     <div class="row mb-3">
         <div class="col-md-6">
-            <a class="btn btn-primary" th:href="@{/grupos/nuevo-grupo}" role="button">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#crearGrupoModal">
                 Crear Nuevo Grupo
-            </a>
+            </button>
         </div>
         <div class="col-md-6 text-right">
             <button class="btn btn-success">Unirse a Grupo</button>
@@ -54,14 +54,15 @@
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}">Editar</a>
-                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" data-target="#eliminarGrupoModal" >Eliminar</a>
-                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id ne idUsuarioActual}">Salir</a>
+                            <a class="dropdown-item"  th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/invitar-usuarios/' + ${grupo.id}}">Invitar</a>
+                            <a class="dropdown-item"  th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/editar-grupo/' + ${grupo.id}}">Editar</a>
+                            <a class="dropdown-item"  th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" th:data-target="'#eliminarGrupoModal_' + ${grupo.id}">Eliminar</a>
+                            <a class="dropdown-item"  th:if="${grupo.usuario.id ne idUsuarioActual}">Salir</a>
                         </div>
                     </div>
                 </div>
                 <!-- Modal para confirmar la eliminación del grupo -->
-                <div class="modal fade" id="eliminarGrupoModal" tabindex="-1" role="dialog" aria-labelledby="eliminarGrupoModalLabel"
+                <div class="modal fade" th:id="'eliminarGrupoModal_' + ${grupo.id}" tabindex="-1" role="dialog" aria-labelledby="'eliminarGrupoModalLabel_' + ${grupo.id}" aria-hidden="true">
                      aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -87,4 +88,31 @@
         </div>
     </div>
 </div>
-
+<!-- Modal para crear un nuevo grupo -->
+<div class="modal fade" id="crearGrupoModal" tabindex="-1" role="dialog" aria-labelledby="crearGrupoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearGrupoModalLabel">Crear Nuevo Grupo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form th:object="${grupoDto}" th:action="@{/grupos/crear-grupo}" method="post">
+                    <!-- Campos de edición -->
+                    <div class="mb-3">
+                        <label for="nombreGrupo" class="form-label">Nombre *</label>
+                        <input type="text" class="form-control" id="nombreGrupo" name="nombre" maxlength="50" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción *</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" maxlength="500" required></textarea>
+                    </div>
+                    <!-- Botón de enviar -->
+                    <button type="submit" class="btn btn-primary">Crear Grupo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
