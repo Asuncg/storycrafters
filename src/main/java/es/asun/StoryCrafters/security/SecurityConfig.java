@@ -41,7 +41,7 @@ public class SecurityConfig {
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .permitAll()
-                ).csrf((csrf)->csrf.disable())
+                ).csrf(AbstractHttpConfigurer::disable)
         ;
 
         return http.build();

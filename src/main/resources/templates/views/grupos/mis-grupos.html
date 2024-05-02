@@ -1,13 +1,3 @@
-<style>
-    body {
-        background-color: #f8f9fa; /* Fondo blanco */
-    }
-
-    .container {
-        margin-top: 50px;
-    }
-</style>
-<script src="/js/grupos.js"></script>
 
 <div class="container">
     <!-- Botones para crear y unirse a grupos -->
@@ -18,7 +8,7 @@
             </button>
         </div>
         <div class="col-md-6 text-right">
-            <button class="btn btn-success">Unirse a Grupo</button>
+            <button class="btn btn-success" data-toggle="modal" data-target="#ingresarInvitacionModal">Unirse a Grupo</button>
         </div>
     </div>
 
@@ -54,10 +44,10 @@
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item"  th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/invitar-usuarios/' + ${grupo.id}}">Invitar</a>
-                            <a class="dropdown-item"  th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/editar-grupo/' + ${grupo.id}}">Editar</a>
-                            <a class="dropdown-item"  th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" th:data-target="'#eliminarGrupoModal_' + ${grupo.id}">Eliminar</a>
-                            <a class="dropdown-item"  th:if="${grupo.usuario.id ne idUsuarioActual}">Salir</a>
+                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" data-target="#agregarUsuariosModal" th:data-group-id="${grupo.id}" onclick="openInvitationModal(this)">Invitar Usuarios</a>
+                            <a class="dropdown-item"  href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/editar-grupo/' + ${grupo.id}}">Editar</a>
+                            <a class="dropdown-item"  href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" th:data-target="'#eliminarGrupoModal_' + ${grupo.id}">Eliminar</a>
+                            <a class="dropdown-item abandonar-grupo-btn"  href="#" th:if="${grupo.usuario.id ne idUsuarioActual}" data-toggle="modal" data-target="#abandonarGrupoModal" th:data-group-id="${grupo.id}" id="abandonarGrupoBtns">Abandonar Grupo</a>
                         </div>
                     </div>
                 </div>
@@ -116,3 +106,76 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de agregar invitaciones -->
+<div class="modal fade" id="invitationModal" tabindex="-1" role="dialog" aria-labelledby="invitationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="invitationModalLabel">Mandar invitación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Campo de correo electrónico -->
+                <div class="form-group email-field">
+                    <input type="email" class="form-control" id="invitationEmail" placeholder="Correo electrónico" required>
+                </div>
+                <!-- Mensaje de éxito o error -->
+                <div id="invitationMessage" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="sendInvitationBtn">Enviar Invitación</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal para ingresar el código de invitación -->
+<div class="modal fade" id="ingresarInvitacionModal" tabindex="-1" aria-labelledby="ingresarInvitacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ingresarInvitacionModalLabel">Ingresar Código de Invitación</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/grupos/ingresar-invitacion}" method="post">
+                    <div class="mb-3">
+                        <label for="codigoInvitacion" class="form-label">Código de Invitación:</label>
+                        <input type="text" class="form-control" id="codigoInvitacion" name="codigoInvitacion" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Unirse al Grupo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para abandonar el grupo -->
+<div class="modal fade" id="abandonarGrupoModal" tabindex="-1" aria-labelledby="abandonarGrupoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="abandonarGrupoModalLabel">Abandonar Grupo</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="abandonarGrupoForm" th:action="@{/grupos/abandonar-grupo}" method="post">
+                    <input type="hidden" id="grupoIdInput" name="grupoId">
+                    <p>¿Estás seguro de que quieres abandonar este grupo?</p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Abandonar Grupo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/grupos.js"></script>

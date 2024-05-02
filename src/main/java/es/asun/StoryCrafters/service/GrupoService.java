@@ -14,5 +14,7 @@ public interface GrupoService {
      void deleteGrupoById(int idGrupo);
 
      Optional<Grupo> findGrupoById(int grupoId);
+
+    Optional<Grupo> findGrupoByCodigoAcceso(String codigoAcceso);
 }
 

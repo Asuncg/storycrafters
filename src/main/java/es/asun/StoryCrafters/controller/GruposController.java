@@ -1,11 +1,8 @@
 package es.asun.StoryCrafters.controller;
 
-import es.asun.StoryCrafters.entity.Categoria;
 import es.asun.StoryCrafters.entity.Grupo;
-import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.GrupoDto;
-import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.EmailService;
 import es.asun.StoryCrafters.service.GrupoService;
 import es.asun.StoryCrafters.service.UserService;
@@ -20,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -172,9 +170,12 @@ public class GruposController {
 
     }
 
-    @GetMapping("invitar-usuarios/{id}")
-    public String invitarUsuarios(Model model, @PathVariable String id) {
-        int idGrupo = Integer.parseInt(id);
+    @PostMapping("/invitar-usuarios")
+    @ResponseBody
+    public String invitarUsuarios(@RequestBody Map<String, Object> request) {
+        // Obtener el ID del grupo y la lista de correos electrónicos desde la solicitud
+        int idGrupo = Integer.parseInt(request.get("groupId").toString());
+        List<String> emails = (List<String>) request.get("emails");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -182,18 +183,82 @@ public class GruposController {
 
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
         if (grupoOptional.isEmpty()) {
-            content = "views/no-acceso";
-            return "index";
+            // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
+            return "El grupo no existe.";
         }
         Grupo grupo = grupoOptional.get();
 
         if (usuario.getId() != grupo.getUsuario().getId()) {
-            content = "views/no-acceso";
-            return "index";
+            // Si el usuario no es el propietario del grupo, puedes devolver un mensaje de error o lanzar una excepción
+            return "No tienes permiso para invitar usuarios a este grupo.";
         }
-        content = "views/grupos/invitar-usuarios";
-        model.addAttribute("content", content);
-        return "index";
+
+        for (String email : emails) {
+            emailService.enviarInvitacion(email, grupo.getCodigoAcceso());
+        }
+
+        return "Invitaciones enviadas correctamente.";
     }
+
+    @PostMapping("/ingresar-invitacion")
+    public String ingresarInvitacion(@RequestParam("codigoInvitacion") String codigoInvitacion, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoByCodigoAcceso(codigoInvitacion);
+        if (grupoOptional.isEmpty()) {
+            // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
+            return "El grupo no existe.";
+        }
+
+        Grupo grupo = grupoOptional.get();
+
+        // Verificar si el usuario ya está en el grupo
+        if (grupo.getUsuarios().contains(usuario)) {
+            // Si el usuario ya está en el grupo, puedes devolver un mensaje de error o redirigirlo
+            model.addAttribute("mensaje", "Ya eres miembro de este grupo.");
+            return "redirect:/grupos/mis-grupos";
+        }
+
+        grupo.getUsuarios().add(usuario);
+
+        grupoService.guardarGrupo(grupo);
+
+        model.addAttribute("mensaje", "¡Te has unido al grupo con éxito!");
+        return "redirect:/grupos/mis-grupos";
+    }
+
+
+    @PostMapping("/abandonar-grupo")
+    public String abandonarGrupo(@RequestParam("grupoId") String grupoId) {
+        int idGrupo = Integer.parseInt(grupoId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+        if (grupoOptional.isEmpty()) {
+            // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
+            return "El grupo no existe.";
+        }
+
+        Grupo grupo = grupoOptional.get();
+
+        // Verificar si el usuario está en el grupo
+        if (!grupo.getUsuarios().contains(usuario)) {
+
+            return "redirect:/grupos/mis-grupos";
+        }
+
+        // Eliminar al usuario del grupo
+        grupo.getUsuarios().remove(usuario);
+
+        grupoService.guardarGrupo(grupo);
+
+        return "redirect:/grupos/mis-grupos";
+    }
+
 }
 
