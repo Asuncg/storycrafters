@@ -53,5 +53,8 @@ public class Relato {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_actualizacion")
     private Date fechaActualizacion;
+
+    @Column(name = "archivado")
+    private boolean archivado = false;
 }
 

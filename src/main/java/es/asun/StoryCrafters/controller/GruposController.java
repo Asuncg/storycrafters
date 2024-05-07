@@ -1,12 +1,16 @@
 package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Grupo;
+import es.asun.StoryCrafters.entity.RelatoGrupo;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.GrupoDto;
+import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
 import es.asun.StoryCrafters.service.EmailService;
 import es.asun.StoryCrafters.service.GrupoService;
+import es.asun.StoryCrafters.service.RelatoGrupoService;
 import es.asun.StoryCrafters.service.UserService;
 import es.asun.StoryCrafters.utilidades.CodigoIngresoGenerator;
+import es.asun.StoryCrafters.utilidades.Constantes;
 import es.asun.StoryCrafters.utilidades.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static es.asun.StoryCrafters.utilidades.Constantes.ESTADO_APROBADO;
+import static es.asun.StoryCrafters.utilidades.Constantes.ESTADO_RECHAZADO;
+
 @Controller
 @RequestMapping("/grupos")
 public class GruposController {
@@ -32,6 +39,9 @@ public class GruposController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    RelatoGrupoService relatoGrupoService;
     private String content = "";
 
     @GetMapping("/mis-grupos")
@@ -186,6 +196,7 @@ public class GruposController {
             // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
             return "El grupo no existe.";
         }
+
         Grupo grupo = grupoOptional.get();
 
         if (usuario.getId() != grupo.getUsuario().getId()) {
@@ -259,6 +270,103 @@ public class GruposController {
 
         return "redirect:/grupos/mis-grupos";
     }
+
+    @GetMapping("/ver-grupo/{grupoId}")
+    public String mostrarGrupo(@PathVariable("grupoId") String grupoId, Model model) {
+        int idGrupo = Integer.parseInt(grupoId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+        if (grupoOptional.isEmpty()) {
+            // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
+            return "El grupo no existe.";
+        }
+
+        Grupo grupo = grupoOptional.get();
+
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+        List<RelatoGrupo> relatosPendientes = new ArrayList<>();
+        List<RelatoGrupo> relatosAprobados = new ArrayList<>();
+        List<RelatoGrupo> relatosRechazados = new ArrayList<>();
+
+        for (RelatoGrupo relato : listaRelatosGrupo) {
+            int estado = relato.getEstado();
+            if (estado == Constantes.ESTADO_PENDIENTE) {
+                relatosPendientes.add(relato);
+            } else if (estado == ESTADO_APROBADO) {
+                relatosAprobados.add(relato);
+            } else if (estado == Constantes.ESTADO_RECHAZADO) {
+                relatosRechazados.add(relato);
+            }
+        }
+
+        content = "views/grupos/ver-grupo";
+
+        model.addAttribute("content", content);
+        model.addAttribute("grupo", grupo);
+        model.addAttribute("idUsuarioActual", usuario.getId());
+        model.addAttribute("listaRelatosPendientes", relatosPendientes);
+        model.addAttribute("listaRelatosAprobados", relatosAprobados);
+        model.addAttribute("listaRelatosRechazados", relatosRechazados);
+        return "index";
+    }
+
+
+    @GetMapping("/aprobar-relato/{id}")
+    public String mostrarFormularioAprobacion(Model model, @PathVariable String id) {
+        int idRelatoGrupo = Integer.parseInt(id);
+
+        Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
+        RelatoGrupo relatoGrupo;
+
+        if (relatoGrupoOptional.isPresent()) {
+
+            relatoGrupo = relatoGrupoOptional.get();
+            RelatoGrupoGestionDto relatoGrupoGestionDto = new RelatoGrupoGestionDto();
+            relatoGrupoGestionDto.setId(idRelatoGrupo);
+            content = "views/grupos/formulario-aprobacion";
+
+            model.addAttribute("content", content);
+            model.addAttribute("relatoGrupoDto", relatoGrupoGestionDto);
+            model.addAttribute("relatoGrupo", relatoGrupo);
+            return "index";
+        } else {
+            return "redirect:/error"; // Redirigir a una página de error
+        }
+    }
+
+    @PostMapping("/gestionar-relato")
+    public String gestionarRelatoGrupo(@ModelAttribute("relatoGrupo") RelatoGrupoGestionDto relatoGrupoGestionDto) {
+
+        int idRelatoGrupo = relatoGrupoGestionDto.getId();
+
+        Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
+
+        if (relatoGrupoOptional.isPresent()) {
+            RelatoGrupo relatoGrupo = relatoGrupoOptional.get();
+            int idGrupo = relatoGrupo.getGrupo().getId();
+
+            // Comprobar si se aprobó o se rechazó
+            if (relatoGrupoGestionDto.isAprobado()) {
+                relatoGrupo.setEstado(ESTADO_APROBADO);
+            } else {
+                relatoGrupo.setEstado(ESTADO_RECHAZADO);
+            }
+
+            relatoGrupo.setCalificacion(relatoGrupoGestionDto.getCalificacion());
+            relatoGrupo.setFeedback(relatoGrupoGestionDto.getFeedback());
+
+            relatoGrupoService.guardarRelatoGrupo(relatoGrupo);
+            return "redirect:/grupos/ver-grupo/" + idGrupo;
+        } else {
+            return "redirect:/error"; // Redirigir a una página de error
+        }
+    }
+
+
 
 }
 

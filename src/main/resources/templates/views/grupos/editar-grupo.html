@@ -3,7 +3,7 @@
         <div class="col-md-6 offset-md-3">
             <div class="card">
                 <div class="card-header text-center">
-                    <h1>Crear Nuevo Grupo</h1>
+                    <h1>Editar Grupo</h1>
                 </div>
                 <div class="card-body">
                     <form th:object="${grupoDto}" th:action="@{'/grupos/actualizar-grupo/' + ${grupo.id}}" method="post">
@@ -18,7 +18,7 @@
                         </div>
                         <!-- Botón de enviar -->
                         <input type="hidden" id="idGrupo" th:value="${grupo.id}">
-                        <button type="submit" class="btn btn-primary">Crear Grupo</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </form>
                 </div>
             </div>

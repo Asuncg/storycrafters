@@ -1,0 +1,9 @@
+.nav-grupos {
+    background-color: #1693a5;
+    border-radius: .5rem;
+}
+
+.nav-grupos a {
+    color: #fff;
+    font-size: 16px;
+}

@@ -71,7 +71,7 @@ function guardarRelato() {
             // Mostrar el modal de éxito
             $('#modalExito').modal('show');
             // Ocultar el modal después de 3 segundos
-            setTimeout(function(){
+            setTimeout(function () {
                 $('#modalExito').modal('hide');
             }, 3000);
         } else {
@@ -101,13 +101,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var textoRelato = document.getElementById('texto-relato');
 
     if (tituloRelato) {
-        tituloRelato.addEventListener('input', function() {
+        tituloRelato.addEventListener('input', function () {
             cambiosPendientes = true;
         });
     }
 
     if (textoRelato) {
-        textoRelato.addEventListener('input', function() {
+        textoRelato.addEventListener('input', function () {
             cambiosPendientes = true;
         });
     }

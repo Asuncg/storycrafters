@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RelatoRepository extends JpaRepository<Relato, Integer> {
-    List<Relato> findByUsuario(Usuario usuario);
+    List<Relato> findByUsuarioAndArchivadoFalse(Usuario usuario);
 
-    @Query("SELECT r FROM Relato r LEFT JOIN FETCH r.categorias WHERE r.id = :id")
-    Optional<Relato> findRelatoById(@Param("id") int id);
+    @Query("SELECT r FROM Relato r LEFT JOIN FETCH r.categorias WHERE r.id = :id AND r.archivado = false")
+    Optional<Relato> findRelatoByIdAndNotArchivado(@Param("id") int id);
 }

@@ -36,9 +36,13 @@ public class Usuario {
     @Column(name = "activo", length = 1, columnDefinition = "int default 1")
     private boolean activo = true;
 
-//    @ManyToMany
-//    private List<Grupo> grupos;
-
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_grupo",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "grupo_id")
+    )
+    private List<Grupo> grupos;
     public Usuario(String nombre, String password) {
     }
 }

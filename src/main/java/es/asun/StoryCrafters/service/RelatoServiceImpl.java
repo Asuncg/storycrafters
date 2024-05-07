@@ -29,13 +29,18 @@ public class RelatoServiceImpl implements RelatoService {
     }
 
     @Override
-    public List<Relato> findAllRelatosByUsuario(Usuario usuario) {
-        return relatoRepository.findByUsuario(usuario);
+    public List<Relato> findAllRelatosByUsuarioAndNotArchivado(Usuario usuario) {
+        return relatoRepository.findByUsuarioAndArchivadoFalse(usuario);
     }
 
     @Override
-    public Optional<Relato> findRelatoById(int id) {
-        return relatoRepository.findRelatoById(id);
+    public Optional<Relato> findRelatoByIdAndNotArchivado(int id) {
+        return relatoRepository.findRelatoByIdAndNotArchivado(id);
+    }
+
+    @Override
+    public void eliminarRelato(int id) {
+        relatoRepository.deleteById(id);
     }
 
 

@@ -1,14 +1,8 @@
 package es.asun.StoryCrafters.controller;
 
-import es.asun.StoryCrafters.entity.Categoria;
-import es.asun.StoryCrafters.entity.Imagen;
-import es.asun.StoryCrafters.entity.Relato;
-import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.model.RelatoDto;
-import es.asun.StoryCrafters.service.CategoriaService;
-import es.asun.StoryCrafters.service.ImagenesService;
-import es.asun.StoryCrafters.service.RelatoService;
-import es.asun.StoryCrafters.service.UserService;
+import es.asun.StoryCrafters.service.*;
 import es.asun.StoryCrafters.utilidades.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +32,12 @@ public class RelatoController {
     @Autowired
     private ImagenesService imagenesService;
 
+    @Autowired
+    private GrupoService grupoService;
+
+    @Autowired
+    private RelatoGrupoService relatoGrupoService;
+
     private String content = "";
 
     @GetMapping("/mis-relatos")
@@ -45,9 +45,9 @@ public class RelatoController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Usuario usuario = userService.findUserByEmail(username);
-        List<Relato> relatos = relatoService.findAllRelatosByUsuario(usuario);
+        List<Relato> relatos = relatoService.findAllRelatosByUsuarioAndNotArchivado(usuario);
         List<Categoria> listaCategorias = categoriaService.findAllCategories();
-        content = "views/mis-relatos";
+        content = "views/relatos/mis-relatos";
 
         model.addAttribute("content", content);
         model.addAttribute("listaCategorias", listaCategorias);
@@ -58,7 +58,7 @@ public class RelatoController {
     @GetMapping("/relatos/{id}")
     public String verRelato(Model model, @PathVariable String id) {
         int idRelato = Integer.parseInt(id);
-        Optional<Relato> relatoOptional = relatoService.findRelatoById(idRelato);
+        Optional<Relato> relatoOptional = relatoService.findRelatoByIdAndNotArchivado(idRelato);
 
         if (relatoOptional.isEmpty()) {
             model.addAttribute("content", "views/no-acceso");
@@ -76,7 +76,7 @@ public class RelatoController {
         }
 
         model.addAttribute("relato", relato);
-        content = "views/vista-relato";
+        content = "views/relatos/vista-relato";
 
         model.addAttribute("content", content);
         return "index";
@@ -87,7 +87,7 @@ public class RelatoController {
 
         List<Imagen> listaImagenes = imagenesService.findAllImagenes();
 
-        content = "views/nuevo-relato-imagen";
+        content = "views/relatos/nuevo-relato-imagen";
 
         model.addAttribute("content", content);
         model.addAttribute("imagenes", listaImagenes);
@@ -108,7 +108,7 @@ public class RelatoController {
             imagen.setUrl("");
         }
 
-        content = "views/nuevo-relato";
+        content = "views/relatos/nuevo-relato";
 
         model.addAttribute("content", content);
         model.addAttribute("categorias", listaCategorias);
@@ -121,7 +121,7 @@ public class RelatoController {
     @GetMapping("/editar-relato/{id}")
     public String editarRelato(Model model, @PathVariable String id) {
         int idRelato = Integer.parseInt(id);
-        Optional<Relato> relatoOptional = relatoService.findRelatoById(idRelato);
+        Optional<Relato> relatoOptional = relatoService.findRelatoByIdAndNotArchivado(idRelato);
 
         if (relatoOptional.isEmpty()) {
             model.addAttribute("content", "views/no-acceso");
@@ -143,7 +143,7 @@ public class RelatoController {
         model.addAttribute("relato", relato);
         model.addAttribute("categorias", categoriaService.findAllCategories());
 
-        model.addAttribute("content", "views/editar-relato");
+        model.addAttribute("content", "views/relatos/editar-relato");
         return "index";
     }
 
@@ -176,7 +176,7 @@ public class RelatoController {
             relato.setCategorias(categorias);
             relato.setFechaCreacion(new Date());
         } else {
-            Optional<Relato> relatoOptional = relatoService.findRelatoById(relatoDto.getId());
+            Optional<Relato> relatoOptional = relatoService.findRelatoByIdAndNotArchivado(relatoDto.getId());
 
             if (relatoOptional.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -199,8 +199,85 @@ public class RelatoController {
         return new ResponseEntity<>(idRelato, HttpStatus.OK);
     }
 
+
+    @GetMapping("/eliminar-relato/{id}")
+    public String eliminarGrupo(Model model, @PathVariable String id) {
+        int idRelato = Integer.parseInt(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        Optional<Relato> relatoOptional = relatoService.findRelatoByIdAndNotArchivado(idRelato);
+        if (relatoOptional.isEmpty()) {
+            model.addAttribute("content", "views/no-acceso");
+            return "index";
+        }
+
+        if (usuario.getId() != relatoOptional.get().getUsuario().getId()) {
+            model.addAttribute("content", "views/no-acceso");
+            return "index";
+        }
+
+        Relato relato = relatoOptional.get();
+        relato.setArchivado(true);
+
+        relatoService.guardarRelato(relato);
+        return "redirect:/relato/mis-relatos";
+    }
+
+    @PostMapping("/publicar-relato")
+    public ResponseEntity<Integer> publicarRelato(@RequestBody Map<String, Object> request) {
+        int idRelato = Integer.parseInt(request.get("idRelato").toString());
+        int idGrupo = Integer.parseInt(request.get("idGrupo").toString());
+
+        Optional<Relato> relatoOptional = relatoService.findRelatoByIdAndNotArchivado(idRelato);
+
+        if (relatoOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Relato relato = relatoOptional.get();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Usuario usuario = userService.findUserByEmail(username);
+
+        if (usuario.getId() != relato.getUsuario().getId()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        RelatoGrupo relatoGrupo = new RelatoGrupo();
+        relatoGrupo.setRelato(relato);
+
+        // Establecer título, texto. imagen y firmaAutor del relato
+        relatoGrupo.setTitulo(relato.getTitulo());
+        relatoGrupo.setTexto(relato.getTexto());
+        relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
+        relatoGrupo.setImagen(relato.getImagen());
+        relatoGrupo.setCategorias(relato.getCategorias());
+
+        // Obtener el grupo seleccionado
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+
+        if (grupoOptional.isPresent()) {
+            Grupo grupo = grupoOptional.get();
+            relatoGrupo.setGrupo(grupo);
+        } else {
+            // Manejar el caso en que el grupo no se encuentra
+
+        }
+
+        // Guardar el RelatoGrupo en la base de datos
+        relatoGrupoService.guardarRelatoGrupo(relatoGrupo);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
     private boolean validarRelatoDTO(RelatoDto relatoDto) {
         return true;
     }
+
 
 }

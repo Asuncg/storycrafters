@@ -30,7 +30,11 @@
                 <div class="col-sm-1" th:if="${grupo.usuario.id ne idUsuarioActual}">
 
                 </div>
-                <div class="col-sm-5" th:text="${grupo.nombre}">Nombre del Grupo</div>
+                <div class="col-sm-5">
+                <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id}}">
+                    <div th:text="${grupo.nombre}">Nombre de Grupo</div>
+                </a>
+                </div>
                 <div class="col-sm-4 text-center" th:text="${#lists.size(grupo.usuarios)} + ' usuarios'">5 usuarios
                 </div>
                 <div class="col-sm-1 text-center">

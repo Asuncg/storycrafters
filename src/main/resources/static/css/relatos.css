@@ -80,7 +80,7 @@
     min-height: 250px;
     background-size: cover;
     background-position: center;
-    font-size: 32px;
+    font-size: 48px;
     color: black;
 }
 
@@ -92,15 +92,14 @@
     border-bottom-right-radius: .5rem;
 }
 
-.vista-detalles-relato {
-    background-color: #dfedf1;
-    border-top-right-radius: .5rem;
-}
-
-.vista-detalles-relato img {
-    width: 50%;
-}
-
 .boton-editar-relato {
     right: 0;
+}
+
+.vista-relato-autor {
+    color: #5b5b5b;
+}
+
+.vista-relato-autor img {
+    width: 8%;
 }

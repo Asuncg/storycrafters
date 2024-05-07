@@ -11,7 +11,9 @@ public interface RelatoService {
 
     int guardarRelato(Relato relato);
 
-    List<Relato> findAllRelatosByUsuario(Usuario usuario);
+    List<Relato> findAllRelatosByUsuarioAndNotArchivado(Usuario usuario);
 
-    Optional<Relato> findRelatoById(int id);
+    Optional<Relato> findRelatoByIdAndNotArchivado(int id);
+
+    void eliminarRelato(int id);
 }

@@ -81,3 +81,27 @@ function sendInvitations() {
     // Convertir los datos a JSON y enviar la solicitud
     xhr.send(JSON.stringify(data));
 }
+
+function mostrarPestana(idPestana) {
+    // Ocultar todas las pestañas
+    var pestanas = document.querySelectorAll('.pestana');
+    pestanas.forEach(function (elemento) {
+        elemento.style.display = 'none';
+    });
+
+    // Mostrar la pestaña seleccionada
+    document.getElementById(idPestana).style.display = 'block';
+
+    // Si la pestaña es "A revisar", filtrar relatos pendientes
+    if (idPestana === 'aRevisar') {
+        var relatosPendientes = document.querySelectorAll('.list-group-item');
+
+        relatosPendientes.forEach(function (elemento) {
+            if (elemento.querySelector('.col-sm-4').innerText !== 'Pendiente') {
+                elemento.style.display = 'none';
+            } else {
+                elemento.style.display = 'flex';
+            }
+        });
+    }
+}

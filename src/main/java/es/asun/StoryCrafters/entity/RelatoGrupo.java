@@ -2,13 +2,19 @@ package es.asun.StoryCrafters.entity;
 
 
 import jakarta.persistence.*;
-import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Date;
+import java.util.List;
+
+@Getter
+@Setter
 @Entity
 public class RelatoGrupo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "id_relato")
@@ -18,11 +24,23 @@ public class RelatoGrupo {
     @JoinColumn(name = "id_grupo")
     private Grupo grupo;
 
-    @Column(nullable = false, name = "titulo", length = 50)
+    @Column(nullable = false, name = "titulo", length = 150)
     private String titulo;
 
-    @Column(nullable = false, name = "texto", length = 50)
+    @Column(nullable = false, name = "texto", length = 10000)
     private String texto;
+
+    @ManyToOne
+    @JoinColumn(name = "id_imagen")
+    private Imagen imagen;
+
+    @ManyToMany
+    @JoinTable(
+            name = "relatogrupo_categoria",
+            joinColumns = @JoinColumn(name = "relato_grupo_id"),
+            inverseJoinColumns = @JoinColumn(name = "categoria_id")
+    )
+    private List<Categoria> categorias;
 
     @Column(nullable = false, name = "firmaAutor", length = 60)
     private String firmaAutor;
