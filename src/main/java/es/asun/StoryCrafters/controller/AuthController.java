@@ -2,11 +2,9 @@ package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserRegisterDto;
-import es.asun.StoryCrafters.repository.UserRepository;
 import es.asun.StoryCrafters.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,10 +17,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @Controller
 @SessionAttributes({"DataUser"})
 public class AuthController {
-
-
-    private UserRepository userRepo;
-
     @Autowired
     private UserService userService;
 
@@ -37,7 +31,6 @@ public class AuthController {
     public String login() {
         return "login";
     }
-
     @GetMapping(value = {"/registro"})
     public String showRegistrationForm(Model model) {
 
@@ -46,7 +39,6 @@ public class AuthController {
         return "registro";
     }
 
-    // handler method to handle user registration form submit request
     @PostMapping("/registro/save")
     public String registration(@Valid @ModelAttribute("user") UserRegisterDto userRegisterDto,
                                BindingResult result,
@@ -67,8 +59,6 @@ public class AuthController {
         userService.saveUser(userRegisterDto);
         return "redirect:/registro?success";
     }
-
-
 }
 
 

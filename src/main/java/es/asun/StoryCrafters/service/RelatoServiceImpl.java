@@ -39,9 +39,7 @@ public class RelatoServiceImpl implements RelatoService {
     }
 
     @Override
-    public void eliminarRelato(int id) {
-        relatoRepository.deleteById(id);
+    public List<Relato> findRelatoByUsuario(Usuario usuario) {
+        return relatoRepository.findRelatoByUsuario(usuario);
     }
-
-
 }

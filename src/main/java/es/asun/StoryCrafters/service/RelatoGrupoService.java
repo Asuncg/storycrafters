@@ -11,4 +11,6 @@ public interface RelatoGrupoService {
     List<RelatoGrupo> findRelatoGrupoByGrupoIs(Grupo grupo);
 
     void guardarRelatoGrupo(RelatoGrupo relatoGrupo);
+
+    boolean existeRelatoEnviado(int idRelato, int idGrupo);
 }

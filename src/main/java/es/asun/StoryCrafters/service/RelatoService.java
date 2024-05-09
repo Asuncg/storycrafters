@@ -15,5 +15,6 @@ public interface RelatoService {
 
     Optional<Relato> findRelatoByIdAndNotArchivado(int id);
 
-    void eliminarRelato(int id);
+    List<Relato> findRelatoByUsuario(Usuario usuario);
+
 }

@@ -3,11 +3,10 @@ package es.asun.StoryCrafters.utilidades;
 import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.RelatoDto;
+import es.asun.StoryCrafters.model.RelatoGrupoDto;
+import es.asun.StoryCrafters.model.RelatoPreviewDto;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 public class Mappings {
     public static Relato mapToRelato(RelatoDto relatoDto, Imagen imagen) {
@@ -31,4 +30,27 @@ public class Mappings {
         return grupo;
     }
 
+    public static RelatoGrupoDto mapToRelatoGrupoDto(RelatoGrupo relatoGrupo) {
+        RelatoGrupoDto relatoGrupoDto = new RelatoGrupoDto();
+        relatoGrupoDto.setId(relatoGrupo.getId());
+        relatoGrupoDto.setTitulo(relatoGrupo.getTitulo());
+        relatoGrupoDto.setTexto(relatoGrupo.getTexto());
+        relatoGrupoDto.setImagen(relatoGrupo.getImagen());
+        relatoGrupoDto.setCategorias(relatoGrupo.getCategorias());
+        relatoGrupoDto.setFirmaAutor(relatoGrupo.getFirmaAutor());
+        relatoGrupoDto.setFechaPublicacion(relatoGrupo.getFechaPublicacion());
+
+        return relatoGrupoDto;
+    }
+
+    public static RelatoPreviewDto mapToRelatoVistaDto (Relato relato) {
+        RelatoPreviewDto relatoPreviewDto = new RelatoPreviewDto();
+        relatoPreviewDto.setId(relato.getId());
+        relatoPreviewDto.setTitulo(relato.getTitulo());
+        relatoPreviewDto.setImagen(relato.getImagen());
+        relatoPreviewDto.setCategorias(relato.getCategorias());
+        relatoPreviewDto.setFechaActualizacion(relato.getFechaActualizacion());
+
+        return relatoPreviewDto;
+    }
 }

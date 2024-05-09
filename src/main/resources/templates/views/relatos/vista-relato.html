@@ -18,7 +18,8 @@
                         </svg>
                         Editar
                     </a>
-                    <button type="button" class="btn btn-outline-primary m-1 btn-sm" data-toggle="modal" data-target="#publicarRelatoModal">
+                    <button type="button" class="btn btn-outline-primary m-1 btn-sm" data-toggle="modal"
+                            data-target="#publicarRelatoModal">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-journal-arrow-up" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
@@ -83,7 +84,8 @@
 
 
 <!-- Modal para confirmar la publicación del relato -->
-<div class="modal fade" id="publicarRelatoModal" tabindex="-1" role="dialog" aria-labelledby="publicarRelatoModalLabel" aria-hidden="true">
+<div class="modal fade" id="publicarRelatoModal" tabindex="-1" role="dialog" aria-labelledby="publicarRelatoModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -93,7 +95,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="mensaje" style="display: none;"></div>
                 <!-- Verifica si el usuario pertenece a algún grupo -->
                 <div th:if="${#lists.isEmpty(relato.usuario.grupos)}">
                     <p>Debes pertenecer al menos a un grupo para poder publicar tu relato.</p>
@@ -108,14 +109,41 @@
                         <!-- Desplegable select para seleccionar un grupo -->
                         <select class="form-select" aria-label="Default select example" id="grupoId">
                             <option selected value="">Selecciona un grupo</option>
-                            <option th:each="grupo : ${relato.usuario.grupos}" th:value="${grupo.id}" th:text="${grupo.nombre}"></option>
+                            <option th:each="grupo : ${relato.usuario.grupos}" th:value="${grupo.id}"
+                                    th:text="${grupo.nombre}"></option>
                         </select>
+                        <!-- Mensaje de confirmación -->
+                        <div id="mensaje"
+                             style="display: none; color: #155724; background-color: #d4edda; border-color: #c3e6cb; padding: .75rem 1.25rem; margin-top: 10px; border: 1px solid transparent; border-radius: .25rem;">
+                            El relato se ha enviado para su revisión previa publicación.
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" onclick="publicarRelato()" class="btn btn-primary">Publicar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal de éxito -->
+<div class="modal fade" id="modalExito" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                El relato se ha enviado correctamente al grupo para su revisión.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de error -->
+<div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                Este relato ya se ha enviado a este grupo.
             </div>
         </div>
     </div>

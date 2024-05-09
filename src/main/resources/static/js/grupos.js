@@ -105,3 +105,7 @@ function mostrarPestana(idPestana) {
         });
     }
 }
+
+function setAprobado(value) {
+    document.getElementById('aprobado').value = value.toString();
+}

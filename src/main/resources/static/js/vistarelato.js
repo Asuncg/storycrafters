@@ -1,5 +1,4 @@
 function publicarRelato() {
-    // Obtener el id del relato y el id del grupo seleccionado
     var idRelato = document.getElementById('relatoId').value;
     var grupoId = document.getElementById('grupoId').value;
 
@@ -8,22 +7,35 @@ function publicarRelato() {
         return;
     }
 
-    // Crear un objeto XMLHttpRequest
     var xhr = new XMLHttpRequest();
-
-    // Configurar la solicitud AJAX
     xhr.open('POST', '/relato/publicar-relato', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
-    // Manejar la respuesta del servidor
     xhr.onload = function () {
         if (xhr.status === 200) {
             // La solicitud se completó correctamente
-            // Mostrar el mensaje de confirmación en el modal
-            document.getElementById('mensaje').innerText = "El relato se ha enviado para su revisión previa publicación.";
-            document.getElementById('mensaje').style.display = 'block';
+            // Cerrar el modal actual
+            $('#publicarRelatoModal').modal('hide');
 
-            // Opcionalmente, puedes actualizar el contenido del modal aquí si es necesario
+            // Mostrar el modal de éxito
+            $('#modalExito').modal('show');
+            setTimeout(function () {
+                $('#modalExito').modal('hide');
+            }, 3000);
+            // Ocultar el modal de éxito después de 3 segundos
+            setTimeout(function () {
+                $('#modalExito').modal('hide');
+            }, 3000);
+        } else if (xhr.status === 400) {
+            // El relato ya ha sido enviado a ese grupo
+            // Cerrar el modal actual
+            $('#publicarRelatoModal').modal('hide');
+
+            // Mostrar el modal de error
+            $('#modalError').modal('show');
+            setTimeout(function () {
+                $('#modalError').modal('hide');
+            }, 3000);
         } else {
             // La solicitud falló
             console.error('Error al publicar el relato: ', xhr.statusText);
@@ -35,6 +47,6 @@ function publicarRelato() {
         idGrupo: grupoId
     };
 
-    // Enviar la solicitud al servidor
-    xhr.send(JSON.stringify(data));
+    var jsonData = JSON.stringify(data);
+    xhr.send(jsonData);
 }

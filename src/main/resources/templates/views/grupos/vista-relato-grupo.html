@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="/css/relatos.css">
+<script src="/js/vistarelato.js"></script>
+<!-- Contenido principal -->
+<div class="container">
+    <div class="row vista-relato-autor">
+        <div class="col-sm-6">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="Avatar"
+                 class="img-fluid m-2">
+            <span th:text="${relatoGrupo.firmaAutor}"></span>
+        </div>
+        <div class="col-sm-6" style="">
+            <div class="row justify-content-end">
+                <div class="col-sm-auto m-2">
+                    <!-- Posible accion de agregar a favoritos -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="badge text-bg-primary" th:each="categoria : ${relatoGrupo.categorias}"
+          th:text="${relatoGrupo.titulo}"></span>
+    <div class="row vista-relato">
+        <div class="col-sm-12 vista-relato-separador">
+            <div class="row">
+                <div class="col-md-12 vista-titulo-relato text-center" th:style="'background-image: url(' + ${relatoGrupo.imagen.url} + '); opacity: 0.5;'" th:utext="${relatoGrupo.titulo}"></div>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="col-md-12 vista-texto-relato" th:utext="${relatoGrupo.texto}"></div>
+            </div>
+        </div>
+    </div>
+</div>

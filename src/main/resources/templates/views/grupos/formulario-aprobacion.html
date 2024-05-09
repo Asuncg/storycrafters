@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/css/relatos.css">
+<script src="/js/grupos.js"></script>
 <div class="container">
     <div class="row vista-relato-autor">
         <div class="col-sm-6">
@@ -44,11 +45,9 @@
                             <textarea class="form-control" id="feedback" th:field="*{feedback}" required style="min-height: 100px"></textarea>
                         </div>
                         <input type="hidden" th:field="*{id}">
-                        <input type="hidden" th:field="*{aprobado}" th:value="${true}">
-                        <button type="submit" class="btn btn-success">Aprobar</button>
-
-                        <input type="hidden" th:field="*{aprobado}" th:value="${false}">
-                        <button type="submit" class="btn btn-danger">Rechazar</button>
+                        <input type="hidden" id="aprobado" name="aprobado" value="false">
+                        <button type="submit" class="btn btn-success" onclick="setAprobado(true)">Aprobar</button>
+                        <button type="submit" class="btn btn-danger" onclick="setAprobado(false)">Rechazar</button>
                     </form>
                 </div>
             </div>

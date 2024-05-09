@@ -4,17 +4,17 @@ import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.RelatoGrupo;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.GrupoDto;
+import es.asun.StoryCrafters.model.RelatoGrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
 import es.asun.StoryCrafters.service.EmailService;
 import es.asun.StoryCrafters.service.GrupoService;
 import es.asun.StoryCrafters.service.RelatoGrupoService;
 import es.asun.StoryCrafters.service.UserService;
+import es.asun.StoryCrafters.utilidades.AuthUtils;
 import es.asun.StoryCrafters.utilidades.CodigoIngresoGenerator;
 import es.asun.StoryCrafters.utilidades.Constantes;
 import es.asun.StoryCrafters.utilidades.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +32,6 @@ import static es.asun.StoryCrafters.utilidades.Constantes.ESTADO_RECHAZADO;
 public class GruposController {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private GrupoService grupoService;
 
     @Autowired
@@ -42,38 +39,34 @@ public class GruposController {
 
     @Autowired
     RelatoGrupoService relatoGrupoService;
-    private String content = "";
+
+    @Autowired
+    UserService userService;
+
+    private static final String ERROR_VIEW = "views/error/error";
+    private static final String INDEX_VIEW = "index";
 
     @GetMapping("/mis-grupos")
     public String misGrupos(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
+        Usuario usuario = AuthUtils.getAuthUser(userService);
         List<Grupo> grupos = grupoService.findAllGruposByUsuario(usuario);
 
-        content = "views/grupos/mis-grupos";
-
         model.addAttribute("grupos", grupos);
-        model.addAttribute("content", content);
+        model.addAttribute("content", "views/grupos/mis-grupos");
         model.addAttribute("idUsuarioActual", usuario.getId());
-        return "index";
+        return INDEX_VIEW;
     }
 
     @GetMapping("/nuevo-grupo")
     public String nuevoGrupo(Model model) {
-
-        content = "views/grupos/crear-grupo";
-
-        model.addAttribute("content", content);
+        model.addAttribute("content", "views/grupos/crear-grupo");
         model.addAttribute("grupoDto", new GrupoDto());
-        return "index";
+        return INDEX_VIEW;
     }
 
     @PostMapping("/crear-grupo")
-    public String crearGrupo(@ModelAttribute("user") GrupoDto grupoDto, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
+    public String crearGrupo(@ModelAttribute("user") GrupoDto grupoDto) {
+        Usuario usuario = AuthUtils.getAuthUser(userService);
 
         Grupo grupo;
 
@@ -87,11 +80,6 @@ public class GruposController {
         grupo.setUsuarios(listaUsuarios);
         grupo.setCodigoAcceso(codigoAcceso);
 
-        String destinatario = "ansuncg@gmail.com";
-        String asunto = "Asunto del correo";
-        String mensaje = "Este es un ejemplo de mensaje.";
-
-        emailService.sendEmail(destinatario, asunto, mensaje);
         grupoService.guardarGrupo(grupo);
 
         return "redirect:/grupos/mis-grupos";
@@ -101,22 +89,13 @@ public class GruposController {
     @GetMapping("/eliminar-grupo/{id}")
     public String eliminarGrupo(Model model, @PathVariable String id) {
         int idGrupo = Integer.parseInt(id);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
-
+        Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
-        if (grupoOptional.isEmpty()) {
-            model.addAttribute("content", "views/no-acceso");
-            return "index";
-        }
 
-        if (usuario.getId() != grupoOptional.get().getUsuario().getId()) {
-            model.addAttribute("content", "views/no-acceso");
-            return "index";
+        if (!grupoValido(grupoOptional, usuario)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
-
         grupoService.deleteGrupoById(idGrupo);
         return "redirect:/grupos/mis-grupos";
     }
@@ -125,52 +104,36 @@ public class GruposController {
     @GetMapping("/editar-grupo/{id}")
     public String editarGrupo(Model model, @PathVariable String id) {
         int idGrupo = Integer.parseInt(id);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
-
+        Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
-        if (grupoOptional.isEmpty()) {
-            content = "views/no-acceso";
-            return "index";
+
+        if (!grupoValido(grupoOptional, usuario)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
+
         Grupo grupo = grupoOptional.get();
-
-        if (usuario.getId() != grupo.getUsuario().getId()) {
-            content = "views/no-acceso";
-            return "index";
-        }
-
-        content = "views/grupos/editar-grupo";
 
         GrupoDto grupoDto = new GrupoDto();
         model.addAttribute("grupo", grupo);
         model.addAttribute("grupoDto", grupoDto);
-        model.addAttribute("content", content);
+        model.addAttribute("content", "views/grupos/editar-grupo");
 
-        return "index";
+        return INDEX_VIEW;
     }
 
     @PostMapping("actualizar-grupo/{id}")
     public String actualizarGrupo(Model model, @PathVariable String id, GrupoDto grupoDto) {
         int idGrupo = Integer.parseInt(id);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
-
+        Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
-        if (grupoOptional.isEmpty()) {
-            content = "views/no-acceso";
-            return "index";
-        }
-        Grupo grupo = grupoOptional.get();
 
-        if (usuario.getId() != grupo.getUsuario().getId()) {
-            content = "views/no-acceso";
-            return "index";
+        if (!grupoValido(grupoOptional, usuario)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
+
+        Grupo grupo = grupoOptional.get();
 
         grupo.setNombre(grupoDto.getNombre());
         grupo.setDescripcion(grupoDto.getDescripcion());
@@ -182,27 +145,20 @@ public class GruposController {
 
     @PostMapping("/invitar-usuarios")
     @ResponseBody
-    public String invitarUsuarios(@RequestBody Map<String, Object> request) {
-        // Obtener el ID del grupo y la lista de correos electrónicos desde la solicitud
+    public String invitarUsuarios(Model model, @RequestBody Map<String, Object> request) {
+
         int idGrupo = Integer.parseInt(request.get("groupId").toString());
         List<String> emails = (List<String>) request.get("emails");
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
-
+        Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
-        if (grupoOptional.isEmpty()) {
-            // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
-            return "El grupo no existe.";
+
+        if (!grupoValido(grupoOptional, usuario)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
 
         Grupo grupo = grupoOptional.get();
-
-        if (usuario.getId() != grupo.getUsuario().getId()) {
-            // Si el usuario no es el propietario del grupo, puedes devolver un mensaje de error o lanzar una excepción
-            return "No tienes permiso para invitar usuarios a este grupo.";
-        }
 
         for (String email : emails) {
             emailService.enviarInvitacion(email, grupo.getCodigoAcceso());
@@ -213,21 +169,16 @@ public class GruposController {
 
     @PostMapping("/ingresar-invitacion")
     public String ingresarInvitacion(@RequestParam("codigoInvitacion") String codigoInvitacion, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
-
+        Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoByCodigoAcceso(codigoInvitacion);
-        if (grupoOptional.isEmpty()) {
-            // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
-            return "El grupo no existe.";
+
+        if (!grupoValido(grupoOptional, usuario)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
 
         Grupo grupo = grupoOptional.get();
-
-        // Verificar si el usuario ya está en el grupo
         if (grupo.getUsuarios().contains(usuario)) {
-            // Si el usuario ya está en el grupo, puedes devolver un mensaje de error o redirigirlo
             model.addAttribute("mensaje", "Ya eres miembro de este grupo.");
             return "redirect:/grupos/mis-grupos";
         }
@@ -240,30 +191,25 @@ public class GruposController {
         return "redirect:/grupos/mis-grupos";
     }
 
-
     @PostMapping("/abandonar-grupo")
-    public String abandonarGrupo(@RequestParam("grupoId") String grupoId) {
+    public String abandonarGrupo(Model model, @RequestParam("grupoId") String grupoId) {
         int idGrupo = Integer.parseInt(grupoId);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
+        Usuario usuario = AuthUtils.getAuthUser(userService);
 
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
         if (grupoOptional.isEmpty()) {
-            // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
-            return "El grupo no existe.";
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
 
         Grupo grupo = grupoOptional.get();
 
-        // Verificar si el usuario está en el grupo
         if (!grupo.getUsuarios().contains(usuario)) {
-
-            return "redirect:/grupos/mis-grupos";
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
 
-        // Eliminar al usuario del grupo
         grupo.getUsuarios().remove(usuario);
 
         grupoService.guardarGrupo(grupo);
@@ -271,18 +217,16 @@ public class GruposController {
         return "redirect:/grupos/mis-grupos";
     }
 
-    @GetMapping("/ver-grupo/{grupoId}")
-    public String mostrarGrupo(@PathVariable("grupoId") String grupoId, Model model) {
+    @GetMapping("/ver-grupo-gestor/{grupoId}")
+    public String mostrarGrupoGestor(@PathVariable("grupoId") String grupoId, Model model) {
         int idGrupo = Integer.parseInt(grupoId);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Usuario usuario = userService.findUserByEmail(username);
+        Usuario usuario = AuthUtils.getAuthUser(userService);
 
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
         if (grupoOptional.isEmpty()) {
-            // Si el grupo no existe, puedes devolver un mensaje de error o lanzar una excepción
-            return "El grupo no existe.";
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
 
         Grupo grupo = grupoOptional.get();
@@ -303,15 +247,51 @@ public class GruposController {
             }
         }
 
-        content = "views/grupos/ver-grupo";
-
-        model.addAttribute("content", content);
+        model.addAttribute("content", "views/grupos/ver-grupo-gestor");
         model.addAttribute("grupo", grupo);
         model.addAttribute("idUsuarioActual", usuario.getId());
         model.addAttribute("listaRelatosPendientes", relatosPendientes);
         model.addAttribute("listaRelatosAprobados", relatosAprobados);
         model.addAttribute("listaRelatosRechazados", relatosRechazados);
-        return "index";
+        return INDEX_VIEW;
+    }
+
+    @GetMapping("/ver-grupo/{grupoId}")
+    public String mostrarGrupo(@PathVariable("grupoId") String grupoId, Model model) {
+        int idGrupo = Integer.parseInt(grupoId);
+
+        Usuario usuario = AuthUtils.getAuthUser(userService);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+        if (grupoOptional.isEmpty()) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+        }
+
+        Grupo grupo = grupoOptional.get();
+
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+
+        List<RelatoGrupo> relatosAprobados = new ArrayList<>();
+        for (RelatoGrupo relato : listaRelatosGrupo) {
+            int estado = relato.getEstado();
+            if (estado == ESTADO_APROBADO) {
+                relatosAprobados.add(relato);
+            }
+        }
+
+        List<RelatoGrupo> publicacionesUsuario = new ArrayList<>();
+        for (RelatoGrupo relato : listaRelatosGrupo) {
+            if (relato.getRelato().getUsuario().getId() == usuario.getId()) {
+                publicacionesUsuario.add(relato);
+            }
+        }
+        model.addAttribute("content", "views/grupos/ver-grupo");
+        model.addAttribute("grupo", grupo);
+        model.addAttribute("idUsuarioActual", usuario.getId());
+        model.addAttribute("publicacionesUsuario", publicacionesUsuario);
+        model.addAttribute("listaRelatosAprobados", relatosAprobados);
+        return INDEX_VIEW;
     }
 
 
@@ -327,19 +307,19 @@ public class GruposController {
             relatoGrupo = relatoGrupoOptional.get();
             RelatoGrupoGestionDto relatoGrupoGestionDto = new RelatoGrupoGestionDto();
             relatoGrupoGestionDto.setId(idRelatoGrupo);
-            content = "views/grupos/formulario-aprobacion";
 
-            model.addAttribute("content", content);
+            model.addAttribute("content", "views/grupos/formulario-aprobacion");
             model.addAttribute("relatoGrupoDto", relatoGrupoGestionDto);
             model.addAttribute("relatoGrupo", relatoGrupo);
-            return "index";
+            return INDEX_VIEW;
         } else {
-            return "redirect:/error"; // Redirigir a una página de error
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
     }
 
     @PostMapping("/gestionar-relato")
-    public String gestionarRelatoGrupo(@ModelAttribute("relatoGrupo") RelatoGrupoGestionDto relatoGrupoGestionDto) {
+    public String gestionarRelatoGrupo(Model model, @ModelAttribute("relatoGrupo") RelatoGrupoGestionDto relatoGrupoGestionDto) {
 
         int idRelatoGrupo = relatoGrupoGestionDto.getId();
 
@@ -360,13 +340,63 @@ public class GruposController {
             relatoGrupo.setFeedback(relatoGrupoGestionDto.getFeedback());
 
             relatoGrupoService.guardarRelatoGrupo(relatoGrupo);
-            return "redirect:/grupos/ver-grupo/" + idGrupo;
+
+            emailService.enviarNotificacion(relatoGrupo.getRelato().getUsuario().getEmail(), relatoGrupo.getFeedback(), relatoGrupo.getTitulo());
+
+            return "redirect:/grupos/ver-grupo-gestor/" + idGrupo;
         } else {
-            return "redirect:/error"; // Redirigir a una página de error
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
     }
 
+    @GetMapping("/ver-relato-grupo/{id}")
+    public String verRelatoGrupo(Model model, @PathVariable String id) {
+        int idRelatoGrupo = Integer.parseInt(id);
 
+        Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
 
+        if (relatoGrupoOptional.isPresent()) {
+            RelatoGrupo relatoGrupo = relatoGrupoOptional.get();
+            RelatoGrupoDto relatoGrupoDto = Mappings.mapToRelatoGrupoDto(relatoGrupo);
+
+            model.addAttribute("content", "views/grupos/vista-relato-grupo");
+            model.addAttribute("relatoGrupo", relatoGrupoDto);
+            return INDEX_VIEW;
+        } else {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+        }
+    }
+
+    @GetMapping("/ver-relato-revisado/{relatoGrupoId}")
+    public String verRelatoRevisado(@PathVariable("relatoGrupoId") String relatoGrupoId, Model model) {
+        int idRelatoGrupo = Integer.parseInt(relatoGrupoId);
+
+        Usuario usuario = AuthUtils.getAuthUser(userService);
+
+        Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
+        if (relatoGrupoOptional.isEmpty()) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+            }
+        RelatoGrupo relatoGrupo = relatoGrupoOptional.get();
+
+        if (relatoGrupo.getRelato().getUsuario().getId() != usuario.getId()) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+        }
+        model.addAttribute("relatoRevisado", relatoGrupo);
+        model.addAttribute("content", "views/grupos/relato-revisado");
+        return INDEX_VIEW;
+    }
+
+    private Boolean grupoValido(Optional<Grupo> grupoOptional, Usuario usuario) {
+        if (grupoOptional.isEmpty()) {
+            return false;
+        }
+        Grupo grupo = grupoOptional.get();
+        return usuario.getId() == grupo.getUsuario().getId();
+    }
 }
 
