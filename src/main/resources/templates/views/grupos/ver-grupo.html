@@ -91,9 +91,9 @@
                     </div>
                     <div class="col-sm-2 text-left">
                         <div th:switch="${publicacion.estado}">
+                            <span th:case="0">Rechazada</span>
                             <span th:case="1">Pendiente</span>
                             <span th:case="2">Aprobada</span>
-                            <span th:case="3">Rechazada</span>
                         </div>
                     </div>
                 </div>

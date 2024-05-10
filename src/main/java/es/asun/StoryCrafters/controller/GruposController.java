@@ -172,12 +172,13 @@ public class GruposController {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoByCodigoAcceso(codigoInvitacion);
 
-        if (!grupoValido(grupoOptional, usuario)) {
+        if (grupoOptional.isEmpty()) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
 
         Grupo grupo = grupoOptional.get();
+
         if (grupo.getUsuarios().contains(usuario)) {
             model.addAttribute("mensaje", "Ya eres miembro de este grupo.");
             return "redirect:/grupos/mis-grupos";

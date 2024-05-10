@@ -109,3 +109,60 @@ function mostrarPestana(idPestana) {
 function setAprobado(value) {
     document.getElementById('aprobado').value = value.toString();
 }
+
+function toggleSeleccionarTodos() {
+    var checkboxes = document.querySelectorAll('input[name="relato"]');
+    var checkboxSeleccionarTodos = document.getElementById('checkboxSeleccionarTodos');
+
+    checkboxes.forEach(function(checkbox) {
+        checkbox.checked = checkboxSeleccionarTodos.checked;
+    });
+}
+
+function aprobarSeleccionados() {
+    var form = document.getElementById('formRelatos');
+    form.action = "/ruta/al/controlador/aprobar";
+
+    // Obtener los IDs de los relatos seleccionados
+    var relatosSeleccionados = [];
+    var checkboxes = document.querySelectorAll('input[name="relato"]:checked');
+    checkboxes.forEach(function(checkbox) {
+        relatosSeleccionados.push(checkbox.value);
+    });
+
+    // Agregar los IDs al formulario
+    relatosSeleccionados.forEach(function(relatoId) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'relatosSeleccionados';
+        input.value = relatoId;
+        form.appendChild(input);
+    });
+
+    // Enviar el formulario
+    form.submit();
+}
+
+function rechazarSeleccionados() {
+    var form = document.getElementById('formRelatos');
+    form.action = "/ruta/al/controlador/rechazar";
+
+    // Obtener los IDs de los relatos seleccionados
+    var relatosSeleccionados = [];
+    var checkboxes = document.querySelectorAll('input[name="relato"]:checked');
+    checkboxes.forEach(function(checkbox) {
+        relatosSeleccionados.push(checkbox.value);
+    });
+
+    // Agregar los IDs al formulario
+    relatosSeleccionados.forEach(function(relatoId) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'relatosSeleccionados';
+        input.value = relatoId;
+        form.appendChild(input);
+    });
+
+    // Enviar el formulario
+    form.submit();
+}

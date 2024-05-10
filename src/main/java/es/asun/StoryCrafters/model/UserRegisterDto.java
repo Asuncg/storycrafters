@@ -29,6 +29,4 @@ public class UserRegisterDto
 
     private boolean activo;
 
-    public UserRegisterDto(Usuario usuario) {
-    }
 }

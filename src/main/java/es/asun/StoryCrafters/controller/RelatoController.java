@@ -1,6 +1,7 @@
 package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.*;
+import es.asun.StoryCrafters.exceptions.BusinessException;
 import es.asun.StoryCrafters.model.RelatoDto;
 import es.asun.StoryCrafters.model.RelatoPreviewDto;
 import es.asun.StoryCrafters.service.*;
@@ -207,7 +208,7 @@ public class RelatoController {
     }
 
     @PostMapping("/publicar-relato")
-    public ResponseEntity<Integer> publicarRelato(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<Integer> publicarRelato(@RequestBody Map<String, Object> request) throws BusinessException {
         int idRelato = Integer.parseInt(request.get("idRelato").toString());
         int idGrupo = Integer.parseInt(request.get("idGrupo").toString());
 
@@ -215,6 +216,8 @@ public class RelatoController {
         boolean relatoEnviado = relatoGrupoService.existeRelatoEnviado(idRelato, idGrupo);
 
         if (relatoEnviado) {
+
+            BusinessException be = new BusinessException("esto falla...");
             // Si ya existe un relato enviado, devolver un mensaje indicando que ya está enviado
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

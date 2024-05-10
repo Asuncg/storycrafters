@@ -11702,8 +11702,22 @@ a[data-toggle="collapse"] {
     color: #fff;
 }
 
-
-
 .gallery-img img {
     border-radius: 15px;
+}
+/*Toggle Password*/
+
+.input-group-icon {
+    position: relative;
+}
+
+.input-group-icon input {
+    padding-right: 30px;
+}
+
+.input-group-icon .toggle-password {
+    position: absolute;
+    right: 25px;
+    top: calc(50% - 0.1em);
+    cursor: pointer;
 }
