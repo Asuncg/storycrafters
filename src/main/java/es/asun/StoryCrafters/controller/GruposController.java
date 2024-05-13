@@ -2,14 +2,12 @@ package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.RelatoGrupo;
+import es.asun.StoryCrafters.entity.Solicitud;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
-import es.asun.StoryCrafters.service.EmailService;
-import es.asun.StoryCrafters.service.GrupoService;
-import es.asun.StoryCrafters.service.RelatoGrupoService;
-import es.asun.StoryCrafters.service.UserService;
+import es.asun.StoryCrafters.service.*;
 import es.asun.StoryCrafters.utilidades.AuthUtils;
 import es.asun.StoryCrafters.utilidades.CodigoIngresoGenerator;
 import es.asun.StoryCrafters.utilidades.Constantes;
@@ -42,6 +40,9 @@ public class GruposController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    SolicitudService solicitudService;
 
     private static final String ERROR_VIEW = "views/error/error";
     private static final String INDEX_VIEW = "index";
@@ -184,9 +185,12 @@ public class GruposController {
             return "redirect:/grupos/mis-grupos";
         }
 
-        grupo.getUsuarios().add(usuario);
+        Solicitud solicitud = new Solicitud();
 
-        grupoService.guardarGrupo(grupo);
+        solicitud.setGrupo(grupo);
+        solicitud.setUsuario(usuario);
+
+        solicitudService.guardarSolicitud(solicitud);
 
         model.addAttribute("mensaje", "¡Te has unido al grupo con éxito!");
         return "redirect:/grupos/mis-grupos";
@@ -232,10 +236,14 @@ public class GruposController {
 
         Grupo grupo = grupoOptional.get();
 
+
+        List<Solicitud> solicitudesPendientes = solicitudService.buscarSolicitudesPorGrupo(grupo);
+
         List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
         List<RelatoGrupo> relatosPendientes = new ArrayList<>();
         List<RelatoGrupo> relatosAprobados = new ArrayList<>();
         List<RelatoGrupo> relatosRechazados = new ArrayList<>();
+
 
         for (RelatoGrupo relato : listaRelatosGrupo) {
             int estado = relato.getEstado();
@@ -254,6 +262,8 @@ public class GruposController {
         model.addAttribute("listaRelatosPendientes", relatosPendientes);
         model.addAttribute("listaRelatosAprobados", relatosAprobados);
         model.addAttribute("listaRelatosRechazados", relatosRechazados);
+        model.addAttribute("solicitudesPendientes", solicitudesPendientes);
+        model.addAttribute("pestana", "publicaciones");
         return INDEX_VIEW;
     }
 
@@ -390,6 +400,32 @@ public class GruposController {
         model.addAttribute("relatoRevisado", relatoGrupo);
         model.addAttribute("content", "views/grupos/relato-revisado");
         return INDEX_VIEW;
+    }
+
+    @GetMapping("/aceptar-solicitud/{solicitudId}")
+    public String aceptarSolicitudGrupo(@PathVariable String solicitudId) {
+
+        Solicitud solicitud = solicitudService.buscarSolicitudPorId(Integer.parseInt(solicitudId));
+
+        Usuario usuario = solicitud.getUsuario();
+
+        Grupo grupo = solicitud.getGrupo();
+
+        grupo.getUsuarios().add(usuario);
+
+        grupoService.guardarGrupo(grupo);
+        solicitudService.gestionarSolicitud(solicitud);
+
+        return "redirect:/grupos/ver-grupo-gestor/" + grupo.getId();
+    }
+
+    @GetMapping("/rechazar-solicitud/{solicitudId}")
+    public String rechazarSolicitudGrupo(@PathVariable String solicitudId) {
+
+        Solicitud solicitud = solicitudService.buscarSolicitudPorId(Integer.parseInt(solicitudId));
+        solicitudService.gestionarSolicitud(solicitud);
+
+        return "redirect:/grupos/ver-grupo-gestor/" + solicitud.getGrupo().getId();
     }
 
     private Boolean grupoValido(Optional<Grupo> grupoOptional, Usuario usuario) {

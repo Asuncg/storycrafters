@@ -17,7 +17,7 @@ public class UserRegisterDto
     private int id;
     @NotEmpty
     private String firstName;
-    @NotEmpty
+
     private String lastName;
     @NotEmpty(message = "Email should not be empty")
     @Email

@@ -106,12 +106,8 @@ function mostrarPestana(idPestana) {
     }
 }
 
-function setAprobado(value) {
-    document.getElementById('aprobado').value = value.toString();
-}
-
 function toggleSeleccionarTodos() {
-    var checkboxes = document.querySelectorAll('input[name="relato"]');
+    var checkboxes = document.querySelectorAll('input[name="solicitud"]');
     var checkboxSeleccionarTodos = document.getElementById('checkboxSeleccionarTodos');
 
     checkboxes.forEach(function(checkbox) {
@@ -119,50 +115,44 @@ function toggleSeleccionarTodos() {
     });
 }
 
-function aprobarSeleccionados() {
-    var form = document.getElementById('formRelatos');
-    form.action = "/ruta/al/controlador/aprobar";
-
-    // Obtener los IDs de los relatos seleccionados
-    var relatosSeleccionados = [];
-    var checkboxes = document.querySelectorAll('input[name="relato"]:checked');
-    checkboxes.forEach(function(checkbox) {
-        relatosSeleccionados.push(checkbox.value);
-    });
-
-    // Agregar los IDs al formulario
-    relatosSeleccionados.forEach(function(relatoId) {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'relatosSeleccionados';
-        input.value = relatoId;
-        form.appendChild(input);
-    });
-
-    // Enviar el formulario
-    form.submit();
+function aceptarSeleccionadas() {
+    var solicitudesSeleccionadas = obtenerSolicitudesSeleccionadas();
+    if (solicitudesSeleccionadas.length > 0) {
+        enviarSolicitudesSeleccionadas('/grupos/aceptar-solicitudes', solicitudesSeleccionadas);
+    } else {
+        alert('No se han seleccionado solicitudes para aceptar.');
+    }
 }
 
-function rechazarSeleccionados() {
-    var form = document.getElementById('formRelatos');
-    form.action = "/ruta/al/controlador/rechazar";
+function rechazarSeleccionadas() {
+    var solicitudesSeleccionadas = obtenerSolicitudesSeleccionadas();
+    if (solicitudesSeleccionadas.length > 0) {
+        enviarSolicitudesSeleccionadas('/grupos/rechazar-solicitudes', solicitudesSeleccionadas);
+    } else {
+        alert('No se han seleccionado solicitudes para rechazar.');
+    }
+}
 
-    // Obtener los IDs de los relatos seleccionados
-    var relatosSeleccionados = [];
-    var checkboxes = document.querySelectorAll('input[name="relato"]:checked');
+function obtenerSolicitudesSeleccionadas() {
+    var checkboxes = document.querySelectorAll('input[name="solicitud"]:checked');
+    var solicitudesSeleccionadas = [];
     checkboxes.forEach(function(checkbox) {
-        relatosSeleccionados.push(checkbox.value);
+        solicitudesSeleccionadas.push(checkbox.value);
     });
+    return solicitudesSeleccionadas;
+}
 
-    // Agregar los IDs al formulario
-    relatosSeleccionados.forEach(function(relatoId) {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'relatosSeleccionados';
-        input.value = relatoId;
-        form.appendChild(input);
-    });
-
-    // Enviar el formulario
-    form.submit();
+function enviarSolicitudesSeleccionadas(url, solicitudesSeleccionadas) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            // Manejar la respuesta del servidor si es necesario
+            window.location.reload(); // Recargar la página después de completar la acción
+        } else {
+            alert('Error al procesar las solicitudes.');
+        }
+    };
+    xhr.send(JSON.stringify(solicitudesSeleccionadas));
 }
