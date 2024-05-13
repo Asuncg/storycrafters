@@ -11718,6 +11718,6 @@ a[data-toggle="collapse"] {
 .input-group-icon .toggle-password {
     position: absolute;
     right: 25px;
-    top: calc(50% - 0.1em);
+    top: calc(58% - 0.1em);
     cursor: pointer;
 }

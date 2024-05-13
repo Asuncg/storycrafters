@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Registration and Login System</title>
@@ -11,6 +11,7 @@
     <script src="/js/registro.js"></script>
 
 </head>
+
 <body>
 <div class="container p-4 p-md-5 pt-5">
     <div class="row justify-content-md-center">
@@ -30,87 +31,67 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form class="row g-3" method="post" role="form" th:action="@{/registro/save}" th:object="${usuario}">
+                    <form class="row g-3" id="registrationForm" method="post" role="form"
+                          th:action="@{/registro/save}" th:object="${usuario}">
                         <div class="col-md-6 form-group mb-3">
                             <label class="form-label">Nombre *</label>
-                            <label for="firstName"></label><input
-                                    class="form-control"
-                                    id="firstName"
-                                    name="firstName"
-                                    placeholder="Indique su nombre"
-                                    th:field="*{firstName}"
-                                    type="text"
-                                    required
-                            />
+                            <label for="firstName"></label><input class="form-control" id="firstName"
+                                                                  name="firstName" placeholder="Indique su nombre"
+                                                                  th:field="*{firstName}"
+                                                                  type="text" required/>
                             <p th:errors="*{firstName}" class="text-danger"
                                th:if="${#fields.hasErrors('firstName')}"></p>
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
                             <label class="form-label">Apellidos</label>
-                            <label for="lastName"></label><input
-                                    class="form-control"
-                                    id="lastName"
-                                    name="lastName"
-                                    placeholder="Indique sus apellidos"
-                                    th:field="*{lastName}"
-                                    type="text"
-                            />
+                            <label for="lastName"></label><input class="form-control" id="lastName"
+                                                                 name="lastName" placeholder="Indique sus apellidos"
+                                                                 th:field="*{lastName}"
+                                                                 type="text"/>
                             <p th:errors="*{lastName}" class="text-danger"
                                th:if="${#fields.hasErrors('lastName')}"></p>
                         </div>
 
                         <div class="col-md-12 form-group mb-3">
                             <label class="form-label">Email *</label>
-                            <label for="email"></label><input
-                                    class="form-control"
-                                    id="email"
-                                    name="email"
-                                    placeholder="Indique su email"
-                                    th:field="*{email}"
-                                    type="email"
-                                    required
-                            />
+                            <label for="email"></label><input class="form-control" id="email" name="email"
+                                                              placeholder="Indique su email" th:field="*{email}"
+                                                              type="email" required/>
                             <p th:errors="*{email}" class="text-danger"
                                th:if="${#fields.hasErrors('email')}"></p>
                         </div>
 
-                        <div class="col-md-6 form-group mb-3 input-group-icon">
+                        <div class="col-md-6 form-group mb-3">
                             <label class="form-label">Password *</label>
-                            <label for="password"></label><input
-                                    class="form-control"
-                                    id="password"
-                                    name="password"
-                                    placeholder="Indique su contraseña"
-                                    th:field="*{password}"
-                                    type="password"
-                                    required
-                            />
-                            <span class="input-group-append">
-                                <i class="bi bi-eye toggle-password" id="togglePassword" onclick="togglePassword('password')"></i>
-                            </span>
-                            <p th:errors="*{password}" class="text-danger"
-                               th:if="${#fields.hasErrors('password')}"></p>
+                            <div class="input-group mb-3">
+                                <input class="form-control" id="password" name="password"
+                                       placeholder="Indique su contraseña" th:field="*{password}" type="password"
+                                       required/>
+                                <span class="input-group-text">
+            <i class="bi bi-eye toggle-password" id="togglePassword"
+               onclick="togglePassword('password')"></i>
+        </span>
+                            </div>
+                            <div class="invalid-feedback" id="passwordLengthError"></div>
                         </div>
 
-                        <div class="col-md-6 form-group mb-3 input-group-icon">
+
+                        <div class="col-md-6 form-group mb-3 input-group">
                             <label class="form-label">Confirmar Password *</label>
-                            <label for="confirmPassword">l</label><input
-                                    class="form-control"
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    placeholder="Confirme su contraseña"
-                                    type="password"
-                                    required
-                            />
-                            <span class="input-group-append">
-                                <i class="bi bi-eye toggle-password" id="toggleConfirmPassword" onclick="togglePassword('confirmPassword')"></i>
-                            </span>
-                            <p id="passwordMatchError" class="text-danger"></p>
+                            <div class="input-group mb-3">
+                                <input class="form-control" id="confirmPassword" name="confirmPassword"
+                                       placeholder="Confirme su contraseña" type="password" required
+                                       oninput="validarCoincidenciaContrasena()"/>
+                                <span class="input-group-text">
+                                    <i class="bi bi-eye toggle-password" id="toggleConfirmPassword"
+                                       onclick="togglePassword('confirmPassword')"></i>
+                                </span>
+                            </div>
+                            <div class="invalid-feedback" id="passwordMatchError"></div>
                         </div>
-
                         <div class="col-md-12 form-group">
-                            <button class="btn btn-primary" type="submit">Registrarse</button>
+                            <button class="btn btn-primary" type="submit" disabled="disabled">Registrarse</button>
                             <span>Ya tienes una cuenta? <a th:href="@{/login}">Entra aquí</a></span>
                         </div>
                     </form>
@@ -119,9 +100,12 @@
         </div>
     </div>
 </div>
+
 <script src="/js/jquery.min.js"></script>
 <script src="/js/popper.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/main.js"></script>
+
 </body>
+
 </html>
