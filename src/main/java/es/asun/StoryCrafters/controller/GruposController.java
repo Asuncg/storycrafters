@@ -4,6 +4,7 @@ import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.RelatoGrupo;
 import es.asun.StoryCrafters.entity.Solicitud;
 import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.model.EstadisticasDto;
 import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
@@ -43,6 +44,8 @@ public class GruposController {
 
     @Autowired
     SolicitudService solicitudService;
+
+    @Autowired EstadisticasService estadisticasService;
 
     private static final String ERROR_VIEW = "views/error/error";
     private static final String INDEX_VIEW = "index";
@@ -426,6 +429,34 @@ public class GruposController {
         solicitudService.gestionarSolicitud(solicitud);
 
         return "redirect:/grupos/ver-grupo-gestor/" + solicitud.getGrupo().getId();
+    }
+
+    @GetMapping("/estadisticas-grupo/{grupoId}")
+    public String verEstadisticasGrupo(@PathVariable("grupoId") String grupoId, Model model) {
+        Usuario usuario = AuthUtils.getAuthUser(userService);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(Integer.parseInt(grupoId));
+
+        if (!grupoValido(grupoOptional, usuario)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+        }
+
+        Grupo grupo = grupoOptional.get();
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+        List<RelatoGrupo> relatosAprobados = new ArrayList<>();
+        for (RelatoGrupo relato : listaRelatosGrupo) {
+            int estado = relato.getEstado();
+            if (estado == ESTADO_APROBADO) {
+                relatosAprobados.add(relato);
+            }
+        }
+
+        EstadisticasDto estadisticasDto = estadisticasService.calcularEstadisticasGrupo(grupo, relatosAprobados);
+        model.addAttribute("grupo", grupo);
+        model.addAttribute("estadisticas", estadisticasDto);
+        model.addAttribute("content", "views/grupos/estadisticas-grupo");
+        return INDEX_VIEW;
     }
 
     private Boolean grupoValido(Optional<Grupo> grupoOptional, Usuario usuario) {

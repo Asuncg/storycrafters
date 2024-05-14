@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
+import static es.asun.StoryCrafters.utilidades.Constantes.ESTADO_APROBADO;
+
 @Getter
 @Setter
 @Entity
@@ -62,7 +64,7 @@ public class RelatoGrupo {
     // Método para generar la fecha de publicación automáticamente
     @PreUpdate
     private void preUpdate() {
-        if (this.estado == 2 && this.fechaPublicacion == null) {
+        if (this.estado == ESTADO_APROBADO && this.fechaPublicacion == null) {
             this.fechaPublicacion = new Date();
         }
     }

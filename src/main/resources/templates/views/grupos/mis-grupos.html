@@ -52,6 +52,7 @@
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" data-target="#agregarUsuariosModal" th:data-group-id="${grupo.id}" onclick="openInvitationModal(this)">Invitar Usuarios</a>
+                            <a class="dropdown-item"  href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/estadisticas-grupo/' + ${grupo.id}}">Estadísticas</a>
                             <a class="dropdown-item"  href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/editar-grupo/' + ${grupo.id}}">Editar</a>
                             <a class="dropdown-item"  href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" th:data-target="'#eliminarGrupoModal_' + ${grupo.id}">Eliminar</a>
                             <a class="dropdown-item abandonar-grupo-btn"  href="#" th:if="${grupo.usuario.id ne idUsuarioActual}" data-toggle="modal" data-target="#abandonarGrupoModal" th:data-group-id="${grupo.id}" id="abandonarGrupoBtns">Abandonar Grupo</a>

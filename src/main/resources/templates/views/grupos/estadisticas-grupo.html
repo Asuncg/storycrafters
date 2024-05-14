@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Estadísticas del Grupo</h3>
+            <div class="estadistica-item">
+                <h5>Número de Usuarios:</h5>
+                <p th:text="${estadisticas.numeroUsuarios}"></p>
+            </div>
+            <div class="estadistica-item">
+                <h5>Número de Relatos Aprobados:</h5>
+                <p th:text="${estadisticas.numeroRelatosPublicados}"></p>
+            </div>
+            <div class="estadistica-item">
+                <h5>Relatos por Categoría:</h5>
+                <ul>
+                    <li th:each="categoria : ${estadisticas.relatosPorCategoria}">
+                        <span th:text="${categoria.key}"></span>: <span th:text="${categoria.value}"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="estadistica-item">
+                <h5>Relatos por Usuario:</h5>
+                <ul>
+                    <li th:each="usuario : ${estadisticas.relatosPorUsuario}">
+                        <span th:text="${usuario.key}"></span>: <span th:text="${usuario.value}"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="estadistica-item">
+                <h5>Relatos Enviados el Último Mes:</h5>
+                <p th:text="${estadisticas.relatosPublicadosUltimoMes}"></p>
+            </div>
+        </div>
+    </div>
+</div>
