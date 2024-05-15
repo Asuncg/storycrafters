@@ -5,6 +5,7 @@ import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -16,5 +17,6 @@ public interface UserService {
 
     void updateUser(UserUpdateDto user);
 
+    Optional<Usuario> findUserById(int id);
 
 }

@@ -29,12 +29,12 @@
 
                 </div>
                 <div class="col-sm-5" th:if="${grupo.usuario.id eq idUsuarioActual}">
-                <a th:href="@{'/grupos/ver-grupo-gestor/' + ${grupo.id}}">
+                <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/publicaciones'}">
                     <div th:text="${grupo.nombre}">Nombre de Grupo</div>
                 </a>
                 </div>
                 <div class="col-sm-5" th:if="${grupo.usuario.id ne idUsuarioActual}">
-                    <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id}}">
+                    <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/publicaciones'}">
                         <div th:text="${grupo.nombre}">Nombre de Grupo</div>
                     </a>
                 </div>

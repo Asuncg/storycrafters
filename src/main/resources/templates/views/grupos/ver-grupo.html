@@ -9,96 +9,41 @@
 </header>
 <div class="nav-scroller py-1 mb-3 border-bottom nav-grupos">
     <nav class="nav nav-underline justify-content-between">
-        <a class="nav-item nav-link link-body-emphasis active" href="#" onclick="mostrarPestana('publicaciones')">Publicaciones</a>
-        <a class="nav-item nav-link link-body-emphasis" href="#" onclick="mostrarPestana('usuarios')">Usuarios</a>
-        <a class="nav-item nav-link link-body-emphasis" href="#" onclick="mostrarPestana('mispublicaciones')">Mis publicaciones</a>
-        <a class="nav-item nav-link link-body-emphasis" href="#">Favoritos</a>
+        <th:block th:include="fragments/navgrupo.html :: nav"></th:block>
     </nav>
 </div>
 <div class="container">
     <!-- Contenido de las pestañas -->
-    <div id="publicaciones" class="pestana">
-        <div class="col-md-12">
-            <div th:if="${#lists.isEmpty(listaRelatosAprobados)}" class="col-sm-auto text-center" role="alert">
-                <h2>Aquí no hay nada...</h2>
-                <img src="/images/no-content.png" class="img-fluid">
-            </div>
-            <div th:if="${not #lists.isEmpty(listaRelatosAprobados)}" class="row" id="relatos"
-                 style="display: flex; flex-wrap: wrap;">
-                <th:block th:each="relato : ${listaRelatosAprobados}">
-                    <!-- Tarjeta de relato aprobado -->
-                    <div class="col-md-4 mb-4" th:id="'relato-' + ${relato.id}">
-                        <a th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}">
-                            <div class="card card-relatos d-flex">
-                                <img class="card-img-top" th:src="${relato.imagen.url}" alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title"><a th:utext="${relato.titulo}"
-                                                              th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}"></a>
-                                    </h5>
-                                </div>
+
+    <div class="col-md-12">
+        <div th:if="${#lists.isEmpty(listaRelatosAprobados)}" class="col-sm-auto text-center" role="alert">
+            <h2>Aquí no hay nada...</h2>
+            <img src="/images/no-content.png" class="img-fluid">
+        </div>
+        <div th:if="${not #lists.isEmpty(listaRelatosAprobados)}" class="row" id="relatos"
+             style="display: flex; flex-wrap: wrap;">
+            <th:block th:each="relato : ${listaRelatosAprobados}">
+                <!-- Tarjeta de relato aprobado -->
+                <div class="col-md-4 mb-4" th:id="'relato-' + ${relato.id}">
+                    <a th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}">
+                        <div class="card card-relatos d-flex">
+                            <img class="card-img-top" th:src="${relato.imagen.url}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title"><a th:utext="${relato.titulo}"
+                                                          th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}"></a>
+                                </h5>
+                                <!-- Agregar aquí cualquier otra información del relato que desees mostrar -->
                             </div>
-                        </a>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-    </div>
-    <div id="usuarios" class="pestana" style="display: none;">
-        <div class="row">
-            <div class="col-md-12">
-                <!-- Encabezados de las columnas -->
-                <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
-                    <div class="col-sm-4 text-left">Nombre de usuario</div>
-                    <div class="col-sm-4 text-left">Apellidos</div>
-                    <div class="col-sm-3 text-left">Relatos publicados</div>
-                    <div class="col-sm-1">Opciones</div>
-                </div>
-                <!-- Usuarios-->
-                <div th:each="usuario : ${grupo.usuarios}"
-                     class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="col-sm-4">
-
-                        <div th:text="${usuario.firstName}"></div>
-
-                    </div>
-                    <div class="col-sm-4">
-
-                        <div th:text="${usuario.lastName}"></div>
-
-                    </div>
-                    <div class="col-sm-3 text-left">5 Relatos</div>
-                    <div class="col-sm-1 text-center">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="mispublicaciones" class="pestana" style="display: none;">
-        <div class="row">
-            <div class="col-md-12">
-                <!-- Encabezados de las columnas -->
-                <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
-                    <div class="col-sm-10 text-left">Título relato</div>
-                    <div class="col-sm-2 text-left">Estado</div>
-                </div>
-                <!-- Publicaciones del usuario -->
-                <div th:each="publicacion : ${publicacionesUsuario}" class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="col-sm-10">
-                        <a th:href="@{'/grupos/ver-relato-revisado/' + ${publicacion.id}}">
-                            <div th:utext="${publicacion.titulo}"></div>
-                        </a>
-                    </div>
-                    <div class="col-sm-2 text-left">
-                        <div th:switch="${publicacion.estado}">
-                            <span th:case="0">Rechazada</span>
-                            <span th:case="1">Pendiente</span>
-                            <span th:case="2">Aprobada</span>
                         </div>
-                    </div>
+                    </a>
                 </div>
-            </div>
+            </th:block>
         </div>
     </div>
 </div>
+
+
+
+
+
 

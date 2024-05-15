@@ -46,10 +46,14 @@ public class SolicitudServiceImpl implements SolicitudService {
         try {
             for (Integer solicitudId : solicitudIds) {
                 Solicitud solicitud = buscarSolicitudPorId(solicitudId);
+
                 Usuario usuario = solicitud.getUsuario();
+
                 Grupo grupo = solicitud.getGrupo();
                 grupo.getUsuarios().add(usuario);
+
                 grupoService.guardarGrupo(grupo);
+
                 eliminarSolicitud(solicitud);
             }
         } catch (Exception e) {
