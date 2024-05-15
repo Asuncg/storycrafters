@@ -155,8 +155,9 @@
             <div class="col-md-12">
                 <!-- Botones para aprobar y rechazar todas las solicitudes -->
                 <div class="mb-3">
-                    <button class="btn btn-success" onclick="aceptarSeleccionadas()">Aceptar Seleccionadas</button>
-                    <button class="btn btn-danger" onclick="rechazarSeleccionadas()">Rechazar Selecciondas</button>
+                    <button class="btn btn-success" onclick="aceptarSeleccionadas('aceptar')">Aceptar Seleccionadas</button>
+                    <button class="btn btn-danger" onclick="rechazarSeleccionadas('rechazar')">Rechazar Selecciondas</button>
+                    <input type="hidden" id="grupoId" th:value="${grupo.id}">
                 </div>
 
                 <!-- Encabezados de las columnas -->
@@ -171,7 +172,7 @@
                 <!-- Solicitudes de usuarios-->
                 <div th:each="solicitud : ${solicitudesPendientes}" class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="col-sm-1 text-center">
-                        <input type="checkbox" name="solicitud" value="[ID_DEL_RELATO]"/>
+                        <input type="checkbox" name="solicitud" th:value="${solicitud.id}"/>
                     </div>
                     <div class="col-sm-4">
                         <a href="#">

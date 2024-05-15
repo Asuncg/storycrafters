@@ -109,7 +109,6 @@ function mostrarPestana(idPestana) {
 function toggleSeleccionarTodos() {
     var checkboxes = document.querySelectorAll('input[name="solicitud"]');
     var checkboxSeleccionarTodos = document.getElementById('checkboxSeleccionarTodos');
-
     checkboxes.forEach(function(checkbox) {
         checkbox.checked = checkboxSeleccionarTodos.checked;
     });
@@ -117,8 +116,9 @@ function toggleSeleccionarTodos() {
 
 function aceptarSeleccionadas() {
     var solicitudesSeleccionadas = obtenerSolicitudesSeleccionadas();
+    var grupoId = document.getElementById('grupoId').value;
     if (solicitudesSeleccionadas.length > 0) {
-        enviarSolicitudesSeleccionadas('/grupos/aceptar-solicitudes', solicitudesSeleccionadas);
+        enviarSolicitudesSeleccionadas(solicitudesSeleccionadas, 'aceptar', grupoId);
     } else {
         alert('No se han seleccionado solicitudes para aceptar.');
     }
@@ -126,8 +126,9 @@ function aceptarSeleccionadas() {
 
 function rechazarSeleccionadas() {
     var solicitudesSeleccionadas = obtenerSolicitudesSeleccionadas();
+    var grupoId = document.getElementById('grupoId').value;
     if (solicitudesSeleccionadas.length > 0) {
-        enviarSolicitudesSeleccionadas('/grupos/rechazar-solicitudes', solicitudesSeleccionadas);
+        enviarSolicitudesSeleccionadas(solicitudesSeleccionadas, 'rechazar', grupoId);
     } else {
         alert('No se han seleccionado solicitudes para rechazar.');
     }
@@ -142,17 +143,29 @@ function obtenerSolicitudesSeleccionadas() {
     return solicitudesSeleccionadas;
 }
 
-function enviarSolicitudesSeleccionadas(url, solicitudesSeleccionadas) {
+function enviarSolicitudesSeleccionadas(solicitudesSeleccionadas, accion, grupoId) {
+    var data = {
+        accion: accion,
+        grupoId: grupoId,
+        solicitudIds: solicitudesSeleccionadas
+    };
+
+    // Crear la solicitud XMLHttpRequest
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
+    xhr.open('POST', '/grupos/gestionar-solicitudes', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
+    xhr.onload = function () {
         if (xhr.status === 200) {
-            // Manejar la respuesta del servidor si es necesario
-            window.location.reload(); // Recargar la página después de completar la acción
+            // Remover las solicitudes gestionadas de la interfaz
+            solicitudesSeleccionadas.forEach(function(solicitudId) {
+                var solicitudElement = document.querySelector('input[name="solicitud"][value="' + solicitudId + '"]').closest('.list-group-item');
+                solicitudElement.remove();
+            });
         } else {
-            alert('Error al procesar las solicitudes.');
+            alert('Error al procesar las solicitudes: ' + xhr.responseText);
         }
     };
-    xhr.send(JSON.stringify(solicitudesSeleccionadas));
+    // Enviar los datos convertidos a JSON
+    xhr.send(JSON.stringify(data));
 }
+

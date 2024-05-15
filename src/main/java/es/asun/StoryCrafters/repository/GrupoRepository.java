@@ -13,5 +13,7 @@ public interface GrupoRepository extends JpaRepository<Grupo, Integer> {
     List<Grupo> findAllByUsuario(Usuario usuario);
 
     Optional<Grupo> findByCodigoAcceso(String codigoAcceso);
+
+
 }
 

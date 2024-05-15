@@ -14,7 +14,10 @@ import es.asun.StoryCrafters.utilidades.CodigoIngresoGenerator;
 import es.asun.StoryCrafters.utilidades.Constantes;
 import es.asun.StoryCrafters.utilidades.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -417,7 +420,7 @@ public class GruposController {
         grupo.getUsuarios().add(usuario);
 
         grupoService.guardarGrupo(grupo);
-        solicitudService.gestionarSolicitud(solicitud);
+        solicitudService.eliminarSolicitud(solicitud);
 
         return "redirect:/grupos/ver-grupo-gestor/" + grupo.getId();
     }
@@ -426,10 +429,39 @@ public class GruposController {
     public String rechazarSolicitudGrupo(@PathVariable String solicitudId) {
 
         Solicitud solicitud = solicitudService.buscarSolicitudPorId(Integer.parseInt(solicitudId));
-        solicitudService.gestionarSolicitud(solicitud);
+        solicitudService.eliminarSolicitud(solicitud);
 
         return "redirect:/grupos/ver-grupo-gestor/" + solicitud.getGrupo().getId();
     }
+
+    @PostMapping("/gestionar-solicitudes")
+    @ResponseBody
+    public ResponseEntity<?> gestionarSolicitudes(@RequestBody Map<String, Object> solicitudData) {
+        String grupoId = solicitudData.get("grupoId").toString();
+        String accion = solicitudData.get("accion").toString();
+        List<Integer> solicitudIds = convertirIdsSolicitud(solicitudData.get("solicitudIds"));
+
+        Usuario usuario = AuthUtils.getAuthUser(userService);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(Integer.parseInt(grupoId));
+        if (!grupoValido(grupoOptional, usuario)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acceso denegado");
+        }
+
+        try {
+            if (accion.equals("aceptar")) {
+                solicitudService.aceptarSolicitudes(grupoId, solicitudIds);
+            } else {
+                solicitudService.eliminarSolicitudes(grupoId, solicitudIds);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al gestionar las solicitudes");
+        }
+
+        return ResponseEntity.ok("Solicitudes gestionadas correctamente");
+    }
+
+
 
     @GetMapping("/estadisticas-grupo/{grupoId}")
     public String verEstadisticasGrupo(@PathVariable("grupoId") String grupoId, Model model) {
@@ -465,6 +497,22 @@ public class GruposController {
         }
         Grupo grupo = grupoOptional.get();
         return usuario.getId() == grupo.getUsuario().getId();
+    }
+
+    private List<Integer> convertirIdsSolicitud(Object solicitudIdsObj) {
+        List<Integer> solicitudIds = new ArrayList<>();
+
+        if (solicitudIdsObj instanceof List<?>) {
+            for (Object id : (List<?>) solicitudIdsObj) {
+                if (id instanceof Integer) {
+                    solicitudIds.add((Integer) id);
+                } else if (id instanceof String) {
+                    solicitudIds.add(Integer.parseInt((String) id));
+                }
+            }
+        }
+
+        return solicitudIds;
     }
 }
 
