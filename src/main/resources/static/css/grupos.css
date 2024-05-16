@@ -7,3 +7,15 @@
     color: #fff;
     font-size: 16px;
 }
+
+.estado-aprobado {
+    color: #59853c;
+}
+
+.estado-pendiente {
+    color: #d5882c;
+}
+
+.estado-rechazado {
+    color: #810000;
+}

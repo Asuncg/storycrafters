@@ -39,6 +39,9 @@ public class Mappings {
         relatoGrupoDto.setCategorias(relatoGrupo.getCategorias());
         relatoGrupoDto.setFirmaAutor(relatoGrupo.getFirmaAutor());
         relatoGrupoDto.setFechaPublicacion(relatoGrupo.getFechaPublicacion());
+        relatoGrupoDto.setCalificacion(relatoGrupo.getCalificacion());
+        relatoGrupoDto.setFeedback(relatoGrupo.getFeedback());
+        relatoGrupoDto.setIdUsuario(relatoGrupo.getRelato().getUsuario().getId());
 
         return relatoGrupoDto;
     }

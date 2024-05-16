@@ -66,117 +66,36 @@ function sendInvitations() {
     xhr.send(JSON.stringify(data));
 }
 
-function mostrarPestana(idPestana) {
-    // Ocultar todas las pestañas
-    var pestanas = document.querySelectorAll('.pestana');
-    pestanas.forEach(function (elemento) {
-        elemento.style.display = 'none';
-    });
-
-    document.getElementById(idPestana).style.display = 'block';
-
-    if (idPestana === 'aRevisar') {
-        var relatosPendientes = document.querySelectorAll('.list-group-item');
-
-        relatosPendientes.forEach(function (elemento) {
-            if (elemento.querySelector('.col-sm-4').innerText !== 'Pendiente') {
-                elemento.style.display = 'none';
-            } else {
-                elemento.style.display = 'flex';
-            }
-        });
-    }
+function setAprobado(aprobado) {
+    document.getElementById('aprobado').value = aprobado;
 }
+
 
 function toggleSeleccionarTodos() {
-    var checkboxes = document.querySelectorAll('input[name="solicitud"]');
-    var checkboxSeleccionarTodos = document.getElementById('checkboxSeleccionarTodos');
-    checkboxes.forEach(function (checkbox) {
-        checkbox.checked = checkboxSeleccionarTodos.checked;
+    var checkboxes = document.querySelectorAll('input[name="solicitudIds"]');
+    var seleccionarTodos = document.getElementById('checkboxSeleccionarTodos');
+    checkboxes.forEach(function(checkbox) {
+        checkbox.checked = seleccionarTodos.checked;
     });
 }
 
-function mostrarModalMensaje(mensaje) {
-    document.getElementById('messageModalBody').textContent = mensaje;
-    var modal = new bootstrap.Modal(document.getElementById('messageModal'));
-    modal.show();
-}
-
-function aceptarSeleccionadas() {
-    var solicitudesSeleccionadas = obtenerSolicitudesSeleccionadas();
-    var grupoId = document.getElementById('grupoId').value;
-    if (solicitudesSeleccionadas.length > 0) {
-        enviarSolicitudesSeleccionadas(solicitudesSeleccionadas, 'aceptar', grupoId);
-    } else {
-        mostrarModalMensaje('No se han seleccionado solicitudes para aceptar.');
-    }
-}
-
-function rechazarSeleccionadas() {
-    var solicitudesSeleccionadas = obtenerSolicitudesSeleccionadas();
-    var grupoId = document.getElementById('grupoId').value;
-    if (solicitudesSeleccionadas.length > 0) {
-        enviarSolicitudesSeleccionadas(solicitudesSeleccionadas, 'rechazar', grupoId);
-    } else {
-        mostrarModalMensaje('No se han seleccionado solicitudes para rechazar.');
-    }
-}
-
-function obtenerSolicitudesSeleccionadas() {
-    var checkboxes = document.querySelectorAll('input[name="solicitud"]:checked');
-    var solicitudesSeleccionadas = [];
-    checkboxes.forEach(function (checkbox) {
-        solicitudesSeleccionadas.push(checkbox.value);
-    });
-    return solicitudesSeleccionadas;
-}
-
-function enviarSolicitudesSeleccionadas(solicitudesSeleccionadas, accion, grupoId) {
-    var data = {
-        accion: accion,
-        grupoId: grupoId,
-        solicitudIds: solicitudesSeleccionadas
-    };
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/grupos/gestionar-solicitudes', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-
-            mostrarModalMensaje(xhr.responseText);
-
-            solicitudesSeleccionadas.forEach(function (solicitudId) {
-                var solicitudElement = document.querySelector('input[name="solicitud"][value="' + solicitudId + '"]').closest('.list-group-item');
-                solicitudElement.remove();
-            });
-        } else {
-            mostrarModalMensaje(xhr.responseText);
-        }
-    };
-    xhr.send(JSON.stringify(data));
-}
-
-//SACAR USUARIO DE UN GRUPO
 function confirmarEliminacionUsuario(link) {
     var grupoId = link.getAttribute('data-grupoId');
     var usuarioId = link.getAttribute('data-usuarioId');
 
-    var mensaje = '¿Estás seguro de que deseas eliminar a este usuario del grupo? Todo el contenido publicado de este usuario no se perderá y seguirá visible para el resto del grupo.';
-
-    // Mostrar el modal
-    document.getElementById('confirmDeleteModalBody').textContent = mensaje;
+    document.getElementById('confirmDeleteModalBody').textContent = '¿Estás seguro de que deseas eliminar a este usuario del grupo? Todo el contenido publicado de este usuario no se perderá y seguirá visible para el resto del grupo.';
     var modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
     modal.show();
 
-    // Al hacer clic en el botón de confirmar
     var confirmButton = document.getElementById('confirmButton');
     confirmButton.onclick = function () {
-        eliminarUsuarioDelGrupo(grupoId, usuarioId);
+        document.getElementById('deleteUserFormGrupoId').value = grupoId;
+        document.getElementById('deleteUserFormUsuarioId').value = usuarioId;
+
+        document.getElementById('deleteUserForm').submit();
         modal.hide();
     };
 
-    // Al hacer clic en el botón de cancelar o fuera del modal, cerrar el modal
     var cancelButton = document.getElementById('cancelButton');
     cancelButton.onclick = function () {
         modal.hide();
@@ -186,30 +105,6 @@ function confirmarEliminacionUsuario(link) {
             modal.hide();
         }
     };
-}
-
-function eliminarUsuarioDelGrupo(grupoId, usuarioId) {
-    var data = {
-        grupoId: grupoId,
-        usuarioId: usuarioId
-    };
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/grupos/eliminar-usuario', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            mostrarModalMensaje('Usuario eliminado del grupo exitosamente.');
-            var usuarioElementId = 'usuario_' + usuarioId; // Generar el id del elemento de usuario
-            var usuarioElement = document.getElementById(usuarioElementId); // Obtener el elemento de usuario por su id
-            if (usuarioElement) {
-                usuarioElement.remove(); // Eliminar el elemento de usuario del DOM
-            }
-        } else {
-            mostrarModalMensaje('Error al eliminar usuario del grupo: ' + xhr.responseText);
-        }
-    };
-    xhr.send(JSON.stringify(data));
 }
 
 

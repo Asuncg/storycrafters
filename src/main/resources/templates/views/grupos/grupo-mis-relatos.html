@@ -17,19 +17,21 @@
         <div class="col-md-12">
             <!-- Encabezados de las columnas -->
             <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
-                <div class="col-sm-6 text-left">Título del Relato</div>
-                <div class="col-sm-6 text-center">Nombre y Apellidos del Autor</div>
+                <div class="col-sm-8 text-left">Título del Relato</div>
+                <div class="col-sm-4 text-center">Estado</div>
             </div>
             <!-- Relatos Pendientes -->
-            <div th:each="relatoGrupo : ${listaRelatosRechazados}"
+            <div th:each="relatoUsuarioGrupo : ${listaRelatosUsuario}"
                  class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="col-sm-6">
-                    <a th:href="@{'/grupos/ver-relato-grupo/' + ${relatoGrupo.id}}">
-                        <div th:utext="${relatoGrupo.titulo}"></div>
+                <div class="col-sm-8">
+                    <a th:href="@{'/grupos/ver-relato-grupo/' + ${relatoUsuarioGrupo.id}}">
+                        <div th:utext="${relatoUsuarioGrupo.titulo}"></div>
                     </a>
                 </div>
-                <div class="col-sm-6 text-center">
-                    <div th:text="${relatoGrupo.relato.usuario.firstName} + ' ' + ${relatoGrupo.relato.usuario.lastName}"></div>
+                <div class="col-sm-4 text-center">
+                    <div th:class="${relatoUsuarioGrupo.estado == 0 ? 'estado-aprobado' : (relatoUsuarioGrupo.estado == 1 ? 'estado-pendiente' : 'estado-rechazado')}">
+                        <div class="font-weight-bold" th:text="${relatoUsuarioGrupo.estado == 0 ? 'PUBLICADO' : (relatoUsuarioGrupo.estado == 1 ? 'PENDIENTE DE REVISIÓN' : 'RECHAZADO')}"></div>
+                    </div>
                 </div>
             </div>
         </div>

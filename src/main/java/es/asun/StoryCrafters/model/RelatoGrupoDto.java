@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+
 @Getter
 @Setter
 public class RelatoGrupoDto {
@@ -17,5 +18,9 @@ public class RelatoGrupoDto {
     private List<Categoria> categorias;
     private String firmaAutor;
     private Date fechaPublicacion;
+    private double calificacion;
+    private String feedback;
+    private int idUsuario;
+
 
 }

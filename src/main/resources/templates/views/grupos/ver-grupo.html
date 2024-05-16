@@ -13,8 +13,6 @@
     </nav>
 </div>
 <div class="container">
-    <!-- Contenido de las pestañas -->
-
     <div class="col-md-12">
         <div th:if="${#lists.isEmpty(listaRelatosAprobados)}" class="col-sm-auto text-center" role="alert">
             <h2>Aquí no hay nada...</h2>
@@ -23,7 +21,6 @@
         <div th:if="${not #lists.isEmpty(listaRelatosAprobados)}" class="row" id="relatos"
              style="display: flex; flex-wrap: wrap;">
             <th:block th:each="relato : ${listaRelatosAprobados}">
-                <!-- Tarjeta de relato aprobado -->
                 <div class="col-md-4 mb-4" th:id="'relato-' + ${relato.id}">
                     <a th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}">
                         <div class="card card-relatos d-flex">
@@ -32,7 +29,6 @@
                                 <h5 class="card-title"><a th:utext="${relato.titulo}"
                                                           th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}"></a>
                                 </h5>
-                                <!-- Agregar aquí cualquier otra información del relato que desees mostrar -->
                             </div>
                         </div>
                     </a>
