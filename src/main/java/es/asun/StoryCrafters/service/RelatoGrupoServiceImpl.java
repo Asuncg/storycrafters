@@ -1,6 +1,7 @@
 package es.asun.StoryCrafters.service;
 
 import es.asun.StoryCrafters.entity.Grupo;
+import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.RelatoGrupo;
 import es.asun.StoryCrafters.repository.RelatoGrupoRepository;
 import es.asun.StoryCrafters.utilidades.Constantes;
@@ -36,5 +37,10 @@ public class RelatoGrupoServiceImpl implements  RelatoGrupoService{
     public boolean existeRelatoEnviado(int idRelato, int idGrupo) {
         List<Integer> estados = Arrays.asList(Constantes.ESTADO_PENDIENTE, Constantes.ESTADO_APROBADO);
         return relatoGrupoRepository.existeRelatoEnviado(idRelato, idGrupo, estados);
+    }
+
+    @Override
+    public Optional<RelatoGrupo> findRelatoGrupoByRelatoAndGrupo(Relato relato, Grupo grupo) {
+        return relatoGrupoRepository.findByRelatoAndGrupo(relato, grupo);
     }
 }

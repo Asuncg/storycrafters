@@ -1,6 +1,7 @@
 package es.asun.StoryCrafters.service;
 
 import es.asun.StoryCrafters.entity.Grupo;
+import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.RelatoGrupo;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface RelatoGrupoService {
     void guardarRelatoGrupo(RelatoGrupo relatoGrupo);
 
     boolean existeRelatoEnviado(int idRelato, int idGrupo);
+
+    Optional<RelatoGrupo> findRelatoGrupoByRelatoAndGrupo(Relato relato, Grupo grupo);
 }

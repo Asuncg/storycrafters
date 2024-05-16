@@ -2,6 +2,7 @@ package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.exceptions.BusinessException;
+import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.RelatoDto;
 import es.asun.StoryCrafters.model.RelatoPreviewDto;
 import es.asun.StoryCrafters.service.*;
@@ -40,6 +41,7 @@ public class RelatoController {
 
     private static final String ERROR_VIEW = "views/error/error";
     private static final String INDEX_VIEW = "index";
+
     @GetMapping("/mis-relatos")
     public String misRelatos(Model model) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
@@ -212,32 +214,57 @@ public class RelatoController {
         int idRelato = Integer.parseInt(request.get("idRelato").toString());
         int idGrupo = Integer.parseInt(request.get("idGrupo").toString());
 
-        // Comprobar si ya existe un relato con estado pendiente o aprobado para el grupo seleccionado
-        boolean relatoEnviado = relatoGrupoService.existeRelatoEnviado(idRelato, idGrupo);
-
-        if (relatoEnviado) {
-
-            BusinessException be = new BusinessException("esto falla...");
-            // Si ya existe un relato enviado, devolver un mensaje indicando que ya está enviado
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        //Comprobar si el relato y el grupo existen
         Optional<Relato> relatoOptional = relatoService.findRelatoByIdAndNotArchivado(idRelato);
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
 
-        if (relatoOptional.isEmpty()) {
+        if (relatoOptional.isEmpty() || grupoOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Relato relato = relatoOptional.get();
+        Grupo grupo = grupoOptional.get();
+        RelatoGrupo relatoGrupo = new RelatoGrupo();
 
-        Usuario usuario = AuthUtils.getAuthUser(userService);
+        //Comprobar si ya hay una copia del relato en enviada a ese grupo
+        Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoByRelatoAndGrupo(relato, grupo);
 
-        if (usuario.getId() != relato.getUsuario().getId()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (relatoGrupoOptional.isPresent()) {
+            relatoGrupo = relatoGrupoOptional.get();
+
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+
+            //Si existe, comprobar el estado: Aprobado o pendiente, y si es el autor o no del relato
+            if (relatoGrupo.getEstado() == 1 || relatoGrupo.getEstado() == 0 || usuario.getId() != relato.getUsuario().getId()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            relatoGrupo.setRelato(relato);
+            relatoGrupo.setTitulo(relato.getTitulo());
+            relatoGrupo.setTexto(relato.getTexto());
+            relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
+            relatoGrupo.setImagen(relato.getImagen());
+            relatoGrupo.setEstado(1);
+            relatoGrupo.setFeedback("");
+
+            // Crear nuevas instancias de las categorías y asociarlas al RelatoGrupo
+            List<Categoria> categorias = new ArrayList<>();
+            for (Categoria categoria : relato.getCategorias()) {
+                Categoria nuevaCategoria = new Categoria();
+                nuevaCategoria.setId(categoria.getId());
+                nuevaCategoria.setNombre(categoria.getNombre());
+                categorias.add(nuevaCategoria);
+            }
+            relatoGrupo.setCategorias(categorias);
+
+            relatoGrupoService.guardarRelatoGrupo(relatoGrupo);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
         }
 
-        RelatoGrupo relatoGrupo = new RelatoGrupo();
         relatoGrupo.setRelato(relato);
-
+        relatoGrupo.setGrupo(grupo);
         relatoGrupo.setTitulo(relato.getTitulo());
         relatoGrupo.setTexto(relato.getTexto());
         relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
@@ -253,15 +280,6 @@ public class RelatoController {
         }
         relatoGrupo.setCategorias(categorias);
 
-        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
-
-        if (grupoOptional.isPresent()) {
-            Grupo grupo = grupoOptional.get();
-            relatoGrupo.setGrupo(grupo);
-        } else {
-            // Manejar el caso en que el grupo no se encuentra
-
-        }
         relatoGrupoService.guardarRelatoGrupo(relatoGrupo);
 
         return new ResponseEntity<>(HttpStatus.OK);

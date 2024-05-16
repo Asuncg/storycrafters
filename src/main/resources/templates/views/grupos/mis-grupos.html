@@ -29,9 +29,9 @@
                     <i class="fa-solid fa-user fa-2xl" style="color: #106875;"></i>
                 </div>
                 <div class="col-sm-5" th:if="${grupo.usuario.id eq idUsuarioActual}">
-                <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/publicaciones'}">
-                    <div th:text="${grupo.nombre}">Nombre de Grupo</div>
-                </a>
+                    <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/publicaciones'}">
+                        <div th:text="${grupo.nombre}">Nombre de Grupo</div>
+                    </a>
                 </div>
                 <div class="col-sm-5" th:if="${grupo.usuario.id ne idUsuarioActual}">
                     <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/publicaciones'}">
@@ -61,7 +61,7 @@
                 </div>
                 <!-- Modal para confirmar la eliminación del grupo -->
                 <div class="modal fade" th:id="'eliminarGrupoModal_' + ${grupo.id}" tabindex="-1" role="dialog" aria-labelledby="'eliminarGrupoModalLabel_' + ${grupo.id}" aria-hidden="true">
-                     aria-hidden="true">
+                    aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
