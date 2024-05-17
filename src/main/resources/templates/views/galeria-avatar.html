@@ -1,19 +1,38 @@
-<style>
-    .avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        cursor: pointer;
-        margin: 5px;
-    }
-</style>
-<div class="container mt-3">
-    <h1 class="text-center">Avatar Gallery</h1>
+<div class="container">
     <div class="row">
-        <div class="col" th:each="imagen : ${imagenes}">
-                    <img th:src="${imagen.url}" class="img-fluid avatar" alt="Imagen" onclick="selectImage(this)">
-            <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" onclick="selectAvatar('https://via.placeholder.com/50')">
-            <!-- Agregar más imágenes aquí -->
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow h-100">
+                <div class="card-header text-center">
+                    <h1>Cambiar Avatar</h1>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Avatar actual del usuario -->
+                        <div class="col">
+                            <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid my-5 rounded-circle avatar">
+                        </div>
+                    </div>
+                    <!-- Galería de imágenes de avatar -->
+                    <div class="row mb-3">
+                        <div class="col text-center">
+                            <h4>Selecciona un nuevo avatar:</h4>
+                            <div class="avatar-gallery">
+                                <!-- Iterar sobre la lista de avatares -->
+                                <th:block th:each="avatar : ${listavatares}">
+                                    <img th:src="${avatar.url}"  class="avatar-thumbnail rounded-circle avatar">
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Botones para guardar o cancelar cambios -->
+                    <div class="row">
+                        <div class="col text-center">
+                            <a class="btn btn-primary mr-2" href="/user/profile" role="button">Cancelar Cambios</a>
+                            <button type="button" class="btn btn-success" id="guardarCambios">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

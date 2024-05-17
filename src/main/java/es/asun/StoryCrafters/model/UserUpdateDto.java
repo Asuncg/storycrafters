@@ -1,5 +1,6 @@
 package es.asun.StoryCrafters.model;
 
+import es.asun.StoryCrafters.entity.Avatar;
 import es.asun.StoryCrafters.entity.Usuario;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,9 +31,12 @@ public class UserUpdateDto {
     @Pattern(regexp = "^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\\s]+$")
     private String firmaAutor;
 
+    private Avatar avatar;
+
     public UserUpdateDto(Usuario usuario) {
         firstName = usuario.getFirstName();
         lastName = usuario.getLastName();
         firmaAutor = usuario.getFirmaAutor();
+        avatar = usuario.getAvatar();
     }
 }

@@ -5,8 +5,7 @@
                 <div class="row g-0">
                     <div class="col-md-12">
                         <div class="col-md-4 profile-custom text-center text-white">
-                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                                 alt="Avatar" class="img-fluid my-5">
+                            <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid my-5 rounded-circle">
                             <h5 th:text="${usuario.firstName} + ' ' + ${usuario.lastName}" ></h5>
                         </div>
                         <div class="card-body p-4">

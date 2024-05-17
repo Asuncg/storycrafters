@@ -11680,9 +11680,12 @@ a[data-toggle="collapse"] {
 }
 
 .profile-custom img {
-    width: 80px;
+    width: 100px;
 }
 
+.avatar {
+    width: 100px;
+}
 
 
 .started-col {

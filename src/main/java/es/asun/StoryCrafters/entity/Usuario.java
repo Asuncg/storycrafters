@@ -43,6 +43,9 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "grupo_id")
     )
     private List<Grupo> grupos;
-    public Usuario(String nombre, String password) {
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "id_avatar")
+    private Avatar avatar;
+
 }
