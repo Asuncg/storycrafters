@@ -41,8 +41,8 @@
                             </svg>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#">Ver sus relatos</a>
-                            <a class="dropdown-item" href="#" >Ver calificaciones</a>
+                            <a class="dropdown-item" href="#" th:href="@{'/grupos/relatos-usuario/' + ${grupo.id} + '/' + ${usuario.id} + '/relatos'}  ">Ver sus relatos</a>
+                            <a class="dropdown-item" href="#" th:href="@{'/grupos/relatos-usuario/' + ${grupo.id} + '/' + ${usuario.id} + '/calificaciones'}">Ver calificaciones</a>
                             <a class="dropdown-item" href="#" th:attr="data-grupoId=${grupo.id}, data-usuarioId=${usuario.id}" onclick="confirmarEliminacionUsuario(this)">Sacar de grupo</a>
                         </div>
                     </div>

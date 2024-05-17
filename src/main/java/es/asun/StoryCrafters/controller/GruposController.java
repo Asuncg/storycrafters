@@ -507,8 +507,59 @@ public class GruposController {
 
                 model.addAttribute("listaRelatosUsuario", listaRelatosUsuario);
                 model.addAttribute("grupo", grupo);
-                model.addAttribute("usuarioActual", usuarioActual);
+                model.addAttribute("idUsuarioActual", usuarioActual.getId());
                 model.addAttribute("content", "views/grupos/grupo-mis-relatos");
+                return INDEX_VIEW;
+
+            } else {
+                model.addAttribute("content", ERROR_VIEW);
+                return INDEX_VIEW;
+            }
+        } else {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+        }
+    }
+
+    @GetMapping("/relatos-usuario/{grupoId}/{usuarioId}/{opcion}")
+    public String verRelatosUsuarioGrupo(@PathVariable("grupoId") String grupoId, @PathVariable("usuarioId") String usuarioId, @PathVariable("opcion") String opcion, Model model) {
+        Usuario usuarioActual = AuthUtils.getAuthUser(userService);
+
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(Integer.parseInt(grupoId));
+        Grupo grupo;
+
+        if (grupoOptional.isPresent()) {
+
+            grupo = grupoOptional.get();
+
+            if (grupo.getUsuarios().contains(usuarioActual)) {
+                List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+
+                Optional<Usuario> usuarioOptional = userService.findUserById(Integer.parseInt(usuarioId));
+
+                if (usuarioOptional.isEmpty() ) {
+                    model.addAttribute("content", ERROR_VIEW);
+                    return INDEX_VIEW;
+                }
+
+                Usuario usuario = usuarioOptional.get();
+
+                List<RelatoGrupo> listaRelatosUsuario = listaRelatosGrupo.stream()
+                        .filter(relato -> relato.getRelato().getUsuario().equals(usuario) &&
+                                relato.getEstado() == ESTADO_APROBADO)
+                        .collect(Collectors.toList());
+
+                if (opcion.equals("relatos")) {
+                    model.addAttribute("content", "views/grupos/grupo-relatos-usuario");
+                } else if (opcion.equals("calificaciones")){
+                    model.addAttribute("content", "views/grupos/grupo-calificaciones-usuario");
+                } else {
+                    model.addAttribute("content", ERROR_VIEW);
+                }
+                model.addAttribute("listaRelatosUsuario", listaRelatosUsuario);
+                model.addAttribute("usuario", usuario);
+                model.addAttribute("grupo", grupo);
+                model.addAttribute("idUsuarioActual", usuarioActual.getId());
                 return INDEX_VIEW;
 
             } else {

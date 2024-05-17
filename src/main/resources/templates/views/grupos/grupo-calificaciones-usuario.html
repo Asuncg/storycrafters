@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="/css/grupos.css">
+<script src="/js/grupos.js"></script>
+<header class="border-bottom lh-1 py-3">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+        <div class="col-sm-auto text-center">
+            <h1 th:text="${usuario.firmaAutor}"></h1>
+        </div>
+    </div>
+</header>
+<div class="nav-scroller py-1 mb-3 border-bottom nav-grupos">
+    <nav class="nav nav-underline justify-content-between">
+        <th:block th:include="fragments/navgrupo.html :: nav"></th:block>
+    </nav>
+</div>
+<div class="container">
+    <div class="row">
+    </div>
+    <div class="col-md-12">
+        <h5 class="font-weight-bold text-uppercase">Relatos de: <span th:text="${usuario.firstName}"></span><span
+                th:text="${usuario.lastName}"></span></h5>
+        <hr class="mt-0 mb-4">
+        <div class="col-md-12">
+            <form th:action="@{/grupos/calcular-media}" method="post">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-primary" onclick="calcularMedia()">Calcular Media de Notas
+                    </button>
+                    <h5 class="font-weight-bold text-uppercase">Nota media: <span id="media-calificacion"></span></h5>
+                </div>
+
+                <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
+                    <div class="col-sm-1 text-center">
+                        <input type="checkbox" id="checkboxSeleccionarTodosLosRelatos" onchange="toggleSeleccionarTodosLosRelatos()">
+                    </div>
+                    <div class="col-sm-5 text-left">Título</div>
+                    <div class="col-sm-4 text-center">
+                        Fecha de publicación
+                    </div>
+                    <div class="col-sm-2 text-left">Calificación</div>
+                </div>
+                <div th:if="${#lists.isEmpty(listaRelatosUsuario)}" class="col-sm-auto text-center" role="alert">
+                    <h2>Aquí no hay nada...</h2>
+                    <img src="/images/no-content.png" class="img-fluid">
+                </div>
+                <div th:each="relato : ${listaRelatosUsuario}"
+                     class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="col-sm-1 text-center">
+                        <input type="checkbox" name="relatoIds" th:value="${relato.id}"/>
+                    </div>
+                    <div class="col-sm-5">
+                        <a th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}">
+                            <div th:text="${relato.titulo}"></div>
+                        </a>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <div th:text="${#dates.format(relato.fechaPublicacion, 'dd/MM/yyyy')}"></div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div th:text="${relato.calificacion}"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
