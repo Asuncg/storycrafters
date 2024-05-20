@@ -1,17 +1,33 @@
+<link rel="stylesheet" href="/css/grupos.css">
+<script src="/js/grupos.js"></script>
 <link rel="stylesheet" href="/css/relatos.css">
 <script src="/js/vistarelato.js"></script>
+<div class="nav-scroller py-1 mb-3 nav-grupos">
+    <header class="lh-1 py-3">
+        <div class="row">
+            <div class="col-sm-12 text-center text-uppercase">
+                <h1 class ="titulo-grupo" th:text="${grupo.nombre}"></h1>
+            </div>
+        </div>
+    </header>
+    <hr class="mt-0 mb-2">
+    <nav class="nav nav-underline justify-content-between mx-5">
+        <th:block th:include="fragments/navgrupo.html :: nav"></th:block>
+    </nav>
+</div>
 <!-- Contenido principal -->
 <div class="container">
     <div class="row vista-relato-autor">
         <div class="col-sm-6">
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="Avatar"
-                 class="img-fluid m-2">
+            <img th:src="${relatoGrupo.usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
             <span th:text="${relatoGrupo.firmaAutor}"></span>
         </div>
-        <div class="col-sm-6" style="">
+        <div class="col-sm-6">
             <div class="row justify-content-end">
                 <div class="col-sm-auto m-2">
-                    <!-- Posible accion de agregar a favoritos -->
+                    <a class="btn btn-outline-primary m-1 btn-sm" href="javascript:history.back()">
+                        Volver
+                    </a>
                 </div>
             </div>
         </div>
@@ -32,7 +48,7 @@
                     <p>Calificación: </p> <span th:text="${relatoGrupo.calificacion}"></span>
 
                 </div>
-                <div class="col-md-12" th:if="${idUsuarioActual eq relatoGrupo.idUsuario}">
+                <div class="col-md-12" th:if="${idUsuarioActual eq relatoGrupo.usuario.id}">
                     <p>Comentario del Gestor: </p> <span th:text="${relatoGrupo.feedback}"></span>
 
                 </div>

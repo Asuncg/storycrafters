@@ -9,8 +9,6 @@
     background-color: #1693a5;
 }
 
-
-
 #titulo-relato {
     min-height: 250px;
     background-color: #EBEDEF;
@@ -73,9 +71,11 @@
     border: 1px solid;
     border-radius: .5rem;
 }
+
 .vista-relato-separador {
     border-right: 1px;
 }
+
 .vista-titulo-relato {
     min-height: 250px;
     background-size: cover;

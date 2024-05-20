@@ -20,13 +20,16 @@ function openInvitationModal(element) {
 
 }
 
-$(document).ready(function () {
-    $('#sendInvitationBtn').click(function () {
-        console.log("Botón 'Enviar Invitación' clickeado");
-        sendInvitations();
-    });
-
+document.addEventListener('DOMContentLoaded', function () {
+    var sendInvitationBtn = document.getElementById('sendInvitationBtn');
+    if (sendInvitationBtn) {
+        sendInvitationBtn.addEventListener('click', function () {
+            console.log("Botón 'Enviar Invitación' clickeado");
+            sendInvitations();
+        });
+    }
 });
+
 
 function sendInvitations() {
     var email = document.getElementById('invitationEmail').value.trim();

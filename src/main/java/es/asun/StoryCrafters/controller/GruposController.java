@@ -1,9 +1,6 @@
 package es.asun.StoryCrafters.controller;
 
-import es.asun.StoryCrafters.entity.Grupo;
-import es.asun.StoryCrafters.entity.RelatoGrupo;
-import es.asun.StoryCrafters.entity.Solicitud;
-import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.model.EstadisticasDto;
 import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoDto;
@@ -41,16 +38,19 @@ public class GruposController {
     private EmailService emailService;
 
     @Autowired
-    RelatoGrupoService relatoGrupoService;
+    private RelatoGrupoService relatoGrupoService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    SolicitudService solicitudService;
+    private SolicitudService solicitudService;
 
     @Autowired
-    EstadisticasService estadisticasService;
+    private EstadisticasService estadisticasService;
+
+    @Autowired
+    private  CategoriaService categoriaService;
 
     private static final String ERROR_VIEW = "views/error/error";
     private static final String INDEX_VIEW = "index";
@@ -244,6 +244,8 @@ public class GruposController {
         prepararModelo(model, grupo);
         switch (opcion) {
             case "publicaciones":
+                List<Categoria> listaCategorias = categoriaService.findAllCategories();
+                model.addAttribute("listaCategorias", listaCategorias);
                 model.addAttribute("content", "views/grupos/ver-grupo");
                 break;
             case "usuarios":
@@ -259,7 +261,7 @@ public class GruposController {
                 model.addAttribute("content", "views/grupos/grupo-relatos-rechazados");
                 break;
             default:
-                // Manejar caso de opción no válida
+                model.addAttribute("content", ERROR_VIEW);
                 break;
         }
         return INDEX_VIEW;
@@ -267,25 +269,35 @@ public class GruposController {
 
     @GetMapping("/aprobar-relato/{id}")
     public String mostrarFormularioAprobacion(Model model, @PathVariable String id) {
+        Usuario usuarioActual = AuthUtils.getAuthUser(userService);
         int idRelatoGrupo = Integer.parseInt(id);
 
         Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
         RelatoGrupo relatoGrupo;
 
         if (relatoGrupoOptional.isPresent()) {
-
             relatoGrupo = relatoGrupoOptional.get();
-            RelatoGrupoGestionDto relatoGrupoGestionDto = new RelatoGrupoGestionDto();
-            relatoGrupoGestionDto.setId(idRelatoGrupo);
+            Optional<Grupo> grupoOptional = grupoService.findGrupoById(relatoGrupo.getGrupo().getId());
 
-            model.addAttribute("content", "views/grupos/formulario-aprobacion");
-            model.addAttribute("relatoGrupoDto", relatoGrupoGestionDto);
-            model.addAttribute("relatoGrupo", relatoGrupo);
-            return INDEX_VIEW;
-        } else {
+            if (grupoOptional.isPresent()) {
+                Grupo grupo = grupoOptional.get();
+                RelatoGrupoGestionDto relatoGrupoGestionDto = new RelatoGrupoGestionDto();
+                relatoGrupoGestionDto.setId(idRelatoGrupo);
+
+                model.addAttribute("content", "views/grupos/formulario-aprobacion");
+                model.addAttribute("relatoGrupoDto", relatoGrupoGestionDto);
+                model.addAttribute("relatoGrupo", relatoGrupo);
+                model.addAttribute("grupo", grupo);
+                model.addAttribute("idUsuarioActual", usuarioActual.getId());
+                return INDEX_VIEW;
+            } else {
+                model.addAttribute("content", ERROR_VIEW);
+                return INDEX_VIEW;
+            }
+
+        }
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
-        }
     }
 
     @PostMapping("/gestionar-relato")

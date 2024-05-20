@@ -3,13 +3,13 @@
     <a class="nav-item nav-link link-body-emphasis" th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/usuarios'}">Usuarios</a>
     <a class="nav-item nav-link link-body-emphasis" th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/relatos-pendientes'}" th:if="${idUsuarioActual eq grupo.usuario.id}">A revisar
         <span th:if="${not #lists.isEmpty(listaRelatosPendientes)}"
-              class="position-absolute top-0 start-100 translate-middle p-2 bg-danger rounded-circle">
+              class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle">
         </span>
     </a>
     <a class="nav-item nav-link link-body-emphasis" th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/relatos-rechazados'}" th:if="${idUsuarioActual eq grupo.usuario.id}">Relatos rechazados</a>
     <a class="nav-item nav-link link-body-emphasis" th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/solicitudes'}" th:if="${idUsuarioActual eq grupo.usuario.id}">Solicitudes de Unión
         <span th:if="${not #lists.isEmpty(solicitudesPendientes)}"
-              class="position-absolute top-0 start-100 translate-middle p-2 bg-danger rounded-circle">
+              class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle">
         </span>
     </a>
     <a class="nav-item nav-link link-body-emphasis" href="#" th:href="@{'/grupos/mis-relatos/' + ${grupo.id}}">Mis Relatos</a>

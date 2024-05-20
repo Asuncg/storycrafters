@@ -11,7 +11,4 @@ public class RelatoGrupoGestionDto {
     private String feedback;
     private boolean aprobado;
 
-    public void setAprobado(boolean aprobado) {
-        this.aprobado = aprobado;
-    }
 }

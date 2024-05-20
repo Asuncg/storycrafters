@@ -1,3 +1,4 @@
+<script src="/js/avatar.js"></script>
 <div class="container">
     <div class="row">
         <div class="col-md-6 offset-md-3">
@@ -8,29 +9,31 @@
                 <div class="card-body">
                     <div class="row">
                         <!-- Avatar actual del usuario -->
-                        <div class="col">
-                            <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid my-5 rounded-circle avatar">
+                        <div class="col text-center">
+                            <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid my-5 rounded-circle avatar" id="current-avatar">
                         </div>
                     </div>
-                    <!-- Galería de imágenes de avatar -->
+                    <div class="row">
+                        <div class="col text-center">
+                            <a class="btn btn-primary mr-2" href="/user/profile" role="button">Cancelar Cambios</a>
+                            <button type="button" class="btn btn-success" id="guardarCambios" onclick="saveChanges()">Guardar Cambios</button>
+                        </div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col text-center">
                             <h4>Selecciona un nuevo avatar:</h4>
                             <div class="avatar-gallery">
                                 <!-- Iterar sobre la lista de avatares -->
                                 <th:block th:each="avatar : ${listavatares}">
-                                    <img th:src="${avatar.url}"  class="avatar-thumbnail rounded-circle avatar">
+                                    <img th:src="${avatar.url}" class="avatar-thumbnail rounded-circle avatar"
+                                         th:data-id="${avatar.id}" onclick="selectAvatar(this)">
                                 </th:block>
                             </div>
                         </div>
                     </div>
-                    <!-- Botones para guardar o cancelar cambios -->
-                    <div class="row">
-                        <div class="col text-center">
-                            <a class="btn btn-primary mr-2" href="/user/profile" role="button">Cancelar Cambios</a>
-                            <button type="button" class="btn btn-success" id="guardarCambios">Guardar Cambios</button>
-                        </div>
-                    </div>
+                    <form id="avatar-form"  th:action="@{/user/profile/update-avatar}" method="post">
+                        <input type="hidden" id="selected-avatar-id" name="selectedAvatarId">
+                    </form>
                 </div>
             </div>
         </div>

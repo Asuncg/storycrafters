@@ -4,8 +4,7 @@
 <div class="container">
     <div class="row vista-relato-autor">
         <div class="col-sm-6">
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="Avatar"
-                 class="img-fluid m-2">
+            <img th:src="${relato.usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
             <span th:text="${relato.usuario.firmaAutor}"></span>
         </div>
         <div class="col-sm-6" style="">

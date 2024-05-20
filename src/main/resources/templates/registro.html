@@ -65,9 +65,9 @@
                         <div class="col-md-6 form-group mb-3">
                             <label class="form-label">Password *</label>
                             <div class="input-group mb-3">
-                                <input class="form-control" id="password" name="password"
-                                       placeholder="Indique su contraseña" th:field="*{password}" type="password"
-                                       required/>
+                                <label for="password"></label><input class="form-control" id="password" name="password"
+                                                                     placeholder="Indique su contraseña" th:field="*{password}" type="password"
+                                                                     required/>
                                 <span class="input-group-text">
             <i class="bi bi-eye toggle-password" id="togglePassword"
                onclick="togglePassword('password')"></i>

@@ -39,7 +39,8 @@ public class RelatoServiceImpl implements RelatoService {
     }
 
     @Override
-    public List<Relato> findRelatoByUsuario(Usuario usuario) {
-        return relatoRepository.findRelatoByUsuario(usuario);
+    public List<Relato> findAllRelatoByUsuarioOrderByFecha(Usuario usuario) {
+        return relatoRepository.findByUsuarioAndArchivadoFalseOrderByFechaActualizacionDesc(usuario);
     }
+
 }

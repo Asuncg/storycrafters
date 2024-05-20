@@ -1,21 +1,23 @@
 package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Avatar;
+import es.asun.StoryCrafters.entity.Relato;
+import es.asun.StoryCrafters.entity.RelatoGrupo;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.AvatarService;
+import es.asun.StoryCrafters.service.RelatoGrupoService;
+import es.asun.StoryCrafters.service.RelatoService;
 import es.asun.StoryCrafters.service.UserService;
 import es.asun.StoryCrafters.utilidades.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/user")
@@ -27,12 +29,22 @@ public class UserController {
     @Autowired
     private AvatarService avatarService;
 
+    @Autowired
+    private RelatoService relatoService;
+
+    @Autowired
+    RelatoGrupoService relatoGrupoService;
+
     @GetMapping(value= {"/profile"})
     public String viewprofile(Model model) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
+        List<Relato> listaRelatos = relatoService.findAllRelatosByUsuarioAndNotArchivado(usuario);
+        int numRelatos = listaRelatos.size();
+
         model.addAttribute("content", "views/profile");
         model.addAttribute("usuario", usuario);
+        model.addAttribute("numRelatos", numRelatos);
         model.addAttribute("userDto", new UserRegisterDto());
 
         return "index";
@@ -68,8 +80,19 @@ public class UserController {
         return "index";
     }
     @PostMapping("/profile/update-avatar")
-    public String updateAvatarProfile(@ModelAttribute("user") UserUpdateDto userDto) {
-        userService.updateUser(userDto);
+    public String updateAvatarProfile(@ModelAttribute("user") UserUpdateDto userDto, @RequestParam("selectedAvatarId") Integer selectedAvatarId) {
+        Usuario usuario = AuthUtils.getAuthUser(userService);
+        Optional<Avatar> avatarOptional = avatarService.findAvatarById(Integer.parseInt(String.valueOf(selectedAvatarId)));
+
+        if (avatarOptional.isEmpty()) {
+            //poner un error
+        }
+        Avatar avatar = avatarOptional.get();
+
+        usuario.setAvatar(avatar);
+        UserUpdateDto userUpdateDto = new UserUpdateDto(usuario);
+
+        userService.updateUser(userUpdateDto);
 
         return "redirect:/user/profile";
     }

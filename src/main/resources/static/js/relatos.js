@@ -23,6 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     var textoCuento = document.getElementById('texto-relato');
     if (textoCuento) {
+        // Inicializa el contador con la longitud del texto actual
+        var caracteresEscritos = textoCuento.textContent.length;
+        document.getElementById('caracteres-escritos').textContent = caracteresEscritos;
+
         textoCuento.addEventListener('input', function () {
             // Limitar la longitud del texto a 4000 caracteres
             if (this.textContent.length > 4000) {
@@ -111,6 +115,15 @@ document.addEventListener('DOMContentLoaded', function () {
             cambiosPendientes = true;
         });
     }
+
+    window.addEventListener('beforeunload', function (e) {
+        if (cambiosPendientes) {
+            var mensaje = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+            e.returnValue = mensaje; // Estándar para la mayoría de los navegadores
+            return mensaje; // Requerido para algunos navegadores
+        }
+    });
+
 });
 
 

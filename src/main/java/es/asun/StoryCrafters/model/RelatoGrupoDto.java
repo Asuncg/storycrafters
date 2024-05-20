@@ -2,6 +2,7 @@ package es.asun.StoryCrafters.model;
 
 import es.asun.StoryCrafters.entity.Categoria;
 import es.asun.StoryCrafters.entity.Imagen;
+import es.asun.StoryCrafters.entity.Usuario;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +21,7 @@ public class RelatoGrupoDto {
     private Date fechaPublicacion;
     private double calificacion;
     private String feedback;
-    private int idUsuario;
+    private Usuario usuario;
 
 
 }

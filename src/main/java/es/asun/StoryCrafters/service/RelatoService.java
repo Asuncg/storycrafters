@@ -15,6 +15,6 @@ public interface RelatoService {
 
     Optional<Relato> findRelatoByIdAndNotArchivado(int id);
 
-    List<Relato> findRelatoByUsuario(Usuario usuario);
+    List<Relato> findAllRelatoByUsuarioOrderByFecha(Usuario usuario);
 
 }

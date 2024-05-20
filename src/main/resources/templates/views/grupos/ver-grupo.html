@@ -1,19 +1,49 @@
 <link rel="stylesheet" href="/css/grupos.css">
 <script src="/js/grupos.js"></script>
-<header class="border-bottom lh-1 py-3">
-    <div class="row flex-nowrap justify-content-between align-items-center">
-        <div class="col-sm-auto text-center">
-            <h1 th:text="${grupo.nombre}"></h1>
+<script src="/js/filtros.js"></script>
+<div class="nav-scroller py-1 mb-3 nav-grupos">
+    <header class="lh-1 py-3">
+        <div class="row">
+            <div class="col-sm-12 text-center text-uppercase">
+                <h1 class ="titulo-grupo" th:text="${grupo.nombre}"></h1>
+            </div>
         </div>
-    </div>
-</header>
-<div class="nav-scroller py-1 mb-3 border-bottom nav-grupos">
-    <nav class="nav nav-underline justify-content-between">
+    </header>
+    <hr class="mt-0 mb-2">
+    <nav class="nav nav-underline justify-content-between mx-5">
         <th:block th:include="fragments/navgrupo.html :: nav"></th:block>
     </nav>
 </div>
 <div class="container">
     <div class="col-md-12">
+        <!-- Filtro y botones de ordenamiento -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="form-group">
+                <label for="categoria"></label><select id="categoria" name="categoria" class="form-control">
+                <option value="">Mostrar todas las categorías</option>
+                <th:block th:each="categoria : ${listaCategorias}">
+                    <option th:value="${categoria.nombre}" th:text="${categoria.nombre}"></option>
+                </th:block>
+            </select>
+            </div>
+            <!-- Botones de ordenamiento -->
+            <div class="btn-group" role="group" aria-label="Ordenar">
+                <button type="button" class="btn btn-secondary" id="btn-ordenar-reciente">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"></path>
+                    </svg>
+                </button>
+                <button type="button" class="btn btn-secondary" id="btn-ordenar-antiguo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
         <div th:if="${#lists.isEmpty(listaRelatosAprobados)}" class="col-sm-auto text-center" role="alert">
             <h2>Aquí no hay nada...</h2>
             <img src="/images/no-content.png" class="img-fluid">
@@ -29,6 +59,9 @@
                                 <h5 class="card-title"><a th:utext="${relato.titulo}"
                                                           th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}"></a>
                                 </h5>
+                                <input type="hidden" class="categorias" th:each="categoria : ${relato.categorias}"
+                                       th:value="${categoria.nombre}">
+                                <input type="hidden" class="fechaPublicacion" th:value="${relato.fechaPublicacion}">
                             </div>
                         </div>
                     </a>

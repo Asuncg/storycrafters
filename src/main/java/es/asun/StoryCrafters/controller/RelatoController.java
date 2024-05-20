@@ -46,7 +46,7 @@ public class RelatoController {
     public String misRelatos(Model model) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
-        List<Relato> relatos = relatoService.findAllRelatosByUsuarioAndNotArchivado(usuario);
+        List<Relato> relatos = relatoService.findAllRelatoByUsuarioOrderByFecha(usuario);
         List<RelatoPreviewDto> relatosDto = new ArrayList<>();
 
         for (Relato relato : relatos) {

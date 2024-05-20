@@ -41,7 +41,7 @@ public class Mappings {
         relatoGrupoDto.setFechaPublicacion(relatoGrupo.getFechaPublicacion());
         relatoGrupoDto.setCalificacion(relatoGrupo.getCalificacion());
         relatoGrupoDto.setFeedback(relatoGrupo.getFeedback());
-        relatoGrupoDto.setIdUsuario(relatoGrupo.getRelato().getUsuario().getId());
+        relatoGrupoDto.setUsuario(relatoGrupo.getRelato().getUsuario());
 
         return relatoGrupoDto;
     }

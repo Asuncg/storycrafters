@@ -15,5 +15,6 @@ public interface RelatoRepository extends JpaRepository<Relato, Integer> {
     @Query("SELECT r FROM Relato r LEFT JOIN FETCH r.categorias WHERE r.id = :id AND r.archivado = false")
     Optional<Relato> findRelatoByIdAndNotArchivado(@Param("id") int id);
 
-    List<Relato> findRelatoByUsuario(Usuario usuario);
+    List<Relato> findByUsuarioAndArchivadoFalseOrderByFechaActualizacionDesc(Usuario usuario);
+
 }
