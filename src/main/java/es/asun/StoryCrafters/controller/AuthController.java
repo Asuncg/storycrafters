@@ -2,7 +2,9 @@ package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserRegisterDto;
+import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.UserService;
+import es.asun.StoryCrafters.utilidades.AuthUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,8 +24,10 @@ public class AuthController {
 
     @GetMapping(value = {"/", "/index"})
     public String home(Model model) {
-        String content = "views/home";
-        model.addAttribute("content", content);
+        Usuario usuario = AuthUtils.getAuthUser(userService);
+        model.addAttribute("usuario", new UserUpdateDto(usuario));
+
+        model.addAttribute("content", "views/home");
         return "index";
     }
 

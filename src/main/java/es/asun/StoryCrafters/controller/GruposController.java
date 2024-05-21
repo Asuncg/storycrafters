@@ -240,14 +240,25 @@ public class GruposController {
             return INDEX_VIEW;
         }
         Grupo grupo = grupoOptional.get();
-        prepararModelo(model, grupo);
+        prepararModeloBase(model, grupo);
+        List<RelatoGrupo> listaRelatosGrupo;
         switch (opcion) {
             case "publicaciones":
                 List<Categoria> listaCategorias = categoriaService.findAllCategories();
                 model.addAttribute("listaCategorias", listaCategorias);
+                listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+                List<RelatoGrupo> relatosAprobados = listarRelatosEstado(listaRelatosGrupo, ESTADO_APROBADO);
+
+                model.addAttribute("listaRelatosAprobados", relatosAprobados);
                 model.addAttribute("content", "views/grupos/ver-grupo");
                 break;
             case "usuarios":
+                listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+                Map<Integer, Long> contadorRelatosPorUsuario = listaRelatosGrupo.stream()
+                        .filter(relato -> relato.getEstado() == Constantes.ESTADO_APROBADO)
+                        .collect(Collectors.groupingBy(relato -> relato.getRelato().getUsuario().getId(), Collectors.counting()));
+
+                model.addAttribute("contadorRelatosPorUsuario", contadorRelatosPorUsuario);
                 model.addAttribute("content", "views/grupos/grupo-usuarios");
                 break;
             case "relatos-pendientes":
@@ -264,6 +275,32 @@ public class GruposController {
                 break;
         }
         return INDEX_VIEW;
+    }
+
+    private void prepararModeloBase(Model model, Grupo grupo) {
+        Usuario usuario = AuthUtils.getAuthUser(userService);
+
+        List<Solicitud> solicitudesPendientes = solicitudService.buscarSolicitudesPorGrupo(grupo);
+
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+        List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+
+        model.addAttribute("grupo", grupo);
+        model.addAttribute("idUsuarioActual", usuario.getId());
+        model.addAttribute("listaRelatosPendientes", relatosPendientes);
+        model.addAttribute("listaRelatosRechazados", relatosRechazados);
+        model.addAttribute("solicitudesPendientes", solicitudesPendientes);
+    }
+
+    public List<RelatoGrupo> listarRelatosEstado(List<RelatoGrupo> listaRelatosGrupo, int estado) {
+        List<RelatoGrupo> relatosFiltrados = new ArrayList<>();
+        for (RelatoGrupo relato : listaRelatosGrupo) {
+            if (relato.getEstado() == estado) {
+                relatosFiltrados.add(relato);
+            }
+        }
+        return relatosFiltrados;
     }
 
     @GetMapping("/aprobar-relato/{id}")
@@ -620,40 +657,7 @@ public class GruposController {
         return usuario.getId() == grupo.getUsuario().getId();
     }
 
-    private void prepararModelo(Model model, Grupo grupo) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
 
-        List<Solicitud> solicitudesPendientes = solicitudService.buscarSolicitudesPorGrupo(grupo);
-
-        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-        List<RelatoGrupo> relatosAprobados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_APROBADO);
-        List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
-        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
-
-
-        Map<Integer, Long> contadorRelatosPorUsuario = listaRelatosGrupo.stream()
-                .filter(relato -> relato.getEstado() == Constantes.ESTADO_APROBADO)
-                .collect(Collectors.groupingBy(relato -> relato.getRelato().getUsuario().getId(), Collectors.counting()));
-
-        model.addAttribute("grupo", grupo);
-        model.addAttribute("idUsuarioActual", usuario.getId());
-        model.addAttribute("listaRelatosPendientes", relatosPendientes);
-        model.addAttribute("listaRelatosAprobados", relatosAprobados);
-        model.addAttribute("listaRelatosRechazados", relatosRechazados);
-        model.addAttribute("solicitudesPendientes", solicitudesPendientes);
-        model.addAttribute("contadorRelatosPorUsuario", contadorRelatosPorUsuario);
-
-    }
-
-    public List<RelatoGrupo> listarRelatosEstado(List<RelatoGrupo> listaRelatosGrupo, int estado) {
-        List<RelatoGrupo> relatosFiltrados = new ArrayList<>();
-        for (RelatoGrupo relato : listaRelatosGrupo) {
-            if (relato.getEstado() == estado) {
-                relatosFiltrados.add(relato);
-            }
-        }
-        return relatosFiltrados;
-    }
 
 }
 
