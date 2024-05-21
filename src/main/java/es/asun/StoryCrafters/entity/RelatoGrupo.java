@@ -61,6 +61,10 @@ public class RelatoGrupo {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaPublicacion;
 
+    // Formato de fecha y hora
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaEnvio;
+
     // Método para generar la fecha de publicación automáticamente
     @PreUpdate
     private void preUpdate() {

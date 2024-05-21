@@ -246,6 +246,7 @@ public class RelatoController {
             relatoGrupo.setImagen(relato.getImagen());
             relatoGrupo.setEstado(1);
             relatoGrupo.setFeedback("");
+            relatoGrupo.setFechaEnvio(new Date());
 
             // Crear nuevas instancias de las categorías y asociarlas al RelatoGrupo
             List<Categoria> categorias = new ArrayList<>();
@@ -269,6 +270,7 @@ public class RelatoController {
         relatoGrupo.setTexto(relato.getTexto());
         relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
         relatoGrupo.setImagen(relato.getImagen());
+        relatoGrupo.setFechaEnvio(new Date());
 
         // Crear nuevas instancias de las categorías y asociarlas al RelatoGrupo
         List<Categoria> categorias = new ArrayList<>();

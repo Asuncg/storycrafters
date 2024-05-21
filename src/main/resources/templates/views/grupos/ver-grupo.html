@@ -56,12 +56,11 @@
                         <div class="card card-relatos d-flex">
                             <img class="card-img-top" th:src="${relato.imagen.url}" alt="Card image cap">
                             <div class="card-body">
-                                <h5 class="card-title"><a th:utext="${relato.titulo}"
-                                                          th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}"></a>
-                                </h5>
+                                <h5 class="card-title"><a th:utext="${relato.titulo}" th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}"></a></h5>
+                                <hr class="mt-0">
+                                <p class="card-text text-center"><small>Fecha de Publicación: </small><small class="text-muted text-center fechaPublicacion" th:text="${#dates.format(relato.fechaPublicacion, 'dd/MM/yyyy')}"></small></p>
                                 <input type="hidden" class="categorias" th:each="categoria : ${relato.categorias}"
                                        th:value="${categoria.nombre}">
-                                <input type="hidden" class="fechaPublicacion" th:value="${relato.fechaPublicacion}">
                             </div>
                         </div>
                     </a>
