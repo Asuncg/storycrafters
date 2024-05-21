@@ -1,11 +1,10 @@
 package es.asun.StoryCrafters.service;
 
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.Properties;
 
 @Service
 public class EmailService {
@@ -16,7 +15,7 @@ public class EmailService {
     @Value("${spring.mail.password}")
     private String emailPassword;
 
-    public void sendEmail(String to, String subject, String text) {
+    public void sendEmail(String to, String subject, String htmlContent) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -31,11 +30,20 @@ public class EmailService {
                 });
 
         try {
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(emailUsername));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
-            message.setText(text);
+
+            // Set the content
+            MimeBodyPart mimeBodyPart = new MimeBodyPart();
+            mimeBodyPart.setContent(htmlContent, "text/html; charset=utf-8");
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(mimeBodyPart);
+
+            // Set the multipart message to the email message
+            message.setContent(multipart);
 
             Transport.send(message);
 
@@ -45,12 +53,26 @@ public class EmailService {
         }
     }
 
-    public void enviarInvitacion(String to, String codigoAcceso) {
+    public void enviarInvitacion(String to, String codigoAcceso, String descripcion, String nombreGrupo, String nombreGestor) {
+        String asunto = "StoryCrafters - Invitación a grupo";
+        String url = "https://storycrafters-production.up.railway.app/";
+        String mensajeHtml = "<html>"
+                + "<body>"
+                + "<div style='text-align: center; padding: 20px; font-family: Arial, sans-serif;'>"
+                + "<h2>¡HOLA!</h2>"
+                + "<p><strong>" + nombreGestor+ "</strong> Te invita a unirte a su grupo en la plataforma <strong>StoryCrafters</strong>.</p>"
+                + "<p><strong>Nombre del grupo:</strong> " + nombreGrupo + "</p>"
+                + "<p><strong>Descripción:</strong> " + descripcion + "</p>"
+                + "<p><strong>Código de acceso:</strong> " + codigoAcceso + "</p>"
+                + "<p>Haz clic en el siguiente enlace para visitar nuestra plataforma:</p>"
+                + "<p><a href='" + url + "' style='color: #1693A5;'>StoryCrafters</a></p>"
+                + "<p>Esperamos verte pronto.</p>"
+                + "<p>Saludos,<br/>El equipo de StoryCrafters</p>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
 
-        String asunto = "Story Craters - Invitación a grupo";
-        String mensaje = "¡Hola! Te invito a unirte a nuestro grupo en la plataforma StoryCrafters. El código de acceso es: " + codigoAcceso;
-
-        sendEmail(to, asunto, mensaje);
+        sendEmail(to, asunto, mensajeHtml);
     }
 
     public void enviarNotificacion(String to, String feedback, String titulo) {

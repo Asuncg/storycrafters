@@ -24,8 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static es.asun.StoryCrafters.utilidades.Constantes.ESTADO_APROBADO;
-import static es.asun.StoryCrafters.utilidades.Constantes.ESTADO_RECHAZADO;
+import static es.asun.StoryCrafters.utilidades.Constantes.*;
 
 @Controller
 @RequestMapping("/grupos")
@@ -170,7 +169,7 @@ public class GruposController {
         Grupo grupo = grupoOptional.get();
 
         for (String email : emails) {
-            emailService.enviarInvitacion(email, grupo.getCodigoAcceso());
+            emailService.enviarInvitacion(email, grupo.getCodigoAcceso(), grupo.getDescripcion(), grupo.getNombre(), usuario.getFirstName());
         }
 
         return "Invitaciones enviadas correctamente.";
@@ -284,6 +283,12 @@ public class GruposController {
                 RelatoGrupoGestionDto relatoGrupoGestionDto = new RelatoGrupoGestionDto();
                 relatoGrupoGestionDto.setId(idRelatoGrupo);
 
+                List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+                List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+                List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+
+                model.addAttribute("listaRelatosPendientes", relatosPendientes);
+                model.addAttribute("listaRelatosRechazados", relatosRechazados);
                 model.addAttribute("content", "views/grupos/formulario-aprobacion");
                 model.addAttribute("relatoGrupoDto", relatoGrupoGestionDto);
                 model.addAttribute("relatoGrupo", relatoGrupo);
@@ -361,7 +366,12 @@ public class GruposController {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+        List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
 
+        model.addAttribute("listaRelatosPendientes", relatosPendientes);
+        model.addAttribute("listaRelatosRechazados", relatosRechazados);
         model.addAttribute("content", "views/grupos/vista-relato-grupo");
         model.addAttribute("relatoGrupo", relatoGrupoDto);
         model.addAttribute("grupo", grupo);
@@ -386,6 +396,13 @@ public class GruposController {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
+
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(relatoGrupo.getGrupo());
+        List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+
+        model.addAttribute("listaRelatosPendientes", relatosPendientes);
+        model.addAttribute("listaRelatosRechazados", relatosRechazados);
         model.addAttribute("relatoRevisado", relatoGrupo);
         model.addAttribute("content", "views/grupos/relato-revisado");
         return INDEX_VIEW;
@@ -517,6 +534,11 @@ public class GruposController {
                         .filter(relato -> relato.getRelato().getUsuario().equals(usuarioActual))
                         .collect(Collectors.toList());
 
+                List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+                List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+
+                model.addAttribute("listaRelatosPendientes", relatosPendientes);
+                model.addAttribute("listaRelatosRechazados", relatosRechazados);
                 model.addAttribute("listaRelatosUsuario", listaRelatosUsuario);
                 model.addAttribute("grupo", grupo);
                 model.addAttribute("idUsuarioActual", usuarioActual.getId());
@@ -568,6 +590,12 @@ public class GruposController {
                 } else {
                     model.addAttribute("content", ERROR_VIEW);
                 }
+
+                List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+                List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+
+                model.addAttribute("listaRelatosPendientes", relatosPendientes);
+                model.addAttribute("listaRelatosRechazados", relatosRechazados);
                 model.addAttribute("listaRelatosUsuario", listaRelatosUsuario);
                 model.addAttribute("usuario", usuario);
                 model.addAttribute("grupo", grupo);
@@ -598,20 +626,10 @@ public class GruposController {
         List<Solicitud> solicitudesPendientes = solicitudService.buscarSolicitudesPorGrupo(grupo);
 
         List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-        List<RelatoGrupo> relatosPendientes = new ArrayList<>();
-        List<RelatoGrupo> relatosAprobados = new ArrayList<>();
-        List<RelatoGrupo> relatosRechazados = new ArrayList<>();
+        List<RelatoGrupo> relatosAprobados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_APROBADO);
+        List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
 
-        for (RelatoGrupo relato : listaRelatosGrupo) {
-            int estado = relato.getEstado();
-            if (estado == Constantes.ESTADO_PENDIENTE) {
-                relatosPendientes.add(relato);
-            } else if (estado == ESTADO_APROBADO) {
-                relatosAprobados.add(relato);
-            } else if (estado == Constantes.ESTADO_RECHAZADO) {
-                relatosRechazados.add(relato);
-            }
-        }
 
         Map<Integer, Long> contadorRelatosPorUsuario = listaRelatosGrupo.stream()
                 .filter(relato -> relato.getEstado() == Constantes.ESTADO_APROBADO)
@@ -626,5 +644,16 @@ public class GruposController {
         model.addAttribute("contadorRelatosPorUsuario", contadorRelatosPorUsuario);
 
     }
+
+    public List<RelatoGrupo> listarRelatosEstado(List<RelatoGrupo> listaRelatosGrupo, int estado) {
+        List<RelatoGrupo> relatosFiltrados = new ArrayList<>();
+        for (RelatoGrupo relato : listaRelatosGrupo) {
+            if (relato.getEstado() == estado) {
+                relatosFiltrados.add(relato);
+            }
+        }
+        return relatosFiltrados;
+    }
+
 }
 
