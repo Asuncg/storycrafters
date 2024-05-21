@@ -45,12 +45,14 @@
             <hr class="mt-0 mb-4">
             <div class="row justify-content-md-center">
                 <div class="col-md-12" th:if="${idUsuarioActual eq grupo.usuario.id}">
-                    <p>Calificación: </p> <span th:text="${relatoGrupo.calificacion}"></span>
+                    <p class="font-weight-bold">Calificación: <span th:text="${relatoGrupo.calificacion}"></span></p>
 
                 </div>
-                <div class="col-md-12" th:if="${idUsuarioActual eq relatoGrupo.usuario.id}">
-                    <p>Comentario del Gestor: </p> <span th:text="${relatoGrupo.feedback}"></span>
-
+                <div class="col-md-12 mb-4" th:if="${idUsuarioActual eq relatoGrupo.usuario.id}">
+                    <p class="font-weight-bold">Apuntes sobre la revisión: </p>
+                    <div class="col-md-12 p-3 feedback">
+                        <span th:text="${relatoGrupo.feedback}"></span>
+                    </div>
                 </div>
             </div>
         </div>
