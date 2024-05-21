@@ -3,7 +3,9 @@
         <div class="col-md-6 offset-md-3">
             <div class="card">
                 <div class="card-header text-center">
+                    <hr class="mt-0">
                     <h1>Editar Grupo</h1>
+                    <hr class="mt-0">
                 </div>
                 <div class="card-body">
                     <form th:object="${grupoDto}" th:action="@{'/grupos/actualizar-grupo/' + ${grupo.id}}" method="post">
