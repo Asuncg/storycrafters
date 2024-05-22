@@ -34,7 +34,7 @@
                     <div th:text="${relatoGrupo.relato.usuario.firstName} + ' ' + ${relatoGrupo.relato.usuario.lastName}"></div>
                 </div>
                 <div class="col-sm-2 text-center">
-                    <div th:text="${#dates.format(relatoGrupo.fechaEnvio, 'dd/MM/yyyy')}"></div>
+                    <div th:text="${#dates.format(relatoGrupo.fechaModificacion, 'dd/MM/yyyy')}"></div>
                 </div>
             </div>
         </div>

@@ -18,13 +18,15 @@
         <div class="col-md-12">
             <!-- Encabezados de las columnas -->
             <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
-                <div class="col-sm-8 text-left">Título del Relato</div>
+                <div class="col-sm-7 text-left">Título del Relato</div>
                 <div class="col-sm-4 text-center">Estado</div>
+                <div class="col-sm-1 text-center"></div>
+
             </div>
             <!-- Relatos Pendientes -->
             <div th:each="relatoUsuarioGrupo : ${listaRelatosUsuario}"
                  class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <a th:href="@{'/grupos/ver-relato-grupo/' + ${relatoUsuarioGrupo.id}}">
                         <div th:utext="${relatoUsuarioGrupo.titulo}"></div>
                     </a>
@@ -33,6 +35,11 @@
                     <div th:class="${relatoUsuarioGrupo.estado == 0 ? 'estado-aprobado' : (relatoUsuarioGrupo.estado == 1 ? 'estado-pendiente' : 'estado-rechazado')}">
                         <div class="font-weight-bold" th:text="${relatoUsuarioGrupo.estado == 0 ? 'PUBLICADO' : (relatoUsuarioGrupo.estado == 1 ? 'PENDIENTE DE REVISIÓN' : 'RECHAZADO')}"></div>
                     </div>
+                </div>
+                <div class="col-sm-1 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                    </svg>
                 </div>
             </div>
         </div>

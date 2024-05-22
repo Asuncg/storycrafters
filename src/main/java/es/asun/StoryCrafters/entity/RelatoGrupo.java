@@ -63,7 +63,7 @@ public class RelatoGrupo {
 
     // Formato de fecha y hora
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaEnvio;
+    private Date fechaModificacion;
 
     // Método para generar la fecha de publicación automáticamente
     @PreUpdate

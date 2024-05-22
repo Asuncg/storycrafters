@@ -2,7 +2,6 @@ package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.exceptions.BusinessException;
-import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.RelatoDto;
 import es.asun.StoryCrafters.model.RelatoPreviewDto;
 import es.asun.StoryCrafters.service.*;
@@ -245,7 +244,7 @@ public class RelatoController {
             relatoGrupo.setImagen(relato.getImagen());
             relatoGrupo.setEstado(1);
             relatoGrupo.setFeedback("");
-            relatoGrupo.setFechaEnvio(new Date());
+            relatoGrupo.setFechaModificacion(new Date());
 
             // Crear nuevas instancias de las categorías y asociarlas al RelatoGrupo
             List<Categoria> categorias = new ArrayList<>();
@@ -269,7 +268,7 @@ public class RelatoController {
         relatoGrupo.setTexto(relato.getTexto());
         relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
         relatoGrupo.setImagen(relato.getImagen());
-        relatoGrupo.setFechaEnvio(new Date());
+        relatoGrupo.setFechaModificacion(new Date());
 
         // Crear nuevas instancias de las categorías y asociarlas al RelatoGrupo
         List<Categoria> categorias = new ArrayList<>();

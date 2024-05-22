@@ -336,6 +336,7 @@ public class GruposController {
             // Comprobar si se aprobó o se rechazó
             if (relatoGrupoGestionDto.isAprobado()) {
                 relatoGrupo.setEstado(ESTADO_APROBADO);
+
             } else {
                 relatoGrupo.setEstado(ESTADO_RECHAZADO);
             }
@@ -633,16 +634,5 @@ public class GruposController {
         model.addAttribute("listaRelatosPendientes", relatosPendientes);
         model.addAttribute("solicitudesPendientes", solicitudesPendientes);
     }
-
-    public List<RelatoGrupo> listarRelatosEstado(List<RelatoGrupo> listaRelatosGrupo, int estado) {
-        List<RelatoGrupo> relatosFiltrados = new ArrayList<>();
-        for (RelatoGrupo relato : listaRelatosGrupo) {
-            if (relato.getEstado() == estado) {
-                relatosFiltrados.add(relato);
-            }
-        }
-        return relatosFiltrados;
-    }
-
 }
 
