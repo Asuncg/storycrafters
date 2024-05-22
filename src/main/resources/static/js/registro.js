@@ -1,47 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("password").addEventListener("input", validatePassword);
-    document.getElementById("confirmPassword").addEventListener("input", validatePassword);
-});
-
-function validatePassword() {
-    var password = document.getElementById("password").value;
-    var confirmPassword = document.getElementById("confirmPassword").value;
-    var passwordMatchError = document.getElementById("passwordMatchError");
-
-    if (password !== confirmPassword) {
-        passwordMatchError.textContent = "Las contraseñas no coinciden";
-    } else {
-        passwordMatchError.textContent = "";
-    }
-}
-
-
-function togglePassword(fieldId) {
-    var field = document.getElementById(fieldId);
-    var fieldType = field.getAttribute('type');
-    if (fieldType === 'password') {
-        field.setAttribute('type', 'text');
-    } else {
-        field.setAttribute('type', 'password');
-    }
-}
-
-function validarCoincidenciaContrasena() {
-    var password = document.getElementById("password").value;
-    var confirmPassword = document.getElementById("confirmPassword");
-    var passwordMatchError = document.getElementById("passwordMatchError");
-
-    if (password !== confirmPassword.value) {
-        confirmPassword.classList.add("is-invalid");
-        passwordMatchError.innerText = "Las contraseñas no coinciden.";
-        $('#passwordMismatchModal').modal('show'); // Muestra el modal
-    } else {
-        confirmPassword.classList.remove("is-invalid");
-        passwordMatchError.innerText = "";
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
     // Obtener los elementos de los campos y el botón de registro
     var firstNameInput = document.getElementById("firstName");
     var lastNameInput = document.getElementById("lastName");
@@ -81,13 +38,10 @@ document.addEventListener("DOMContentLoaded", function() {
         var contrasenasCoinciden = password === confirmPassword;
 
         // Habilitar o deshabilitar el botón de registro en consecuencia
-        if (camposCompletos && contrasenasCoinciden && longitudMinima) {
+        if (camposCompletos && contrasenasCoinciden) {
             registrationButton.removeAttribute("disabled");
         } else {
             registrationButton.setAttribute("disabled", "disabled");
         }
     }
 });
-
-
-

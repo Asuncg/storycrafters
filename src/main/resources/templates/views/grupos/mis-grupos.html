@@ -184,5 +184,30 @@
         </div>
     </div>
 </div>
+<!-- Modal de invitar usuarios -->
+<div class="modal fade" id="invitationModal" tabindex="-1" role="dialog" aria-labelledby="invitationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="invitationModalLabel">Mandar invitación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Campo de correo electrónico -->
+                <div class="form-group email-field">
+                    <input type="email" class="form-control" id="invitationEmail" placeholder="Correo electrónico" required>
+                </div>
+                <!-- Mensaje de éxito o error -->
+                <div id="invitationMessageModal" style="display: none;"></div> <!-- Cambiado el ID aquí -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="sendInvitationBtn">Enviar Invitación</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/js/grupos.js"></script>

@@ -1,8 +1,10 @@
 package es.asun.StoryCrafters.controller;
 
+import es.asun.StoryCrafters.entity.Avatar;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
+import es.asun.StoryCrafters.service.AvatarService;
 import es.asun.StoryCrafters.service.UserService;
 import es.asun.StoryCrafters.utilidades.AuthUtils;
 import jakarta.validation.Valid;
@@ -15,12 +17,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.util.Optional;
+
 
 @Controller
 @SessionAttributes({"DataUser"})
 public class AuthController {
+    private final UserService userService;
+
+    private final AvatarService avatarService;
+
     @Autowired
-    private UserService userService;
+public AuthController(UserService userService, AvatarService avatarService) {
+        this.userService = userService;
+        this.avatarService = avatarService;
+    }
 
     @GetMapping(value = {"/", "/index"})
     public String home(Model model) {
@@ -56,6 +67,16 @@ public class AuthController {
         }
 
         if (result.hasErrors()) {
+            model.addAttribute("user", userRegisterDto);
+            return "redirect:/registro?error";
+        }
+
+        Optional<Avatar> avatarOptional = avatarService.findAvatarById(1);
+
+        if (avatarOptional.isPresent()) {
+            Avatar avatar = avatarOptional.get();
+            userRegisterDto.setAvatar(avatar);
+        } else {
             model.addAttribute("user", userRegisterDto);
             return "redirect:/registro?error";
         }

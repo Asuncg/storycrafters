@@ -257,8 +257,8 @@ public class GruposController {
             case "publicaciones":
                 List<Categoria> listaCategorias = categoriaService.findAllCategories();
                 model.addAttribute("listaCategorias", listaCategorias);
-                listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-                List<RelatoGrupo> relatosAprobados = listarRelatosEstado(listaRelatosGrupo, ESTADO_APROBADO);
+
+                List<RelatoGrupo> relatosAprobados = relatoGrupoService.buscarRelatosGrupo(grupo,ESTADO_APROBADO);
 
                 model.addAttribute("listaRelatosAprobados", relatosAprobados);
                 model.addAttribute("content", "views/grupos/ver-grupo");
@@ -279,8 +279,7 @@ public class GruposController {
                 model.addAttribute("content", "views/grupos/grupo-solicitudes");
                 break;
             case "relatos-rechazados":
-                listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-                List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+                List<RelatoGrupo> relatosRechazados = relatoGrupoService.buscarRelatosGrupo(grupo,ESTADO_RECHAZADO);
 
                 model.addAttribute("listaRelatosRechazados", relatosRechazados);
                 model.addAttribute("content", "views/grupos/grupo-relatos-rechazados");
@@ -294,7 +293,6 @@ public class GruposController {
 
     @GetMapping("/aprobar-relato/{id}")
     public String mostrarFormularioAprobacion(Model model, @PathVariable String id) {
-        Usuario usuarioActual = AuthUtils.getAuthUser(userService);
         int idRelatoGrupo = Integer.parseInt(id);
 
         Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
@@ -628,9 +626,7 @@ public class GruposController {
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
         List<Solicitud> solicitudesPendientes = solicitudService.buscarSolicitudesPorGrupo(grupo);
-
-        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+        List<RelatoGrupo> relatosPendientes = relatoGrupoService.buscarRelatosGrupo(grupo, ESTADO_PENDIENTE);
 
         model.addAttribute("grupo", grupo);
         model.addAttribute("idUsuarioActual", usuario.getId());

@@ -13,7 +13,8 @@ public interface RelatoGrupoService {
 
     void guardarRelatoGrupo(RelatoGrupo relatoGrupo);
 
-    boolean existeRelatoEnviado(int idRelato, int idGrupo);
-
     Optional<RelatoGrupo> findRelatoGrupoByRelatoAndGrupo(Relato relato, Grupo grupo);
+
+    List<RelatoGrupo> buscarRelatosGrupo(Grupo grupo, int estado);
+
 }

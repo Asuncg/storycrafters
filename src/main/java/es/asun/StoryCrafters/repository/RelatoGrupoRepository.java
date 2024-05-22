@@ -16,5 +16,7 @@ public interface  RelatoGrupoRepository extends JpaRepository<RelatoGrupo, Integ
     boolean existeRelatoEnviado(@Param("idRelato") int idRelato, @Param("idGrupo") int idGrupo, @Param("estados") List<Integer> estados);
     List<RelatoGrupo> findByGrupoIs(Grupo grupo);
 
-    Optional<RelatoGrupo> findByRelatoAndGrupo(Relato relaot, Grupo grupo);
+    Optional<RelatoGrupo> findByRelatoAndGrupo(Relato relato, Grupo grupo);
+
+    List<RelatoGrupo> findByGrupoAndEstadoOrderByFechaPublicacionDesc(Grupo grupo, int estado);
 }

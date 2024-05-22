@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function openInvitationModal(element) {
     groupId = element.getAttribute('data-group-id');
     document.getElementById('invitationEmail').value = '';
-    document.getElementById('invitationMessage').style.display = 'none';
+    document.getElementById('invitationMessageModal').style.display = 'none'; // Cambiado aquí
 
     var invitationModal = new bootstrap.Modal(document.getElementById('invitationModal'));
     invitationModal.show();
@@ -60,10 +60,10 @@ function sendInvitations() {
     var email = document.getElementById('invitationEmail').value.trim();
 
     if (email === '') {
-        document.getElementById('invitationMessage').innerText = 'Por favor, ingresa un correo electrónico.';
-        document.getElementById('invitationMessage').classList.remove('text-success');
-        document.getElementById('invitationMessage').classList.add('text-danger');
-        document.getElementById('invitationMessage').style.display = 'block';
+        document.getElementById('invitationMessageModal').innerText = 'Por favor, ingresa un correo electrónico.';
+        document.getElementById('invitationMessageModal').classList.remove('text-success');
+        document.getElementById('invitationMessageModal').classList.add('text-danger');
+        document.getElementById('invitationMessageModal').style.display = 'block';
         return;
     }
 
@@ -78,7 +78,7 @@ function sendInvitations() {
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function () {
-        var invitationMessage = document.getElementById('invitationMessage');
+        var invitationMessage = document.getElementById('invitationMessageModal'); // Cambiado aquí
         if (xhr.status === 200) {
             invitationMessage.innerText = 'Invitación enviada con éxito.';
             invitationMessage.classList.remove('text-danger');
@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
 
 
 function setAprobado(aprobado) {

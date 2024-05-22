@@ -34,13 +34,12 @@ public class RelatoGrupoServiceImpl implements  RelatoGrupoService{
     }
 
     @Override
-    public boolean existeRelatoEnviado(int idRelato, int idGrupo) {
-        List<Integer> estados = Arrays.asList(Constantes.ESTADO_PENDIENTE, Constantes.ESTADO_APROBADO);
-        return relatoGrupoRepository.existeRelatoEnviado(idRelato, idGrupo, estados);
+    public Optional<RelatoGrupo> findRelatoGrupoByRelatoAndGrupo(Relato relato, Grupo grupo) {
+        return relatoGrupoRepository.findByRelatoAndGrupo(relato, grupo);
     }
 
     @Override
-    public Optional<RelatoGrupo> findRelatoGrupoByRelatoAndGrupo(Relato relato, Grupo grupo) {
-        return relatoGrupoRepository.findByRelatoAndGrupo(relato, grupo);
+    public List<RelatoGrupo> buscarRelatosGrupo(Grupo grupo, int estado) {
+        return relatoGrupoRepository.findByGrupoAndEstadoOrderByFechaPublicacionDesc(grupo, estado);
     }
 }
