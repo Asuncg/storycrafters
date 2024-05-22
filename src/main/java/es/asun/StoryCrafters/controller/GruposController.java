@@ -14,14 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static es.asun.StoryCrafters.utilidades.Constantes.*;
@@ -30,29 +26,29 @@ import static es.asun.StoryCrafters.utilidades.Constantes.*;
 @RequestMapping("/grupos")
 public class GruposController {
 
-    @Autowired
-    private GrupoService grupoService;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private RelatoGrupoService relatoGrupoService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private SolicitudService solicitudService;
-
-    @Autowired
-    private EstadisticasService estadisticasService;
-
-    @Autowired
-    private  CategoriaService categoriaService;
+    private final GrupoService grupoService;
+    private final EmailService emailService;
+    private final RelatoGrupoService relatoGrupoService;
+    private final UserService userService;
+    private final SolicitudService solicitudService;
+    private final EstadisticasService estadisticasService;
+    private final CategoriaService categoriaService;
 
     private static final String ERROR_VIEW = "views/error/error";
     private static final String INDEX_VIEW = "index";
+
+    @Autowired
+    public GruposController(GrupoService grupoService, EmailService emailService, RelatoGrupoService relatoGrupoService,
+                            UserService userService, SolicitudService solicitudService, EstadisticasService estadisticasService,
+                            CategoriaService categoriaService) {
+        this.grupoService = grupoService;
+        this.emailService = emailService;
+        this.relatoGrupoService = relatoGrupoService;
+        this.userService = userService;
+        this.solicitudService = solicitudService;
+        this.estadisticasService = estadisticasService;
+        this.categoriaService = categoriaService;
+    }
 
     @GetMapping("/mis-grupos")
     public String misGrupos(Model model) {
@@ -93,14 +89,13 @@ public class GruposController {
         return "redirect:/grupos/mis-grupos";
     }
 
-
     @GetMapping("/eliminar-grupo/{id}")
     public String eliminarGrupo(Model model, @PathVariable String id) {
         int idGrupo = Integer.parseInt(id);
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
 
-        if (!grupoValido(grupoOptional, usuario)) {
+        if (!grupoYGestorValido(grupoOptional, usuario)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -108,14 +103,13 @@ public class GruposController {
         return "redirect:/grupos/mis-grupos";
     }
 
-
     @GetMapping("/editar-grupo/{id}")
     public String editarGrupo(Model model, @PathVariable String id) {
         int idGrupo = Integer.parseInt(id);
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
 
-        if (!grupoValido(grupoOptional, usuario)) {
+        if (!grupoYGestorValido(grupoOptional, usuario)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -136,7 +130,7 @@ public class GruposController {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
 
-        if (!grupoValido(grupoOptional, usuario)) {
+        if (!grupoYGestorValido(grupoOptional, usuario)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -161,7 +155,7 @@ public class GruposController {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
 
-        if (!grupoValido(grupoOptional, usuario)) {
+        if (!grupoYGestorValido(grupoOptional, usuario)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -176,31 +170,48 @@ public class GruposController {
     }
 
     @PostMapping("/ingresar-invitacion")
-    public String ingresarInvitacion(@RequestParam("codigoInvitacion") String codigoInvitacion, Model model) {
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> ingresarInvitacion(@RequestParam("codigoInvitacion") String codigoInvitacion) {
+        Map<String, String> response = new HashMap<>();
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoByCodigoAcceso(codigoInvitacion);
 
         if (grupoOptional.isEmpty()) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
+            response.put("status", "error");
+            response.put("message", "Hubo un error al intentar ingresar al grupo.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         Grupo grupo = grupoOptional.get();
 
         if (grupo.getUsuarios().contains(usuario)) {
-            model.addAttribute("mensaje", "Ya eres miembro de este grupo.");
-            return "redirect:/grupos/mis-grupos";
+            response.put("status", "error");
+            response.put("message", "Ya eres miembro de este grupo.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        if (usuario.getFirmaAutor().isEmpty()) {
+            response.put("status", "error");
+            response.put("message", "Debes tener una firma de Autor para poder publicar tus obras antes de entrar a un grupo. Configúrala en tu perfil!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        Optional<Solicitud> solicitudOptional = solicitudService.buscarSolicitud(grupo, usuario);
+
+        if (solicitudOptional.isPresent()) {
+            response.put("status", "error");
+            response.put("message", "Ya has enviado una solicitud de ingreso para este grupo.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         Solicitud solicitud = new Solicitud();
-
         solicitud.setGrupo(grupo);
         solicitud.setUsuario(usuario);
-
         solicitudService.guardarSolicitud(solicitud);
 
-        model.addAttribute("mensaje", "¡Te has unido al grupo con éxito!");
-        return "redirect:/grupos/mis-grupos";
+        response.put("status", "success");
+        response.put("message", "¡Te has unido al grupo con éxito! Espera a que el gestor acepte la solicitud.");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/abandonar-grupo")
@@ -268,6 +279,10 @@ public class GruposController {
                 model.addAttribute("content", "views/grupos/grupo-solicitudes");
                 break;
             case "relatos-rechazados":
+                listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+                List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
+
+                model.addAttribute("listaRelatosRechazados", relatosRechazados);
                 model.addAttribute("content", "views/grupos/grupo-relatos-rechazados");
                 break;
             default:
@@ -275,32 +290,6 @@ public class GruposController {
                 break;
         }
         return INDEX_VIEW;
-    }
-
-    private void prepararModeloBase(Model model, Grupo grupo) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-
-        List<Solicitud> solicitudesPendientes = solicitudService.buscarSolicitudesPorGrupo(grupo);
-
-        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-        List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
-        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
-
-        model.addAttribute("grupo", grupo);
-        model.addAttribute("idUsuarioActual", usuario.getId());
-        model.addAttribute("listaRelatosPendientes", relatosPendientes);
-        model.addAttribute("listaRelatosRechazados", relatosRechazados);
-        model.addAttribute("solicitudesPendientes", solicitudesPendientes);
-    }
-
-    public List<RelatoGrupo> listarRelatosEstado(List<RelatoGrupo> listaRelatosGrupo, int estado) {
-        List<RelatoGrupo> relatosFiltrados = new ArrayList<>();
-        for (RelatoGrupo relato : listaRelatosGrupo) {
-            if (relato.getEstado() == estado) {
-                relatosFiltrados.add(relato);
-            }
-        }
-        return relatosFiltrados;
     }
 
     @GetMapping("/aprobar-relato/{id}")
@@ -320,23 +309,16 @@ public class GruposController {
                 RelatoGrupoGestionDto relatoGrupoGestionDto = new RelatoGrupoGestionDto();
                 relatoGrupoGestionDto.setId(idRelatoGrupo);
 
-                List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-                List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
-                List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+                prepararModeloBase(model, grupo);
 
-                model.addAttribute("listaRelatosPendientes", relatosPendientes);
-                model.addAttribute("listaRelatosRechazados", relatosRechazados);
                 model.addAttribute("content", "views/grupos/formulario-aprobacion");
                 model.addAttribute("relatoGrupoDto", relatoGrupoGestionDto);
                 model.addAttribute("relatoGrupo", relatoGrupo);
-                model.addAttribute("grupo", grupo);
-                model.addAttribute("idUsuarioActual", usuarioActual.getId());
                 return INDEX_VIEW;
             } else {
                 model.addAttribute("content", ERROR_VIEW);
                 return INDEX_VIEW;
             }
-
         }
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
@@ -380,7 +362,6 @@ public class GruposController {
 
         Usuario usuarioActual = AuthUtils.getAuthUser(userService);
 
-        //Vlidar si existe el relato
         Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
         if (relatoGrupoOptional.isEmpty()) {
             model.addAttribute("content", ERROR_VIEW);
@@ -390,7 +371,6 @@ public class GruposController {
         RelatoGrupo relatoGrupo = relatoGrupoOptional.get();
         RelatoGrupoDto relatoGrupoDto = Mappings.mapToRelatoGrupoDto(relatoGrupo);
 
-        //validar si existe el grupo
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(relatoGrupo.getGrupo().getId());
         if (grupoOptional.isEmpty()) {
             model.addAttribute("content", ERROR_VIEW);
@@ -398,21 +378,15 @@ public class GruposController {
         }
          Grupo grupo = grupoOptional.get();
 
-        //validar que el usuario pertenezca al grupo para poder ver el relato
         if (!grupo.getUsuarios().contains(usuarioActual)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
-        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-        List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
-        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
 
-        model.addAttribute("listaRelatosPendientes", relatosPendientes);
-        model.addAttribute("listaRelatosRechazados", relatosRechazados);
+        prepararModeloBase(model, grupo);
+
         model.addAttribute("content", "views/grupos/vista-relato-grupo");
         model.addAttribute("relatoGrupo", relatoGrupoDto);
-        model.addAttribute("grupo", grupo);
-        model.addAttribute("idUsuarioActual", usuarioActual.getId());
         return INDEX_VIEW;
     }
 
@@ -434,12 +408,15 @@ public class GruposController {
             return INDEX_VIEW;
         }
 
-        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(relatoGrupo.getGrupo());
-        List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
-        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+        Optional<Grupo> grupoOptional = grupoService.findGrupoById(relatoGrupo.getGrupo().getId());
+        if (grupoOptional.isEmpty()) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+        }
+        Grupo grupo = grupoOptional.get();
 
-        model.addAttribute("listaRelatosPendientes", relatosPendientes);
-        model.addAttribute("listaRelatosRechazados", relatosRechazados);
+        prepararModeloBase(model, grupo);
+
         model.addAttribute("relatoRevisado", relatoGrupo);
         model.addAttribute("content", "views/grupos/relato-revisado");
         return INDEX_VIEW;
@@ -479,7 +456,7 @@ public class GruposController {
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(grupoId);
-        if (!grupoValido(grupoOptional, usuario)) {
+        if (!grupoYGestorValido(grupoOptional, usuario)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -504,7 +481,7 @@ public class GruposController {
 
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(Integer.parseInt(grupoId));
 
-        if (!grupoValido(grupoOptional, usuario)) {
+        if (!grupoYGestorValido(grupoOptional, usuario)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -533,7 +510,7 @@ public class GruposController {
         Usuario usuarioGestor = AuthUtils.getAuthUser(userService);
         Optional<Grupo> grupoOptional = grupoService.findGrupoById(grupoId);
 
-        if (!grupoValido(grupoOptional, usuarioGestor)) {
+        if (!grupoYGestorValido(grupoOptional, usuarioGestor)) {
             model.addAttribute("content", "error");
             return "index";
         }
@@ -571,14 +548,9 @@ public class GruposController {
                         .filter(relato -> relato.getRelato().getUsuario().equals(usuarioActual))
                         .collect(Collectors.toList());
 
-                List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
-                List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+                prepararModeloBase(model, grupo);
 
-                model.addAttribute("listaRelatosPendientes", relatosPendientes);
-                model.addAttribute("listaRelatosRechazados", relatosRechazados);
                 model.addAttribute("listaRelatosUsuario", listaRelatosUsuario);
-                model.addAttribute("grupo", grupo);
-                model.addAttribute("idUsuarioActual", usuarioActual.getId());
                 model.addAttribute("content", "views/grupos/grupo-mis-relatos");
                 return INDEX_VIEW;
 
@@ -628,15 +600,10 @@ public class GruposController {
                     model.addAttribute("content", ERROR_VIEW);
                 }
 
-                List<RelatoGrupo> relatosRechazados = listarRelatosEstado(listaRelatosGrupo, Constantes.ESTADO_RECHAZADO);
-                List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+                prepararModeloBase(model, grupo);
 
-                model.addAttribute("listaRelatosPendientes", relatosPendientes);
-                model.addAttribute("listaRelatosRechazados", relatosRechazados);
                 model.addAttribute("listaRelatosUsuario", listaRelatosUsuario);
                 model.addAttribute("usuario", usuario);
-                model.addAttribute("grupo", grupo);
-                model.addAttribute("idUsuarioActual", usuarioActual.getId());
                 return INDEX_VIEW;
 
             } else {
@@ -649,7 +616,7 @@ public class GruposController {
         }
     }
 
-    private Boolean grupoValido(Optional<Grupo> grupoOptional, Usuario usuario) {
+    private Boolean grupoYGestorValido(Optional<Grupo> grupoOptional, Usuario usuario) {
         if (grupoOptional.isEmpty()) {
             return false;
         }
@@ -657,7 +624,29 @@ public class GruposController {
         return usuario.getId() == grupo.getUsuario().getId();
     }
 
+    private void prepararModeloBase(Model model, Grupo grupo) {
+        Usuario usuario = AuthUtils.getAuthUser(userService);
 
+        List<Solicitud> solicitudesPendientes = solicitudService.buscarSolicitudesPorGrupo(grupo);
+
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+        List<RelatoGrupo> relatosPendientes = listarRelatosEstado(listaRelatosGrupo, ESTADO_PENDIENTE);
+
+        model.addAttribute("grupo", grupo);
+        model.addAttribute("idUsuarioActual", usuario.getId());
+        model.addAttribute("listaRelatosPendientes", relatosPendientes);
+        model.addAttribute("solicitudesPendientes", solicitudesPendientes);
+    }
+
+    public List<RelatoGrupo> listarRelatosEstado(List<RelatoGrupo> listaRelatosGrupo, int estado) {
+        List<RelatoGrupo> relatosFiltrados = new ArrayList<>();
+        for (RelatoGrupo relato : listaRelatosGrupo) {
+            if (relato.getEstado() == estado) {
+                relatosFiltrados.add(relato);
+            }
+        }
+        return relatosFiltrados;
+    }
 
 }
 

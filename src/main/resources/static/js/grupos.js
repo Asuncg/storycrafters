@@ -1,4 +1,3 @@
-var groupId;
 document.addEventListener("DOMContentLoaded", function () {
     var abandonarGrupoBtns = document.querySelectorAll('.abandonar-grupo-btn');
     abandonarGrupoBtns.forEach(function (btn) {
@@ -7,30 +6,56 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('grupoIdInput').value = grupoId;
         });
     });
+
+    var submitInvitacionBtn = document.getElementById('submitInvitacionBtn');
+    submitInvitacionBtn.addEventListener('click', function () {
+        var codigoInvitacion = document.getElementById('codigoInvitacion').value;
+        fetch('/grupos/ingresar-invitacion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ codigoInvitacion: codigoInvitacion })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Hubo un error al intentar ingresar al grupo.');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                var invitationMessage = document.getElementById('invitationMessage');
+                invitationMessage.style.display = 'block';
+                if (data.status === 'success') {
+                    invitationMessage.className = 'alert alert-success';
+                    invitationMessage.textContent = data.message;
+                } else {
+                    invitationMessage.className = 'alert alert-danger';
+                    invitationMessage.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                var invitationMessage = document.getElementById('invitationMessage');
+                invitationMessage.className = 'alert alert-danger';
+                invitationMessage.textContent = error.message;
+                invitationMessage.style.display = 'block';
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    });
 });
 
 function openInvitationModal(element) {
     groupId = element.getAttribute('data-group-id');
+    document.getElementById('invitationEmail').value = '';
+    document.getElementById('invitationMessage').style.display = 'none';
 
-    $('#invitationEmail').val('');
-    $('#invitationMessage').hide();
-
-    $('#invitationModal').modal('show');
-
-
+    var invitationModal = new bootstrap.Modal(document.getElementById('invitationModal'));
+    invitationModal.show();
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    var sendInvitationBtn = document.getElementById('sendInvitationBtn');
-    if (sendInvitationBtn) {
-        sendInvitationBtn.addEventListener('click', function () {
-            console.log("Botón 'Enviar Invitación' clickeado");
-            sendInvitations();
-        });
-    }
-});
-
-
+// Función para manejar las invitaciones
 function sendInvitations() {
     var email = document.getElementById('invitationEmail').value.trim();
 
@@ -53,26 +78,35 @@ function sendInvitations() {
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function () {
+        var invitationMessage = document.getElementById('invitationMessage');
         if (xhr.status === 200) {
-            document.getElementById('invitationMessage').innerText = 'Invitación enviada con éxito.';
-            document.getElementById('invitationMessage').classList.remove('text-danger');
-            document.getElementById('invitationMessage').classList.add('text-success');
-            document.getElementById('invitationMessage').style.display = 'block';
+            invitationMessage.innerText = 'Invitación enviada con éxito.';
+            invitationMessage.classList.remove('text-danger');
+            invitationMessage.classList.add('text-success');
         } else {
-            document.getElementById('invitationMessage').innerText = 'Error al enviar la invitación.';
-            document.getElementById('invitationMessage').classList.remove('text-success');
-            document.getElementById('invitationMessage').classList.add('text-danger');
-            document.getElementById('invitationMessage').style.display = 'block';
+            invitationMessage.innerText = 'Error al enviar la invitación.';
+            invitationMessage.classList.remove('text-success');
+            invitationMessage.classList.add('text-danger');
         }
+        invitationMessage.style.display = 'block';
     };
 
     xhr.send(JSON.stringify(data));
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    var sendInvitationBtn = document.getElementById('sendInvitationBtn');
+    if (sendInvitationBtn) {
+        sendInvitationBtn.addEventListener('click', function () {
+            sendInvitations();
+        });
+    }
+});
+
+
 function setAprobado(aprobado) {
     document.getElementById('aprobado').value = aprobado;
 }
-
 
 function toggleSeleccionarTodos() {
     var checkboxes = document.querySelectorAll('input[name="solicitudIds"]');
@@ -110,7 +144,6 @@ function confirmarEliminacionUsuario(link) {
     };
 }
 
-//CALCULAR LA NOTA MEDIA DE LOS RELATOS DEL USUARIO
 function calcularMedia() {
     var checkboxes = document.querySelectorAll('input[name="relatoIds"]:checked');
     var totalCalificaciones = 0;

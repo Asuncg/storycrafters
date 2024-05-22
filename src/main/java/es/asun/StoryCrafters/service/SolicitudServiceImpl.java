@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SolicitudServiceImpl implements SolicitudService {
@@ -26,8 +27,12 @@ public class SolicitudServiceImpl implements SolicitudService {
     }
 
     @Override
+    @Transactional
     public void guardarSolicitud(Solicitud solicitud) {
-        solicitudRepository.save(solicitud);
+        Optional<Solicitud> solicitudExistente = solicitudRepository.findByGrupoAndUsuario(solicitud.getGrupo(), solicitud.getUsuario());
+        if (solicitudExistente.isEmpty()) {
+            solicitudRepository.save(solicitud);
+        }
     }
 
     @Override
@@ -67,5 +72,10 @@ public class SolicitudServiceImpl implements SolicitudService {
             Solicitud solicitud = buscarSolicitudPorId(solicitudId);
             eliminarSolicitud(solicitud);
         }
+    }
+
+    @Override
+    public Optional<Solicitud> buscarSolicitud(Grupo grupo, Usuario usuario) {
+        return solicitudRepository.findByGrupoAndUsuario(grupo, usuario);
     }
 }

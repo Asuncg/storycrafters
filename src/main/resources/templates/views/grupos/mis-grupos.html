@@ -1,13 +1,18 @@
-<div class="container">
+<script src="/js/grupos.js"></script>
+<div class="container text-center">
+    <hr class="mt-0">
+    <h1>Tus Grupos</h1>
+    <hr class="mt-0">
     <!-- Botones para crear y unirse a grupos -->
     <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-6 text-left">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#crearGrupoModal">
                 Crear Nuevo Grupo
             </button>
         </div>
         <div class="col-md-6 text-right">
-            <button class="btn btn-success" data-toggle="modal" data-target="#ingresarInvitacionModal">Unirse a Grupo</button>
+            <button class="btn btn-success" data-toggle="modal" data-target="#ingresarInvitacionModal">Unirse a Grupo
+            </button>
         </div>
     </div>
     <!-- Lista de Grupos -->
@@ -16,8 +21,9 @@
             <!-- Encabezados de las columnas -->
             <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
                 <div class="col-sm-1"></div>
-                <div class="col-sm-5 text-left">Nombre del Grupo</div>
-                <div class="col-sm-4 text-center">Usuarios</div>
+                <div class="col-sm-4 text-left">Nombre del Grupo</div>
+                <div class="col-sm-2 text-center">Gestor</div>
+                <div class="col-sm-2 text-center">Usuarios</div>
                 <div class="col-sm-1">Opciones</div>
             </div>
             <!-- Grupos -->
@@ -28,18 +34,21 @@
                 <div class="col-sm-1 text-center" th:if="${grupo.usuario.id ne idUsuarioActual}">
                     <i class="fa-solid fa-user fa-2xl" style="color: #106875;"></i>
                 </div>
-                <div class="col-sm-5" th:if="${grupo.usuario.id eq idUsuarioActual}">
+                <div class="col-sm-4">
                     <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/publicaciones'}">
-                        <div th:text="${grupo.nombre}">Nombre de Grupo</div>
+                        <div th:text="${grupo.nombre}"></div>
                     </a>
                 </div>
-                <div class="col-sm-5" th:if="${grupo.usuario.id ne idUsuarioActual}">
-                    <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/publicaciones'}">
-                        <div th:text="${grupo.nombre}">Nombre de Grupo</div>
-                    </a>
+                <div class="col-sm-2 text-center">
+                    <div th:text="${grupo.usuario.firstName}"></div>
                 </div>
-                <div class="col-sm-4 text-center" th:text="${#lists.size(grupo.usuarios)} + ' usuarios'">5 usuarios
+                <div class="col-sm-2 text-center">
+                    <span th:text="${#lists.size(grupo.usuarios)}"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                    </svg>
                 </div>
+
                 <div class="col-sm-1 text-center">
                     <div class="dropdown show">
                         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
@@ -51,16 +60,25 @@
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" data-target="#agregarUsuariosModal" th:data-group-id="${grupo.id}" onclick="openInvitationModal(this)">Invitar Usuarios</a>
-                            <a class="dropdown-item"  href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/estadisticas-grupo/' + ${grupo.id}}">Estadísticas</a>
-                            <a class="dropdown-item"  href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" th:href="@{'/grupos/editar-grupo/' + ${grupo.id}}">Editar</a>
-                            <a class="dropdown-item"  href="#" th:if="${grupo.usuario.id eq idUsuarioActual}" data-toggle="modal" th:data-target="'#eliminarGrupoModal_' + ${grupo.id}">Eliminar</a>
-                            <a class="dropdown-item abandonar-grupo-btn"  href="#" th:if="${grupo.usuario.id ne idUsuarioActual}" data-toggle="modal" data-target="#abandonarGrupoModal" th:data-group-id="${grupo.id}" id="abandonarGrupoBtns">Abandonar Grupo</a>
+                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}"
+                               data-toggle="modal" data-target="#agregarUsuariosModal" th:data-group-id="${grupo.id}"
+                               onclick="openInvitationModal(this)">Invitar Usuarios</a>
+                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}"
+                               th:href="@{'/grupos/estadisticas-grupo/' + ${grupo.id}}">Estadísticas</a>
+                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}"
+                               th:href="@{'/grupos/editar-grupo/' + ${grupo.id}}">Editar</a>
+                            <a class="dropdown-item" href="#" th:if="${grupo.usuario.id eq idUsuarioActual}"
+                               data-toggle="modal" th:data-target="'#eliminarGrupoModal_' + ${grupo.id}">Eliminar</a>
+                            <a class="dropdown-item abandonar-grupo-btn" href="#"
+                               th:if="${grupo.usuario.id ne idUsuarioActual}" data-toggle="modal"
+                               data-target="#abandonarGrupoModal" th:data-group-id="${grupo.id}"
+                               id="abandonarGrupoBtns">Abandonar Grupo</a>
                         </div>
                     </div>
                 </div>
                 <!-- Modal para confirmar la eliminación del grupo -->
-                <div class="modal fade" th:id="'eliminarGrupoModal_' + ${grupo.id}" tabindex="-1" role="dialog" aria-labelledby="'eliminarGrupoModalLabel_' + ${grupo.id}" aria-hidden="true">
+                <div class="modal fade" th:id="'eliminarGrupoModal_' + ${grupo.id}" tabindex="-1" role="dialog"
+                     aria-labelledby="'eliminarGrupoModalLabel_' + ${grupo.id}" aria-hidden="true">
                     aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -71,13 +89,16 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                ¿Estás seguro de que quieres eliminar este grupo? Se perderán todas las evaluaciones hechas a los
-                                miembros y los relatos enviados se perderán, aunque los usuarios sí conservarán el relato original. El
+                                ¿Estás seguro de que quieres eliminar este grupo? Se perderán todas las evaluaciones
+                                hechas a los
+                                miembros y los relatos enviados se perderán, aunque los usuarios sí conservarán el
+                                relato original. El
                                 grupo no se podrá recuperar.
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <a class="btn btn-danger" id="eliminarGrupoBtn" th:href="@{'/grupos/eliminar-grupo/' + ${grupo.id}}" role="button">Eliminar</a>
+                                <a class="btn btn-danger" id="eliminarGrupoBtn"
+                                   th:href="@{'/grupos/eliminar-grupo/' + ${grupo.id}}" role="button">Eliminar</a>
                             </div>
                         </div>
                     </div>
@@ -87,7 +108,8 @@
     </div>
 </div>
 <!-- Modal para crear un nuevo grupo -->
-<div class="modal fade" id="crearGrupoModal" tabindex="-1" role="dialog" aria-labelledby="crearGrupoModalLabel" aria-hidden="true">
+<div class="modal fade" id="crearGrupoModal" tabindex="-1" role="dialog" aria-labelledby="crearGrupoModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -105,7 +127,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción *</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" maxlength="500" required></textarea>
+                        <textarea class="form-control" id="descripcion" name="descripcion" maxlength="500"
+                                  required></textarea>
                     </div>
                     <!-- Botón de enviar -->
                     <button type="submit" class="btn btn-primary">Crear Grupo</button>
@@ -114,34 +137,9 @@
         </div>
     </div>
 </div>
-
-<!-- Modal de agregar invitaciones -->
-<div class="modal fade" id="invitationModal" tabindex="-1" role="dialog" aria-labelledby="invitationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="invitationModalLabel">Mandar invitación</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Campo de correo electrónico -->
-                <div class="form-group email-field">
-                    <input type="email" class="form-control" id="invitationEmail" placeholder="Correo electrónico" required>
-                </div>
-                <!-- Mensaje de éxito o error -->
-                <div id="invitationMessage" style="display: none;"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="sendInvitationBtn">Enviar Invitación</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- Modal para ingresar el código de invitación -->
-<div class="modal fade" id="ingresarInvitacionModal" tabindex="-1" aria-labelledby="ingresarInvitacionModalLabel" aria-hidden="true">
+<div class="modal fade" id="ingresarInvitacionModal" tabindex="-1" aria-labelledby="ingresarInvitacionModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -149,23 +147,24 @@
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form th:action="@{/grupos/ingresar-invitacion}" method="post">
+                <form id="ingresarInvitacionForm">
                     <div class="mb-3">
                         <label for="codigoInvitacion" class="form-label">Código de Invitación:</label>
                         <input type="text" class="form-control" id="codigoInvitacion" name="codigoInvitacion" required>
                     </div>
+                    <div id="invitationMessage" class="mt-3"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Unirse al Grupo</button>
+                        <button type="button" class="btn btn-primary" id="submitInvitacionBtn">Unirse al Grupo</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 <!-- Modal para abandonar el grupo -->
-<div class="modal fade" id="abandonarGrupoModal" tabindex="-1" aria-labelledby="abandonarGrupoModalLabel" aria-hidden="true">
+<div class="modal fade" id="abandonarGrupoModal" tabindex="-1" aria-labelledby="abandonarGrupoModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

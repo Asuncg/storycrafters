@@ -10,7 +10,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col text-center">
-              <img th:src="${userDto.avatar.url}" alt="Avatar" class="img-fluid my-4 rounded-circle avatar">
+              <img th:src="${currentUser.avatar.url}" alt="Avatar" class="img-fluid my-4 rounded-circle avatar">
             </div>
             <div class="col">
               <a class="btn btn-primary my-5" href="#" role="button" th:href="@{/user/profile/edit-avatar}"> Cambiar Avatar</a>
@@ -20,17 +20,17 @@
             <!-- Campos de edición -->
             <div class="mb-3">
               <label for="firstName" class="form-label">Nombre *</label>
-              <input type="text" class="form-control" id="firstName" name="firstName" th:value="${userDto.firstName}"
+              <input type="text" class="form-control" id="firstName" name="firstName" th:value="${currentUser.firstName}"
                      th:maxlength="60" pattern="^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$" required>
             </div>
             <div class="mb-3">
               <label for="lastName" class="form-label">Apellidos</label>
-              <input type="text" class="form-control" id="lastName" name="lastName" th:value="${userDto.lastName}"
+              <input type="text" class="form-control" id="lastName" name="lastName" th:value="${currentUser.lastName}"
                      th:maxlength="60" pattern="^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$">
             </div>
             <div class="mb-3">
               <label for="firmaAutor" class="form-label">Firma de Autor</label>
-              <input type="text" class="form-control" id="firmaAutor" name="firmaAutor" th:value="${userDto.firmaAutor}"
+              <input type="text" class="form-control" id="firmaAutor" name="firmaAutor" th:value="${currentUser.firmaAutor}"
                      th:maxlength="60" pattern="^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$">
             </div>
             <!-- Botón de enviar -->

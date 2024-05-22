@@ -21,27 +21,26 @@ import java.util.*;
 @RequestMapping("/relato")
 public class RelatoController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private RelatoService relatoService;
-
-    @Autowired
-    private CategoriaService categoriaService;
-
-    @Autowired
-    private ImagenesService imagenesService;
-
-    @Autowired
-    private GrupoService grupoService;
-
-    @Autowired
-    private RelatoGrupoService relatoGrupoService;
+    private final UserService userService;
+    private final RelatoService relatoService;
+    private final CategoriaService categoriaService;
+    private final ImagenesService imagenesService;
+    private final GrupoService grupoService;
+    private final RelatoGrupoService relatoGrupoService;
 
     private static final String ERROR_VIEW = "views/error/error";
     private static final String INDEX_VIEW = "index";
 
+    @Autowired
+    public RelatoController(UserService userService, RelatoService relatoService, CategoriaService categoriaService,
+                            ImagenesService imagenesService, GrupoService grupoService, RelatoGrupoService relatoGrupoService) {
+        this.userService = userService;
+        this.relatoService = relatoService;
+        this.categoriaService = categoriaService;
+        this.imagenesService = imagenesService;
+        this.grupoService = grupoService;
+        this.relatoGrupoService = relatoGrupoService;
+    }
     @GetMapping("/mis-relatos")
     public String misRelatos(Model model) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
