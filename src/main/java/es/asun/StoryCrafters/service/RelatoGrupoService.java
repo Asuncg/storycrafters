@@ -17,4 +17,6 @@ public interface RelatoGrupoService {
 
     List<RelatoGrupo> buscarRelatosGrupo(Grupo grupo, int estado);
 
+    void eliminarRelatoGrupo (int idrelato);
+
 }

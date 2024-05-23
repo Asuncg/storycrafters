@@ -42,4 +42,9 @@ public class RelatoGrupoServiceImpl implements  RelatoGrupoService{
     public List<RelatoGrupo> buscarRelatosGrupo(Grupo grupo, int estado) {
         return relatoGrupoRepository.findByGrupoAndEstadoOrderByFechaPublicacionDesc(grupo, estado);
     }
+
+    @Override
+    public void eliminarRelatoGrupo(int idrelato) {
+        relatoGrupoRepository.deleteById(idrelato);
+    }
 }

@@ -1,0 +1,134 @@
+<link rel="stylesheet" href="/css/grupos.css">
+<script src="/js/gestionrelatogrupo.js"></script>
+<div class="nav-scroller py-1 mb-3 nav-grupos">
+    <header class="lh-1 py-3">
+        <div class="row">
+            <div class="col-sm-12 text-center text-uppercase">
+                <h1 class="titulo-grupo" th:text="${grupo.nombre}"></h1>
+            </div>
+        </div>
+    </header>
+    <hr class="mt-0 mb-2">
+    <nav class="nav nav-underline justify-content-between mx-5">
+        <th:block th:include="fragments/navgrupo.html :: nav"></th:block>
+    </nav>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- RELATOS PENDIENTES -->
+            <div class="col-md-12 my-5">
+                <h5>RELATOS PENDIENTES</h5>
+                <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
+                    <div class="col-sm-5 text-left">Título del Relato</div>
+                    <div class="col-sm-5 text-center">Nombre y Apellidos del Autor</div>
+                    <div class="col-sm-2 text-center">Fecha de envío</div>
+                </div>
+                <div th:each="relatoGrupo : ${listaRelatosPendientes}" class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="col-sm-5">
+                        <a th:href="@{'/grupos/' + ${relatoGrupo.grupo.id} + '/revisar-relato/' + ${relatoGrupo.id}}">
+                            <div th:utext="${relatoGrupo.titulo}"></div>
+                        </a>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <div th:text="${relatoGrupo.relato.usuario.firstName} + ' ' + ${relatoGrupo.relato.usuario.lastName}"></div>
+                    </div>
+                    <div class="col-sm-2 text-center">
+                        <div th:text="${#dates.format(relatoGrupo.fechaModificacion, 'dd/MM/yyyy')}"></div>
+                    </div>
+                    <div class="col-sm-1 text-center">
+                        <a  class="btn btn-outline-primary btn-sm" th:href="@{'/grupos/' + ${relatoGrupo.grupo.id} + '/revisar-relato/' + ${relatoGrupo.id}}">
+                            Revisar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RELATOS PUBLICADOS -->
+            <div class="col-md-12 mb-5">
+                <h5>RELATOS PUBLICADOS</h5>
+                <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
+                    <div class="col-sm-5 text-left">Título del Relato</div>
+                    <div class="col-sm-4 text-center">Nombre y Apellidos del Autor</div>
+                    <div class="col-sm-2 text-center">Fecha de publicación</div>
+                    <div class="col-sm-1 text-center">Opciones</div>
+                </div>
+                <div th:each="relatoGrupo : ${listaRelatosAprobados}" class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="col-sm-5">
+                        <a th:href="@{'/grupos/' + ${relatoGrupo.grupo.id} + '/relato/' + ${relatoGrupo.id}}">
+                            <div th:utext="${relatoGrupo.titulo}"></div>
+                        </a>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <div th:text="${relatoGrupo.relato.usuario.firstName} + ' ' + ${relatoGrupo.relato.usuario.lastName}"></div>
+                    </div>
+                    <div class="col-sm-2 text-center">
+                        <div th:text="${#dates.format(relatoGrupo.fechaModificacion, 'dd/MM/yyyy')}"></div>
+                    </div>
+                    <div class="col-sm-1 text-center">
+                        <a th:data-relatoGrupo-id="${relatoGrupo.id}" th:data-grupo-id="${relatoGrupo.grupo.id}" onclick="confirmDelete(this, 0, 'gestionar-relatos')">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RELATOS RECHAZADOS -->
+            <div class="col-md-12">
+                <h5>RELATOS RECHAZADOS</h5>
+                <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
+                    <div class="col-sm-5 text-left">Título del Relato</div>
+                    <div class="col-sm-4 text-center">Nombre y Apellidos del Autor</div>
+                    <div class="col-sm-2 text-center">Fecha de revisión</div>
+                    <div class="col-sm-1 text-center">Opciones</div>
+                </div>
+                <div th:each="relatoGrupo : ${listaRelatosRechazados}" class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="col-sm-5">
+                        <a th:href="@{'/grupos/' + ${relatoGrupo.grupo.id} + '/relato/' + ${relatoGrupo.id}}">
+                            <div th:utext="${relatoGrupo.titulo}"></div>
+                        </a>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <div th:text="${relatoGrupo.relato.usuario.firstName} + ' ' + ${relatoGrupo.relato.usuario.lastName}"></div>
+                    </div>
+                    <div class="col-sm-2 text-center">
+                        <div th:text="${#dates.format(relatoGrupo.fechaModificacion, 'dd/MM/yyyy')}"></div>
+                    </div>
+                    <div class="col-sm-1 text-center">
+                        <a th:data-relatoGrupo-id="${relatoGrupo.id}" th:data-grupo-id="${relatoGrupo.grupo.id}" onclick="confirmDelete(this, 2, 'gestionar-relatos')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales de confirmación -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="deleteModalBody">
+                <!-- Mensaje dinámico -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <a id="confirmDeleteButton" href="#" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>

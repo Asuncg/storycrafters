@@ -27,7 +27,7 @@
              style="display: flex; flex-wrap: wrap;">
             <th:block th:each="relato : ${listaRelatosUsuario}">
                 <div class="col-md-4 mb-4" th:id="'relato-' + ${relato.id}">
-                    <a th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}">
+                    <a th:href="@{'/grupos/' + ${relato.grupo.id} + '/relato/' + ${relato.id}}">
                         <div class="card card-relatos d-flex">
                             <img class="card-img-top" th:src="${relato.imagen.url}" alt="Card image cap">
                             <div class="card-body">

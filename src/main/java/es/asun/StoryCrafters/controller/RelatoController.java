@@ -184,7 +184,7 @@ public class RelatoController {
 
 
     @GetMapping("/eliminar-relato/{id}")
-    public String eliminarGrupo(Model model, @PathVariable String id) {
+    public String eliminarRelato(Model model, @PathVariable String id) {
         int idRelato = Integer.parseInt(id);
 
         Usuario usuario = AuthUtils.getAuthUser(userService);

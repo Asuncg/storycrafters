@@ -1,4 +1,4 @@
-<script src="/js/grupos.js"></script>
+<script src="/js/listaGrupos.js"></script>
 <div class="container text-center">
     <hr class="mt-0">
     <h1>Tus Grupos</h1>
@@ -35,7 +35,7 @@
                     <i class="fa-solid fa-user fa-2xl" style="color: #106875;"></i>
                 </div>
                 <div class="col-sm-4">
-                    <a th:href="@{'/grupos/ver-grupo/' + ${grupo.id} + '/publicaciones'}">
+                    <a th:href="@{'/grupos/' + ${grupo.id} + '/publicaciones'}">
                         <div th:text="${grupo.nombre}"></div>
                     </a>
                 </div>
