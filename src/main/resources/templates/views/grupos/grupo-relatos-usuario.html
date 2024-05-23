@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/css/grupos.css">
+<link rel="stylesheet" href="/css/relatos.css">
 <script src="/js/grupos.js"></script>
 <div class="nav-scroller py-1 mb-3 nav-grupos">
     <header class="lh-1 py-3">
@@ -14,9 +15,21 @@
     </nav>
 </div>
 <div class="container">
-    <div class="col-md-12">
-        <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle" style="width: 5%;"> <span th:text="${usuario.firmaAutor}"></span>
-        <hr class="mt-0 mb-4">
+    <div class="row vista-relato-autor">
+        <div class="col-sm-6">
+            <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
+            <span th:text="${usuario.firmaAutor}"></span>
+            <hr class="mt-0 mb-2">
+        </div>
+        <div class="col-sm-6">
+            <div class="row justify-content-end">
+                <div class="col-sm-auto m-2">
+                    <a class="btn btn-outline-primary m-1 btn-sm" href="javascript:history.back()">
+                        Volver
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-md-12">
         <div th:if="${#lists.isEmpty(listaRelatosUsuario)}" class="col-sm-auto text-center" role="alert">
