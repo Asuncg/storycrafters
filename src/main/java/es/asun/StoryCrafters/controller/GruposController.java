@@ -77,22 +77,33 @@ public class GruposController {
 
     @GetMapping("/editar-grupo/{id}")
     public String editarGrupo(Model model, @PathVariable String id) {
-        int idGrupo = Integer.parseInt(id);
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-        Grupo grupo = grupoService.findGrupoById(idGrupo);
-
-        if (!gestorValido(grupo, usuario)) {
+        if (!validateId(id)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
 
-        GrupoDto grupoDto = new GrupoDto();
-        model.addAttribute("grupo", grupo);
-        model.addAttribute("grupoDto", grupoDto);
-        model.addAttribute("content", "views/grupos/editar-grupo");
+        try {
+            int idGrupo = Integer.parseInt(id);
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+            Grupo grupo = grupoService.findGrupoById(idGrupo);
 
-        return INDEX_VIEW;
+            if (!gestorValido(grupo, usuario)) {
+                model.addAttribute("content", ERROR_VIEW);
+                return INDEX_VIEW;
+            }
+
+            GrupoDto grupoDto = new GrupoDto();
+            model.addAttribute("grupo", grupo);
+            model.addAttribute("grupoDto", grupoDto);
+            model.addAttribute("content", "views/grupos/editar-grupo");
+
+            return INDEX_VIEW;
+        } catch (GrupoException e) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+        }
     }
+
 
     @PostMapping("actualizar-grupo/{id}")
     public String actualizarGrupo(Model model, @PathVariable String id, GrupoDto grupoDto) {
@@ -162,20 +173,19 @@ public class GruposController {
         }
 
         int idGrupo = Integer.parseInt(grupoId);
-        Grupo grupo = grupoService.findGrupoById(idGrupo);
-
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-        prepararModeloBase(model, grupo);
 
         try {
+            Grupo grupo = grupoService.findGrupoById(idGrupo);
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+            prepararModeloBase(model, grupo);
             grupoService.mostrarVista(grupo, opcion, model, usuario);
-        } catch (GrupoException e) {
+        } catch (NumberFormatException | GrupoException e) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
-
         return INDEX_VIEW;
     }
+
 
     @GetMapping("/{grupoId}/mis-relatos")
     public String verMisRelatosGrupo(@PathVariable("grupoId") String grupoId, Model model) {
@@ -195,7 +205,6 @@ public class GruposController {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
-
     }
 
     @GetMapping("/{grupoId}/revisar-relato/{id}")
@@ -205,30 +214,32 @@ public class GruposController {
             return INDEX_VIEW;
         }
 
-        int idRelatoGrupo = Integer.parseInt(id);
-        int idGrupo = Integer.parseInt(grupoId);
+        try {
+            int idRelatoGrupo = Integer.parseInt(id);
+            int idGrupo = Integer.parseInt(grupoId);
 
+            Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
+            if (relatoGrupoOptional.isPresent()) {
+                RelatoGrupo relatoGrupo = relatoGrupoOptional.get();
+                Grupo grupo = grupoService.findGrupoById(idGrupo);
 
-        Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
-        RelatoGrupo relatoGrupo;
+                RelatoGrupoGestionDto relatoGrupoGestionDto = new RelatoGrupoGestionDto();
+                relatoGrupoGestionDto.setId(idRelatoGrupo);
 
-        if (relatoGrupoOptional.isPresent()) {
-            relatoGrupo = relatoGrupoOptional.get();
-            Grupo grupo = grupoService.findGrupoById(idGrupo);
+                prepararModeloBase(model, grupo);
 
-            RelatoGrupoGestionDto relatoGrupoGestionDto = new RelatoGrupoGestionDto();
-            relatoGrupoGestionDto.setId(idRelatoGrupo);
-
-            prepararModeloBase(model, grupo);
-
-            model.addAttribute("content", "views/grupos/formulario-aprobacion");
-            model.addAttribute("relatoGrupoDto", relatoGrupoGestionDto);
-            model.addAttribute("relatoGrupo", relatoGrupo);
+                model.addAttribute("content", "views/grupos/formulario-aprobacion");
+                model.addAttribute("relatoGrupoDto", relatoGrupoGestionDto);
+                model.addAttribute("relatoGrupo", relatoGrupo);
+                return INDEX_VIEW;
+            } else {
+                model.addAttribute("content", ERROR_VIEW);
+                return INDEX_VIEW;
+            }
+        } catch (NumberFormatException | GrupoException e) {
+            model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
-
         }
-        model.addAttribute("content", ERROR_VIEW);
-        return INDEX_VIEW;
     }
 
     @PostMapping("/gestionar-relato")
@@ -250,29 +261,29 @@ public class GruposController {
             return INDEX_VIEW;
         }
 
-        int idRelatoGrupo = Integer.parseInt(id);
-        int idGrupo = Integer.parseInt(grupoId);
-
-        Usuario usuarioActual = AuthUtils.getAuthUser(userService);
-
-        RelatoGrupoDto relatoGrupoDto = relatoGrupoService.encontrarRelatoGrupoPorId(idRelatoGrupo);
         try {
+            int idRelatoGrupo = Integer.parseInt(id);
+            int idGrupo = Integer.parseInt(grupoId);
+
+            Usuario usuarioActual = AuthUtils.getAuthUser(userService);
+
+            RelatoGrupoDto relatoGrupoDto = relatoGrupoService.encontrarRelatoGrupoPorId(idRelatoGrupo);
             Grupo grupo = grupoService.findGrupoById(idGrupo);
 
             if (!grupo.getUsuarios().contains(usuarioActual)) {
                 model.addAttribute("content", ERROR_VIEW);
                 return INDEX_VIEW;
             }
+
             prepararModeloBase(model, grupo);
 
-        } catch (GrupoException e) {
+            model.addAttribute("content", "views/grupos/vista-relato-grupo");
+            model.addAttribute("relatoGrupo", relatoGrupoDto);
+            return INDEX_VIEW;
+        } catch (NumberFormatException | GrupoException e) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
-
-        model.addAttribute("content", "views/grupos/vista-relato-grupo");
-        model.addAttribute("relatoGrupo", relatoGrupoDto);
-        return INDEX_VIEW;
     }
 
     @GetMapping("/aceptar-solicitud/{solicitudId}")
@@ -293,7 +304,11 @@ public class GruposController {
     }
 
     @GetMapping("/rechazar-solicitud/{solicitudId}")
-    public String rechazarSolicitudGrupo(@PathVariable String solicitudId) {
+    public String rechazarSolicitudGrupo(Model model, @PathVariable String solicitudId) {
+        if (!validateId(solicitudId)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
+        }
 
         Solicitud solicitud = solicitudService.buscarSolicitudPorId(Integer.parseInt(solicitudId));
         solicitudService.eliminarSolicitud(solicitud);
@@ -324,35 +339,43 @@ public class GruposController {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
-
         return "redirect:/grupos/" + grupoId + "/solicitudes";
     }
 
     @GetMapping("/estadisticas-grupo/{grupoId}")
     public String verEstadisticasGrupo(@PathVariable("grupoId") String grupoId, Model model) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
+        try {
+            int idGrupo = Integer.parseInt(grupoId);
 
-        Grupo grupo = grupoService.findGrupoById(Integer.parseInt(grupoId));
+            if (!validateId(grupoId)) {
+                model.addAttribute("content", ERROR_VIEW);
+                return INDEX_VIEW;
+            }
+            Usuario usuario = AuthUtils.getAuthUser(userService);
 
-        if (!gestorValido(grupo, usuario)) {
+            Grupo grupo = grupoService.findGrupoById(idGrupo);
+
+            if (!gestorValido(grupo, usuario)) {
+                model.addAttribute("content", ERROR_VIEW);
+                return INDEX_VIEW;
+            }
+
+            List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+
+            List<RelatoGrupo> relatosAprobados = listaRelatosGrupo.stream()
+                    .filter(relato -> relato.getEstado() == ESTADO_APROBADO)
+                    .collect(Collectors.toList());
+
+            EstadisticasDto estadisticasDto = estadisticasService.calcularEstadisticasGrupo(grupo, relatosAprobados);
+
+            model.addAttribute("grupo", grupo);
+            model.addAttribute("estadisticas", estadisticasDto);
+            model.addAttribute("content", "views/grupos/estadisticas-grupo");
+            return INDEX_VIEW;
+        } catch (NumberFormatException e) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
-
-        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-        List<RelatoGrupo> relatosAprobados = new ArrayList<>();
-        for (RelatoGrupo relato : listaRelatosGrupo) {
-            int estado = relato.getEstado();
-            if (estado == ESTADO_APROBADO) {
-                relatosAprobados.add(relato);
-            }
-        }
-
-        EstadisticasDto estadisticasDto = estadisticasService.calcularEstadisticasGrupo(grupo, relatosAprobados);
-        model.addAttribute("grupo", grupo);
-        model.addAttribute("estadisticas", estadisticasDto);
-        model.addAttribute("content", "views/grupos/estadisticas-grupo");
-        return INDEX_VIEW;
     }
 
     @PostMapping("/eliminar-usuario")
@@ -423,7 +446,6 @@ public class GruposController {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
-
     }
 
     @GetMapping("/{grupoId}/eliminar-relato-grupo/{id}/{vista}")
