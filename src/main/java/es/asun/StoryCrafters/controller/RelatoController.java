@@ -44,13 +44,8 @@ public class RelatoController {
     public String misRelatos(Model model) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
-        List<Relato> relatos = relatoService.findAllRelatoByUsuarioOrderByFecha(usuario);
-        List<RelatoPreviewDto> relatosDto = new ArrayList<>();
+        List<RelatoPreviewDto> relatosDto = relatoService.findAllRelatoByUsuarioOrderByFecha(usuario);
 
-        for (Relato relato : relatos) {
-            RelatoPreviewDto relatoDto = Mappings.mapToRelatoVistaDto(relato);
-            relatosDto.add(relatoDto);
-        }
         List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
         model.addAttribute("content", "views/relatos/mis-relatos");
