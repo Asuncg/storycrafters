@@ -31,22 +31,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(UserRegisterDto userRegisterDto) {
+    public void saveUser(UserRegisterDto userRegisterDto)  {
         Usuario usuario = new Usuario();
         usuario.setFirstName(userRegisterDto.getFirstName());
         usuario.setLastName(userRegisterDto.getLastName());
         usuario.setEmail(userRegisterDto.getEmail());
+        usuario.setAvatar(userRegisterDto.getAvatar());
         usuario.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
 
-        Optional<Avatar> avatarOptional = avatarService.findAvatarById(1);
+        Avatar avatar;
+        try {
+            avatar = avatarService.findAvatarById(1);
+            usuario.setAvatar(avatar);
 
-        if (avatarOptional.isPresent()) {
-            Avatar avatar = avatarOptional.get();
-            userRegisterDto.setAvatar(avatar);
-        } else {
-            throw new AvatarNotFoundException("Default avatar not found");
+            userRepository.save(usuario);
+        } catch (AvatarNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        userRepository.save(usuario);
     }
 
     @Override

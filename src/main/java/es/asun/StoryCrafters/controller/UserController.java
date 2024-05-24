@@ -74,22 +74,18 @@ public class UserController {
     @PostMapping("/profile/update-avatar")
     public String updateAvatarProfile(Model model,@ModelAttribute("user") UserUpdateDto userDto, @RequestParam("selectedAvatarId") Integer selectedAvatarId) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
-        Optional<Avatar> avatarOptional = avatarService.findAvatarById(Integer.parseInt(String.valueOf(selectedAvatarId)));
+        Avatar avatar;
+        try {
+            avatar  = avatarService.findAvatarById(Integer.parseInt(String.valueOf(selectedAvatarId)));
+            usuario.setAvatar(avatar);
+            UserUpdateDto userUpdateDto = new UserUpdateDto(usuario);
 
-        if (avatarOptional.isEmpty()) {
-            try {
-                throw new AvatarNotFoundException("Default avatar not found");
-            } catch (AvatarNotFoundException e) {
-                model.addAttribute("content", ERROR_VIEW);
-                return INDEX_VIEW;            }
+            userService.updateUser(userUpdateDto);
+
+            return "redirect:/user/profile";
+        } catch (AvatarNotFoundException e) {
+            model.addAttribute("content", ERROR_VIEW);
+            return INDEX_VIEW;
         }
-        Avatar avatar = avatarOptional.get();
-
-        usuario.setAvatar(avatar);
-        UserUpdateDto userUpdateDto = new UserUpdateDto(usuario);
-
-        userService.updateUser(userUpdateDto);
-
-        return "redirect:/user/profile";
     }
 }
