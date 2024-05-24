@@ -3,11 +3,12 @@ package es.asun.StoryCrafters.controller;
 import es.asun.StoryCrafters.entity.Avatar;
 import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.exceptions.AvatarNotFoundException;
 import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.AvatarService;
 import es.asun.StoryCrafters.service.RelatoService;
 import es.asun.StoryCrafters.service.UserService;
-import es.asun.StoryCrafters.utilidades.AuthUtils;
+import es.asun.StoryCrafters.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +20,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-
-
     private final UserService userService;
 
     private final AvatarService avatarService;
@@ -45,7 +44,6 @@ public class UserController {
         model.addAttribute("numRelatos", numRelatos);
         return "index";
     }
-
 
     @GetMapping("/edit")
     public String showEditProfileForm(Model model) {
@@ -76,7 +74,7 @@ public class UserController {
         Optional<Avatar> avatarOptional = avatarService.findAvatarById(Integer.parseInt(String.valueOf(selectedAvatarId)));
 
         if (avatarOptional.isEmpty()) {
-            //poner un error
+            throw new AvatarNotFoundException("Default avatar not found");
         }
         Avatar avatar = avatarOptional.get();
 

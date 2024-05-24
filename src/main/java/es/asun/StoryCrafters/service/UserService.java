@@ -9,11 +9,9 @@ import java.util.Optional;
 
 public interface UserService {
 
-
-    List<UserRegisterDto> findAllUsers();
     void saveUser(UserRegisterDto userRegisterDto);
 
-    Usuario findUserByEmail(String email);
+    Optional<Usuario> findUserByEmail(String email);
 
     void updateUser(UserUpdateDto user);
 

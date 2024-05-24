@@ -6,7 +6,7 @@
     <header class="lh-1 py-3">
         <div class="row">
             <div class="col-sm-12 text-center text-uppercase">
-                <h1 class ="titulo-grupo" th:text="${grupo.nombre}"></h1>
+                <h1 class="titulo-grupo" th:text="${grupo.nombre}"></h1>
             </div>
         </div>
     </header>
@@ -19,8 +19,10 @@
 <div class="container">
     <div class="row vista-relato-autor">
         <div class="col-sm-6">
-            <img th:src="${relatoGrupo.usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
-            <span th:text="${relatoGrupo.firmaAutor}"></span>
+            <a href="#" th:href="@{'/grupos/' + ${grupo.id} + '/usuario/'  + ${currentUser.id} + '/relatos'}">
+                <img th:src="${relatoGrupo.usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
+                <span th:text="${relatoGrupo.firmaAutor}"></span>
+            </a>
         </div>
         <div class="col-sm-6">
             <div class="row justify-content-end">
@@ -37,7 +39,9 @@
     <div class="row vista-relato">
         <div class="col-sm-12 vista-relato-separador">
             <div class="row">
-                <div class="col-md-12 vista-titulo-relato text-center" th:style="'background-image: url(' + ${relatoGrupo.imagen.url} + '); opacity: 0.5;'" th:utext="${relatoGrupo.titulo}"></div>
+                <div class="col-md-12 vista-titulo-relato text-center"
+                     th:style="'background-image: url(' + ${relatoGrupo.imagen.url} + '); opacity: 0.5;'"
+                     th:utext="${relatoGrupo.titulo}"></div>
             </div>
             <div class="row justify-content-md-center">
                 <div class="col-md-12 vista-texto-relato" th:utext="${relatoGrupo.texto}"></div>

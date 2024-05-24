@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
-import static es.asun.StoryCrafters.utilidades.Constantes.ESTADO_APROBADO;
+import static es.asun.StoryCrafters.utils.Constantes.ESTADO_APROBADO;
 
 @Getter
 @Setter

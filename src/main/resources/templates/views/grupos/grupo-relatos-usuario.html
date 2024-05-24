@@ -5,7 +5,7 @@
     <header class="lh-1 py-3">
         <div class="row">
             <div class="col-sm-12 text-center text-uppercase">
-                <h1 class ="titulo-grupo" th:text="${grupo.nombre}"></h1>
+                <h1 class="titulo-grupo" th:text="${grupo.nombre}"></h1>
             </div>
         </div>
     </header>
@@ -17,9 +17,11 @@
 <div class="container">
     <div class="row vista-relato-autor">
         <div class="col-sm-6">
-            <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
-            <span th:text="${usuario.firmaAutor}"></span>
-            <hr class="mt-0 mb-2">
+            <a href="#" th:href="@{'/grupos/' + ${grupo.id} + '/usuario/'  + ${usuario.id} + '/relatos'}">
+                <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
+                <span th:text="${usuario.firmaAutor}"></span>
+                <hr class="mt-0 mb-2">
+            </a>
         </div>
         <div class="col-sm-6">
             <div class="row justify-content-end">

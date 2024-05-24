@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,9 +28,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = userRepository.findByEmail(email);
+        Optional<Usuario> usuarioOptional = userRepository.findByEmail(email);
 
-        if (usuario != null) {
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
             return new org.springframework.security.core.userdetails.User(usuario.getEmail(),
                     usuario.getPassword(),
                     new ArrayList<>());

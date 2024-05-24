@@ -7,7 +7,7 @@
         <hr class="mt-0">
         <!-- Filtro y botones de ordenamiento -->
         <div class="d-flex justify-content-between align-items-center mb-3" th:if="${not #lists.isEmpty(relatos)}">
-            <div class="form-group">
+            <div class="col-sm-3 form-group">
                 <label for="categoria"></label><select id="categoria" name="categoria" class="form-control">
                 <option value="">Mostrar todas las categorías</option>
                 <th:block th:each="categoria : ${listaCategorias}">
@@ -15,25 +15,10 @@
                 </th:block>
             </select>
             </div>
-            <!-- Botones de ordenamiento -->
-            <div class="btn-group" role="group" aria-label="Ordenar">
-                <button type="button" class="btn btn-secondary" id="btn-ordenar-reciente">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-arrow-up-short" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                              d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"></path>
-                    </svg>
-                </button>
-                <button type="button" class="btn btn-secondary" id="btn-ordenar-antiguo">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-arrow-down-short" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                              d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4"></path>
-                    </svg>
-                </button>
+            <div class="col-sm-3 input-group mt-3 mt-lg-0 ">
+                <input class="form-control" type="search" id="searchInput" placeholder="Search" aria-label="Buscar Relato">
             </div>
         </div>
-
         <div class="row" id="relatos" style="display: flex; flex-wrap: wrap;">
             <div th:if="${#lists.isEmpty(relatos)}" class="col-sm-12 text-center" role="alert">
                 <h2>Aún no tienes ningún relato creado</h2>
@@ -51,7 +36,7 @@
                         <div class="card card-relatos d-flex">
                             <img class="card-img-top" th:src="${relato.imagen.url}" alt="Card image cap">
                             <div class="card-body">
-                                <h5 class="card-title"><a th:utext="${relato.titulo}" th:href="@{'/relato/relatos/' + ${relato.id}}"></a></h5>
+                                <h5 class="card-title text-center"><a th:utext="${relato.titulo}" th:href="@{'/relato/relatos/' + ${relato.id}}"></a></h5>
                                 <hr class="mt-0">
                                 <p class="card-text text-center"><small>Última actualización: </small><small class="text-muted" th:text="${#dates.format(relato.fechaActualizacion, 'dd/MM/yyyy')}"></small></p>
                                 <input type="hidden" class="categorias" th:each="categoria : ${relato.categorias}"

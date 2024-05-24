@@ -74,11 +74,4 @@ public class EmailService {
 
         sendEmail(to, asunto, mensajeHtml);
     }
-
-    public void enviarNotificacion(String to, String feedback, String titulo) {
-
-        String asunto = "Story Craters - Notifiacion sobre estado de tu relato, " + titulo;
-
-        sendEmail(to, asunto, feedback);
-    }
 }

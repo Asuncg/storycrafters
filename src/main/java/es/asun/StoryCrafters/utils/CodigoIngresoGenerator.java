@@ -1,4 +1,4 @@
-package es.asun.StoryCrafters.utilidades;
+package es.asun.StoryCrafters.utils;
 
 import java.security.SecureRandom;
 import java.util.Base64;

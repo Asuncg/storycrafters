@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Optional;
+
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
@@ -19,7 +21,12 @@ public class GlobalControllerAdvice {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
             String email = ((UserDetails) principal).getUsername();
-            return userService.findUserByEmail(email);
+            Optional<Usuario> usuarioOptional = userService.findUserByEmail(email);
+
+            if (usuarioOptional.isEmpty()) {
+                //agregar excepcion
+            }
+            return usuarioOptional.get();
         }
         return null;
     }

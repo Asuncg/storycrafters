@@ -1,12 +1,10 @@
 package es.asun.StoryCrafters.controller;
 
-import es.asun.StoryCrafters.entity.Avatar;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
-import es.asun.StoryCrafters.service.AvatarService;
 import es.asun.StoryCrafters.service.UserService;
-import es.asun.StoryCrafters.utilidades.AuthUtils;
+import es.asun.StoryCrafters.utils.AuthUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,18 +17,14 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.util.Optional;
 
-
 @Controller
 @SessionAttributes({"DataUser"})
 public class AuthController {
     private final UserService userService;
 
-    private final AvatarService avatarService;
-
     @Autowired
-public AuthController(UserService userService, AvatarService avatarService) {
+    public AuthController(UserService userService) {
         this.userService = userService;
-        this.avatarService = avatarService;
     }
 
     @GetMapping(value = {"/", "/index"})
@@ -46,9 +40,9 @@ public AuthController(UserService userService, AvatarService avatarService) {
     public String login() {
         return "login";
     }
+
     @GetMapping(value = {"/registro"})
     public String showRegistrationForm(Model model) {
-
         UserRegisterDto user = new UserRegisterDto();
         model.addAttribute("usuario", user);
         return "registro";
@@ -59,24 +53,17 @@ public AuthController(UserService userService, AvatarService avatarService) {
                                BindingResult result,
                                Model model
     ) {
-        Usuario existingUsuario = userService.findUserByEmail(userRegisterDto.getEmail());
+        Optional<Usuario> usuarioOptional = userService.findUserByEmail(userRegisterDto.getEmail());
 
-        if (existingUsuario != null && existingUsuario.getEmail() != null && !existingUsuario.getEmail().isEmpty()) {
-            result.rejectValue("email", null,
-                    "There is already an account registered with the same email");
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            if (usuario.getEmail() != null && !usuario.getEmail().isEmpty()) {
+                result.rejectValue("email", null,
+                        "There is already an account registered with the same email");
+            }
         }
 
         if (result.hasErrors()) {
-            model.addAttribute("user", userRegisterDto);
-            return "redirect:/registro?error";
-        }
-
-        Optional<Avatar> avatarOptional = avatarService.findAvatarById(1);
-
-        if (avatarOptional.isPresent()) {
-            Avatar avatar = avatarOptional.get();
-            userRegisterDto.setAvatar(avatar);
-        } else {
             model.addAttribute("user", userRegisterDto);
             return "redirect:/registro?error";
         }

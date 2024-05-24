@@ -6,10 +6,10 @@ import es.asun.StoryCrafters.model.GrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
 import es.asun.StoryCrafters.service.*;
-import es.asun.StoryCrafters.utilidades.AuthUtils;
-import es.asun.StoryCrafters.utilidades.CodigoIngresoGenerator;
-import es.asun.StoryCrafters.utilidades.Constantes;
-import es.asun.StoryCrafters.utilidades.Mappings;
+import es.asun.StoryCrafters.utils.AuthUtils;
+import es.asun.StoryCrafters.utils.CodigoIngresoGenerator;
+import es.asun.StoryCrafters.utils.Constantes;
+import es.asun.StoryCrafters.utils.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static es.asun.StoryCrafters.utilidades.Constantes.*;
+import static es.asun.StoryCrafters.utils.Constantes.*;
 
 @Controller
 @RequestMapping("/grupos")
@@ -380,8 +380,6 @@ public class GruposController {
             relatoGrupo.setFechaModificacion(new Date());
             relatoGrupoService.guardarRelatoGrupo(relatoGrupo);
 
-            emailService.enviarNotificacion(relatoGrupo.getRelato().getUsuario().getEmail(), relatoGrupo.getFeedback(), relatoGrupo.getTitulo());
-
             return "redirect:/grupos/" + idGrupo + "/gestionar-relatos";
         } else {
             model.addAttribute("content", ERROR_VIEW);
@@ -421,38 +419,6 @@ public class GruposController {
 
         model.addAttribute("content", "views/grupos/vista-relato-grupo");
         model.addAttribute("relatoGrupo", relatoGrupoDto);
-        return INDEX_VIEW;
-    }
-
-    @GetMapping("/ver-relato-revisado/{relatoGrupoId}")
-    public String verRelatoRevisado(@PathVariable("relatoGrupoId") String relatoGrupoId, Model model) {
-        int idRelatoGrupo = Integer.parseInt(relatoGrupoId);
-
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-
-        Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoById(idRelatoGrupo);
-        if (relatoGrupoOptional.isEmpty()) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
-        }
-        RelatoGrupo relatoGrupo = relatoGrupoOptional.get();
-
-        if (relatoGrupo.getRelato().getUsuario().getId() != usuario.getId()) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
-        }
-
-        Optional<Grupo> grupoOptional = grupoService.findGrupoById(relatoGrupo.getGrupo().getId());
-        if (grupoOptional.isEmpty()) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
-        }
-        Grupo grupo = grupoOptional.get();
-
-        prepararModeloBase(model, grupo);
-
-        model.addAttribute("relatoRevisado", relatoGrupo);
-        model.addAttribute("content", "views/grupos/relato-revisado");
         return INDEX_VIEW;
     }
 
@@ -563,8 +529,6 @@ public class GruposController {
 
         return "redirect:/grupos/" + grupoId + "/usuarios";
     }
-
-
 
     @GetMapping("/{grupoId}/usuario/{usuarioId}/{opcion}")
     public String verRelatosUsuarioGrupo(@PathVariable("grupoId") String grupoId, @PathVariable("usuarioId") String usuarioId, @PathVariable("opcion") String opcion, Model model) {

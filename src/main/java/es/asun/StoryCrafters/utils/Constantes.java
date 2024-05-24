@@ -1,4 +1,4 @@
-package es.asun.StoryCrafters.utilidades;
+package es.asun.StoryCrafters.utils;
 
 public class Constantes {
     public static final int ESTADO_PENDIENTE = 1;

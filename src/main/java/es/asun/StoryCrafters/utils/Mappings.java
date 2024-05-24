@@ -1,4 +1,4 @@
-package es.asun.StoryCrafters.utilidades;
+package es.asun.StoryCrafters.utils;
 
 import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.model.GrupoDto;

@@ -62,7 +62,7 @@
             <!-- Usuarios-->
             <div th:each="usuario : ${grupo.usuarios}" class="list-group-item d-flex justify-content-between align-items-center" th:id="'usuario_' + ${usuario.id}">
                 <div class="col-sm-5">
-                    <a href="#">
+                    <a href="#" th:href="@{'/grupos/' + ${grupo.id} + '/usuario/'  + ${usuario.id} + '/relatos'}">
                         <div th:text="${usuario.firstName}"></div>
                     </a>
                 </div>
