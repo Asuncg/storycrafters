@@ -4,6 +4,7 @@ import es.asun.StoryCrafters.entity.Categoria;
 import es.asun.StoryCrafters.entity.Imagen;
 import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.exceptions.RelatoException;
 import es.asun.StoryCrafters.model.RelatoDto;
 import es.asun.StoryCrafters.model.RelatoPreviewDto;
 
@@ -17,7 +18,7 @@ public interface RelatoService {
 
     List<Relato> findAllRelatosByUsuarioAndNotArchivado(Usuario usuario);
 
-    Optional<Relato> findRelatoByIdAndNotArchivado(int id);
+    Relato findRelatoByIdAndNotArchivado(int id) throws RelatoException;
 
     List<RelatoPreviewDto> findAllRelatoByUsuarioOrderByFecha(Usuario usuario);
 

@@ -4,6 +4,7 @@ package es.asun.StoryCrafters.service;
 import es.asun.StoryCrafters.entity.Avatar;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.exceptions.AvatarNotFoundException;
+import es.asun.StoryCrafters.exceptions.UsuarioException;
 import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.repository.UserRepository;
@@ -75,8 +76,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Usuario> findUserById(int id) {
-        return userRepository.findById(id);
+    public Usuario findUserById(int id) throws UsuarioException {
+        Optional<Usuario> usuarioOptional = userRepository.findById(id);
+        if (usuarioOptional.isEmpty()) {
+            throw new UsuarioException("Usuario no encontrado");
+        }
+        return usuarioOptional.get();
     }
 
 

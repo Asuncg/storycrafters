@@ -3,6 +3,8 @@ package es.asun.StoryCrafters.service;
 import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.Solicitud;
 import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.exceptions.GrupoException;
+import es.asun.StoryCrafters.exceptions.UsuarioException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,6 +27,6 @@ public interface SolicitudService {
 
     Optional<Solicitud> buscarSolicitud(Grupo grupo, Usuario usuario);
 
-    void ingresarInvitacion(Usuario usuario, String codigoInvitacion);
+    void ingresarInvitacion(Usuario usuario, String codigoInvitacion) throws GrupoException, UsuarioException;
 
 }

@@ -2,10 +2,13 @@ package es.asun.StoryCrafters.service;
 
 import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.exceptions.RelatoException;
 import es.asun.StoryCrafters.model.RelatoPreviewDto;
 import es.asun.StoryCrafters.repository.RelatoRepository;
 import es.asun.StoryCrafters.utils.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,8 +33,13 @@ public class RelatoServiceImpl implements RelatoService {
     }
 
     @Override
-    public Optional<Relato> findRelatoByIdAndNotArchivado(int id) {
-        return relatoRepository.findRelatoByIdAndNotArchivado(id);
+    public Relato findRelatoByIdAndNotArchivado(int id) throws RelatoException {
+        Optional<Relato> relatoOptional = relatoRepository.findRelatoByIdAndNotArchivado(id);
+
+        if (relatoOptional.isEmpty()) {
+            throw new RelatoException("Relato no encontrado");
+        }
+        return relatoOptional.get();
     }
 
     @Override

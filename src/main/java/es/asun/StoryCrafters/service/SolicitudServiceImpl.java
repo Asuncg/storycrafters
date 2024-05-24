@@ -83,7 +83,7 @@ public class SolicitudServiceImpl implements SolicitudService {
     }
 
     @Override
-    public void ingresarInvitacion(Usuario usuario, String codigoInvitacion) throws GrupoException, SolicitudException, UsuarioException {
+    public void ingresarInvitacion(Usuario usuario, String codigoInvitacion) throws SolicitudException, GrupoException, UsuarioException {
         Optional<Grupo> grupoOptional = grupoService.findGrupoByCodigoAcceso(codigoInvitacion);
 
         if (grupoOptional.isEmpty()) {

@@ -58,14 +58,14 @@ public class GrupoServiceImpl implements GrupoService {
     }
 
     @Override
-    public String actualizarGrupo(String idGrupo, GrupoDto grupoDto) throws InvalidGrupoException, UnauthorizedAccessException {
+    public String actualizarGrupo(String idGrupo, GrupoDto grupoDto) throws InvalidGrupoException, UnauthorizedAccessException, GrupoException {
         int id = Integer.parseInt(idGrupo);
         String redirect = "redirect:/grupos/";
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
         Grupo grupo = this.findGrupoById(id);
 
-        if (!grupoYGestorValido(grupo, usuario)) {
+        if (!gestorValido(grupo, usuario)) {
             throw new InvalidGrupoException("Invalid group or unauthorized access");
         }
 
@@ -102,37 +102,22 @@ public class GrupoServiceImpl implements GrupoService {
     }
 
     @Override
-    public String eliminarGrupo(final Model model, String id) {
-        int idGrupo = Integer.parseInt(id);
-        String redirect = "redirect:/grupos/";
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-        Grupo grupo = this.findGrupoById(idGrupo);
-
-        if (!grupoYGestorValido(grupo, usuario)) {
-            model.addAttribute("content", "views/error/error");
-            return "index";
-        }
-        this.deleteGrupoById(idGrupo);
-        return redirect;
+    public void eliminarGrupo(int id) {
+        this.deleteGrupoById(id);
     }
 
     @Override
-    public String enviarInvitacion(Map<String, Object> request, Model model) {
-        int idGrupo = Integer.parseInt(request.get("groupId").toString());
-        List<String> emails = (List<String>) request.get("emails");
-
+    public void enviarInvitacion(int idGrupo, List<String> emails) throws GrupoException {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Grupo grupo = this.findGrupoById(idGrupo);
 
-        if (!grupoYGestorValido(grupo, usuario)) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
+        if (!gestorValido(grupo, usuario)) {
+            throw new UnauthorizedAccessException("Acceso Denegado");
         }
 
         for (String email : emails) {
             emailService.enviarInvitacion(email, grupo.getCodigoAcceso(), grupo.getDescripcion(), grupo.getNombre(), usuario.getFirstName());
         }
-        return "Invitaciones enviadas correctamente.";
     }
 
     @Override
@@ -195,11 +180,8 @@ public class GrupoServiceImpl implements GrupoService {
         model.addAttribute("content", "views/grupos/grupo-mis-relatos");
     }
 
-
-
-
-    private Boolean grupoYGestorValido(Grupo grupo, Usuario usuario) {
+    private Boolean gestorValido(Grupo grupo, Usuario usuario) {
         return usuario.getId() == grupo.getUsuario().getId();
-
     }
+
 }

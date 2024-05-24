@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static es.asun.StoryCrafters.utils.Constantes.ERROR_VIEW;
+import static es.asun.StoryCrafters.utils.Constantes.INDEX_VIEW;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -69,12 +72,16 @@ public class UserController {
     }
 
     @PostMapping("/profile/update-avatar")
-    public String updateAvatarProfile(@ModelAttribute("user") UserUpdateDto userDto, @RequestParam("selectedAvatarId") Integer selectedAvatarId) {
+    public String updateAvatarProfile(Model model,@ModelAttribute("user") UserUpdateDto userDto, @RequestParam("selectedAvatarId") Integer selectedAvatarId) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Optional<Avatar> avatarOptional = avatarService.findAvatarById(Integer.parseInt(String.valueOf(selectedAvatarId)));
 
         if (avatarOptional.isEmpty()) {
-            throw new AvatarNotFoundException("Default avatar not found");
+            try {
+                throw new AvatarNotFoundException("Default avatar not found");
+            } catch (AvatarNotFoundException e) {
+                model.addAttribute("content", ERROR_VIEW);
+                return INDEX_VIEW;            }
         }
         Avatar avatar = avatarOptional.get();
 
