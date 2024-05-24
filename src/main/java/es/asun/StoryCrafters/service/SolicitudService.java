@@ -24,4 +24,7 @@ public interface SolicitudService {
     void eliminarSolicitudes(String grupoId, List<Integer> solicitudIds);
 
     Optional<Solicitud> buscarSolicitud(Grupo grupo, Usuario usuario);
+
+    void ingresarInvitacion(Usuario usuario, String codigoInvitacion);
+
 }

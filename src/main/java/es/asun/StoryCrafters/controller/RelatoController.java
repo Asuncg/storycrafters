@@ -209,14 +209,13 @@ public class RelatoController {
 
         //Comprobar si el relato y el grupo existen
         Optional<Relato> relatoOptional = relatoService.findRelatoByIdAndNotArchivado(idRelato);
-        Optional<Grupo> grupoOptional = grupoService.findGrupoById(idGrupo);
+        Grupo grupo = grupoService.findGrupoById(idGrupo);
 
-        if (relatoOptional.isEmpty() || grupoOptional.isEmpty()) {
+        if (relatoOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Relato relato = relatoOptional.get();
-        Grupo grupo = grupoOptional.get();
         RelatoGrupo relatoGrupo = new RelatoGrupo();
 
         //Comprobar si ya hay una copia del relato en enviada a ese grupo

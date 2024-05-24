@@ -10,5 +10,5 @@ public class RelatoGrupoGestionDto {
     private double calificacion;
     private String feedback;
     private boolean aprobado;
-
+    private int idGrupo;
 }

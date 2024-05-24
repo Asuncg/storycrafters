@@ -14,6 +14,8 @@ public interface GrupoRepository extends JpaRepository<Grupo, Integer> {
 
     Optional<Grupo> findByCodigoAcceso(String codigoAcceso);
 
+    //List<Grupo> findRelatoGrupoByGrupo(Grupo grupo);
+
 
 }
 
