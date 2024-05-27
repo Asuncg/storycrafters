@@ -193,13 +193,12 @@ public class RelatoController {
                 }
 
                 relatoGrupoService.actualizarRelatoGrupoEnviado(relatoGrupo, relato);
-                return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 RelatoGrupo relatoGrupo = new RelatoGrupo();
                 relatoGrupoService.enviarNuevoRelatoGrupo(relatoGrupo, relato, grupo);
-                return new ResponseEntity<>(HttpStatus.OK);
             }
 
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (GrupoException | RelatoException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
