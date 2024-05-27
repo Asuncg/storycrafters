@@ -7,5 +7,5 @@ import es.asun.StoryCrafters.model.EstadisticasDto;
 import java.util.List;
 
 public interface EstadisticasService {
-    EstadisticasDto calcularEstadisticasGrupo(Grupo grupo, List<RelatoGrupo> listaRelatosGrupo);
+    EstadisticasDto calcularEstadisticasGrupo(Grupo grupo);
 }

@@ -3,6 +3,7 @@ package es.asun.StoryCrafters.service;
 import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.RelatoGrupo;
+import es.asun.StoryCrafters.exceptions.UsuarioException;
 import es.asun.StoryCrafters.model.RelatoGrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
 
@@ -29,4 +30,6 @@ public interface RelatoGrupoService {
     void actualizarRelatoGrupoEnviado(RelatoGrupo relatoGrupo, Relato relato);
 
     void enviarNuevoRelatoGrupo(RelatoGrupo relatoGrupo, Relato relato, Grupo grupo);
+
+    List<RelatoGrupo> encontrarRelatosGrupoUsuario(Grupo grupo, int idUsuario) throws UsuarioException;
 }

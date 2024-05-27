@@ -15,4 +15,5 @@ public interface  RelatoGrupoRepository extends JpaRepository<RelatoGrupo, Integ
     Optional<RelatoGrupo> findByRelatoAndGrupo(Relato relato, Grupo grupo);
 
     List<RelatoGrupo> findByGrupoAndEstadoOrderByFechaPublicacionDesc(Grupo grupo, int estado);
+
 }

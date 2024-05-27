@@ -206,14 +206,12 @@ public class GruposController {
         int idGrupo = Integer.parseInt(grupoId);
 
         try {
-            Grupo grupo;
-            try {
-                grupo = grupoService.findGrupoById(idGrupo);
-            } catch (GrupoException e) {
-                throw new RuntimeException(e);
-            }
+            Grupo grupo = grupoService.findGrupoById(idGrupo);
+
             Usuario usuario = AuthUtils.getAuthUser(userService);
+
             prepararModeloBase(model, grupo);
+
             grupoService.mostrarVista(grupo, opcion, model, usuario);
         } catch (NumberFormatException | GrupoException e) {
             model.addAttribute("content", ERROR_VIEW);
@@ -392,23 +390,16 @@ public class GruposController {
             return INDEX_VIEW;
         }
 
-        int idGrupo = Integer.parseInt(grupoId);
         try {
             Usuario usuario = AuthUtils.getAuthUser(userService);
-            Grupo grupo = grupoService.findGrupoById(idGrupo);
+            Grupo grupo = grupoService.findGrupoById(Integer.parseInt(grupoId));
 
             if (!Validadores.gestorValido(grupo, usuario)) {
                 model.addAttribute("content", ERROR_VIEW);
                 return INDEX_VIEW;
             }
 
-            List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-
-            List<RelatoGrupo> relatosAprobados = listaRelatosGrupo.stream()
-                    .filter(relato -> relato.getEstado() == ESTADO_APROBADO)
-                    .collect(Collectors.toList());
-
-            EstadisticasDto estadisticasDto = estadisticasService.calcularEstadisticasGrupo(grupo, relatosAprobados);
+            EstadisticasDto estadisticasDto = estadisticasService.calcularEstadisticasGrupo(grupo);
 
             model.addAttribute("grupo", grupo);
             model.addAttribute("estadisticas", estadisticasDto);
@@ -453,29 +444,21 @@ public class GruposController {
                 return INDEX_VIEW;
             }
 
-            int idGrupo = Integer.parseInt(grupoId);
-            int idUsuario = Integer.parseInt(usuarioId);
-
-            Usuario usuarioActual = AuthUtils.getAuthUser(userService);
-
-            Grupo grupo = grupoService.findGrupoById(idGrupo);
-            if (!grupo.getUsuarios().contains(usuarioActual)) {
+            Grupo grupo = grupoService.findGrupoById(Integer.parseInt(grupoId));
+            if (!grupo.getUsuarios().contains(AuthUtils.getAuthUser(userService))) {
                 model.addAttribute("content", ERROR_VIEW);
                 return INDEX_VIEW;
             }
 
-            Usuario usuario = userService.findUserById(idUsuario);
+            Usuario usuario = userService.findUserById(Integer.parseInt(usuarioId));
 
-            List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
-            List<RelatoGrupo> listaRelatosUsuario = listaRelatosGrupo.stream()
-                    .filter(relato -> relato.getRelato().getUsuario().equals(usuario) && relato.getEstado() == ESTADO_APROBADO)
-                    .collect(Collectors.toList());
+            List<RelatoGrupo> listaRelatosUsuario = relatoGrupoService.encontrarRelatosGrupoUsuario(grupo, Integer.parseInt(usuarioId));
 
-            String contentView;
+            String content;
             if (opcion.equals("relatos")) {
-                contentView = "views/grupos/grupo-relatos-usuario";
+                content = "views/grupos/grupo-relatos-usuario";
             } else if (opcion.equals("calificaciones")) {
-                contentView = "views/grupos/grupo-calificaciones-usuario";
+                content = "views/grupos/grupo-calificaciones-usuario";
             } else {
                 model.addAttribute("content", ERROR_VIEW);
                 return INDEX_VIEW;
@@ -484,7 +467,7 @@ public class GruposController {
             prepararModeloBase(model, grupo);
             model.addAttribute("listaRelatosUsuario", listaRelatosUsuario);
             model.addAttribute("usuario", usuario);
-            model.addAttribute("content", contentView);
+            model.addAttribute("content", content);
             return INDEX_VIEW;
 
         } catch (NumberFormatException | GrupoException | UsuarioException e) {

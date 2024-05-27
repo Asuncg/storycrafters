@@ -1,10 +1,8 @@
 package es.asun.StoryCrafters.service;
 
-import es.asun.StoryCrafters.entity.Categoria;
-import es.asun.StoryCrafters.entity.Grupo;
-import es.asun.StoryCrafters.entity.Relato;
-import es.asun.StoryCrafters.entity.RelatoGrupo;
+import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.exceptions.RelatoGrupoException;
+import es.asun.StoryCrafters.exceptions.UsuarioException;
 import es.asun.StoryCrafters.model.RelatoGrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
 import es.asun.StoryCrafters.repository.RelatoGrupoRepository;
@@ -23,6 +21,9 @@ public class RelatoGrupoServiceImpl implements RelatoGrupoService {
 
     @Autowired
     private RelatoGrupoRepository relatoGrupoRepository;
+
+    @Autowired
+    private  UserService userService;
 
     @Override
     public Optional<RelatoGrupo> findRelatoGrupoById(int idRelatoGrupo) {
@@ -125,6 +126,17 @@ public class RelatoGrupoServiceImpl implements RelatoGrupoService {
         relatoGrupo.setCategorias(asociarCategorias(relato));
 
         this.guardarRelatoGrupo(relatoGrupo);
+    }
+
+    @Override
+    public List<RelatoGrupo> encontrarRelatosGrupoUsuario(Grupo grupo, int idUsuario) throws UsuarioException {
+        Usuario usuario = userService.findUserById(idUsuario);
+
+        List<RelatoGrupo> listaRelatosGrupo = this.findRelatoGrupoByGrupoIs(grupo);
+
+        return listaRelatosGrupo.stream()
+                .filter(relato -> relato.getRelato().getUsuario().equals(usuario) && relato.getEstado() == ESTADO_APROBADO)
+                .collect(Collectors.toList());
     }
 
     private List<Categoria> asociarCategorias(Relato relato) {

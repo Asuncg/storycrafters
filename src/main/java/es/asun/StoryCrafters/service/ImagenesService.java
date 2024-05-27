@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface ImagenesService {
     List<Imagen> findAllImagenes();
-
     Imagen findImageById(int id);
 }

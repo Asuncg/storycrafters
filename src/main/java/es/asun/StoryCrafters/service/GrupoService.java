@@ -4,11 +4,9 @@ import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.exceptions.GrupoException;
 import es.asun.StoryCrafters.model.GrupoDto;
-import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
 import org.springframework.ui.Model;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface GrupoService {

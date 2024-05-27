@@ -4,27 +4,36 @@ import es.asun.StoryCrafters.entity.Categoria;
 import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.RelatoGrupo;
 import es.asun.StoryCrafters.model.EstadisticasDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static es.asun.StoryCrafters.utils.Constantes.ESTADO_APROBADO;
 
 @Service
 public class EstadisticasServiceImpl implements EstadisticasService{
 
+    @Autowired
+    private RelatoGrupoService relatoGrupoService;
     @Override
-    public EstadisticasDto calcularEstadisticasGrupo(Grupo grupo, List<RelatoGrupo> listaRelatosGrupo) {
+    public EstadisticasDto calcularEstadisticasGrupo(Grupo grupo) {
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
+
+        List<RelatoGrupo> relatosAprobados = listaRelatosGrupo.stream()
+                .filter(relato -> relato.getEstado() == ESTADO_APROBADO)
+                .toList();
+
         int numeroUsuarios = calcularNumeroUsuarios(grupo);
-        int numeroRelatosAprobados = calcularNumeroRelatosAprobados(listaRelatosGrupo);
-        Map<String, Integer> relatosPorCategoria = calcularRelatosPorCategoria(listaRelatosGrupo);
-        Map<String, Integer> relatosPorUsuario = calcularRelatosPorUsuario(listaRelatosGrupo);
-        int relatosEnviadosUltimoMes = calcularRelatosPublicadosUltimoMes(listaRelatosGrupo);
+        int numeroRelatosAprobados = calcularNumeroRelatosAprobados(relatosAprobados);
+        Map<String, Integer> relatosPorCategoria = calcularRelatosPorCategoria(relatosAprobados);
+        Map<String, Integer> relatosPorUsuario = calcularRelatosPorUsuario(relatosAprobados);
+        int relatosEnviadosUltimoMes = calcularRelatosPublicadosUltimoMes(relatosAprobados);
 
         return new EstadisticasDto(numeroUsuarios, numeroRelatosAprobados, relatosPorCategoria, relatosPorUsuario, relatosEnviadosUltimoMes);
     }

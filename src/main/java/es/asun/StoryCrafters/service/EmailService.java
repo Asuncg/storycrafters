@@ -35,14 +35,12 @@ public class EmailService {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
 
-            // Set the content
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(htmlContent, "text/html; charset=utf-8");
 
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(mimeBodyPart);
 
-            // Set the multipart message to the email message
             message.setContent(multipart);
 
             Transport.send(message);
