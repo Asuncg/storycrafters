@@ -10,6 +10,7 @@ import es.asun.StoryCrafters.service.*;
 import es.asun.StoryCrafters.utils.AuthUtils;
 import es.asun.StoryCrafters.utils.Constantes;
 import es.asun.StoryCrafters.utils.Validadores;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,22 +24,18 @@ import static es.asun.StoryCrafters.utils.Constantes.ERROR_VIEW;
 @Controller
 @RequestMapping("/relato")
 public class RelatoController {
-
-    private final UserService userService;
-    private final RelatoService relatoService;
-    private final CategoriaService categoriaService;
-    private final ImagenesService imagenesService;
-    private final GrupoService grupoService;
-    private final RelatoGrupoService relatoGrupoService;
-
-    public RelatoController(UserService userService, RelatoService relatoService, CategoriaService categoriaService, ImagenesService imagenesService, GrupoService grupoService, RelatoGrupoService relatoGrupoService) {
-        this.userService = userService;
-        this.relatoService = relatoService;
-        this.categoriaService = categoriaService;
-        this.imagenesService = imagenesService;
-        this.grupoService = grupoService;
-        this.relatoGrupoService = relatoGrupoService;
-    }
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private RelatoService relatoService;
+    @Autowired
+    private CategoriaService categoriaService;
+    @Autowired
+    private ImagenesService imagenesService;
+    @Autowired
+    private GrupoService grupoService;
+    @Autowired
+    private RelatoGrupoService relatoGrupoService;
 
     @GetMapping("/mis-relatos")
     public String misRelatos(Model model) {
@@ -200,7 +197,6 @@ public class RelatoController {
             } else {
                 RelatoGrupo relatoGrupo = new RelatoGrupo();
                 relatoGrupoService.enviarNuevoRelatoGrupo(relatoGrupo, relato, grupo);
-
                 return new ResponseEntity<>(HttpStatus.OK);
             }
 

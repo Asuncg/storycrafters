@@ -7,6 +7,7 @@ import es.asun.StoryCrafters.repository.GrupoRepository;
 import es.asun.StoryCrafters.utils.AuthUtils;
 import es.asun.StoryCrafters.utils.CodigoIngresoGenerator;
 import es.asun.StoryCrafters.utils.Mappings;
+import es.asun.StoryCrafters.utils.Validadores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -65,7 +66,7 @@ public class GrupoServiceImpl implements GrupoService {
 
         Grupo grupo = this.findGrupoById(id);
 
-        if (!gestorValido(grupo, usuario)) {
+        if (!Validadores.gestorValido(grupo, usuario)) {
             throw new InvalidGrupoException("Invalid group or unauthorized access");
         }
 
@@ -111,7 +112,7 @@ public class GrupoServiceImpl implements GrupoService {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Grupo grupo = this.findGrupoById(idGrupo);
 
-        if (!gestorValido(grupo, usuario)) {
+        if (!Validadores.gestorValido(grupo, usuario)) {
             throw new UnauthorizedAccessException("Acceso Denegado");
         }
 
@@ -167,7 +168,6 @@ public class GrupoServiceImpl implements GrupoService {
                 throw new GrupoException("Opción no válida");
         }
     }
-
     @Override
     public void verMisRelatosGrupo(Grupo grupo, Usuario usuarioActual, Model model) {
         List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
@@ -178,10 +178,6 @@ public class GrupoServiceImpl implements GrupoService {
 
         model.addAttribute("listaRelatosUsuario", listaRelatosUsuario);
         model.addAttribute("content", "views/grupos/grupo-mis-relatos");
-    }
-
-    private Boolean gestorValido(Grupo grupo, Usuario usuario) {
-        return usuario.getId() == grupo.getUsuario().getId();
     }
 
 }

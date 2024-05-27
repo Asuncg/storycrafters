@@ -8,6 +8,7 @@ import es.asun.StoryCrafters.model.RelatoGrupoDto;
 import es.asun.StoryCrafters.model.RelatoGrupoGestionDto;
 import es.asun.StoryCrafters.service.*;
 import es.asun.StoryCrafters.utils.AuthUtils;
+import es.asun.StoryCrafters.utils.Validadores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,21 +25,20 @@ import static es.asun.StoryCrafters.utils.Constantes.*;
 @RequestMapping("/grupos")
 public class GruposController {
 
-    private final GrupoService grupoService;
-    private final RelatoGrupoService relatoGrupoService;
-    private final UserService userService;
-    private final SolicitudService solicitudService;
-    private final EstadisticasService estadisticasService;
+    @Autowired
+    private GrupoService grupoService;
 
     @Autowired
-    public GruposController(GrupoService grupoService, RelatoGrupoService relatoGrupoService,
-                            UserService userService, SolicitudService solicitudService, EstadisticasService estadisticasService) {
-        this.grupoService = grupoService;
-        this.relatoGrupoService = relatoGrupoService;
-        this.userService = userService;
-        this.solicitudService = solicitudService;
-        this.estadisticasService = estadisticasService;
-    }
+    private RelatoGrupoService relatoGrupoService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SolicitudService solicitudService;
+
+    @Autowired
+    private EstadisticasService estadisticasService;
 
     @GetMapping("/")
     public String misGrupos(Model model) {
@@ -66,7 +66,7 @@ public class GruposController {
 
     @GetMapping("/eliminar-grupo/{id}")
     public String eliminarGrupo(Model model, @PathVariable String id) {
-        if (!validateId(id)) {
+        if (!Validadores.validateId(id)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -79,7 +79,7 @@ public class GruposController {
 
             grupo = grupoService.findGrupoById(idGrupo);
 
-            if (!gestorValido(grupo, usuario)) {
+            if (!Validadores.gestorValido(grupo, usuario)) {
                 model.addAttribute("content", "views/error/error");
                 return INDEX_VIEW;
             }
@@ -96,7 +96,7 @@ public class GruposController {
 
     @GetMapping("/editar-grupo/{id}")
     public String editarGrupo(Model model, @PathVariable String id) {
-        if (!validateId(id)) {
+        if (!Validadores.validateId(id)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -107,7 +107,7 @@ public class GruposController {
             Grupo grupo = grupoService.findGrupoById(idGrupo);
             Usuario usuario = AuthUtils.getAuthUser(userService);
 
-            if (!gestorValido(grupo, usuario)) {
+            if (!Validadores.gestorValido(grupo, usuario)) {
                 model.addAttribute("content", ERROR_VIEW);
                 return INDEX_VIEW;
             }
@@ -126,7 +126,7 @@ public class GruposController {
 
     @PostMapping("actualizar-grupo/{id}")
     public String actualizarGrupo(Model model, @PathVariable String id, GrupoDto grupoDto) {
-        if (!validateId(id)) {
+        if (!Validadores.validateId(id)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -180,7 +180,7 @@ public class GruposController {
 
     @PostMapping("/abandonar-grupo")
     public String abandonarGrupo(Model model, @RequestParam("grupoId") String grupoId) {
-        if (!validateId(grupoId)) {
+        if (!Validadores.validateId(grupoId)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -197,10 +197,8 @@ public class GruposController {
     }
 
     @GetMapping("/{grupoId}/{opcion}")
-    public String mostrarVista(@PathVariable("grupoId") String grupoId,
-                               @PathVariable("opcion") String opcion,
-                               Model model) {
-        if (!validateId(grupoId)) {
+    public String mostrarVista(@PathVariable("grupoId") String grupoId, @PathVariable("opcion") String opcion, Model model) {
+        if (!Validadores.validateId(grupoId)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -226,7 +224,7 @@ public class GruposController {
 
     @GetMapping("/{grupoId}/mis-relatos")
     public String verMisRelatosGrupo(@PathVariable("grupoId") String grupoId, Model model) {
-        if (!validateId(grupoId)) {
+        if (!Validadores.validateId(grupoId)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -252,7 +250,7 @@ public class GruposController {
 
     @GetMapping("/{grupoId}/revisar-relato/{id}")
     public String mostrarFormularioAprobacion(Model model, @PathVariable String id, @PathVariable String grupoId) {
-        if (!validateId(id) || !validateId(grupoId)) {
+        if (!Validadores.validateId(id) || !Validadores.validateId(grupoId)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -299,7 +297,7 @@ public class GruposController {
 
     @GetMapping("/{grupoId}/relato/{id}")
     public String verRelatoGrupo(Model model, @PathVariable String id, @PathVariable String grupoId) {
-        if (!validateId(id) || !validateId(grupoId)) {
+        if (!Validadores.validateId(id) || !Validadores.validateId(grupoId)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -348,7 +346,7 @@ public class GruposController {
 
     @GetMapping("/rechazar-solicitud/{solicitudId}")
     public String rechazarSolicitudGrupo(Model model, @PathVariable String solicitudId) {
-        if (!validateId(solicitudId)) {
+        if (!Validadores.validateId(solicitudId)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -360,40 +358,36 @@ public class GruposController {
     }
 
     @PostMapping("/gestionar-solicitudes")
-    public String gestionarSolicitudes(@RequestParam("grupoId") int grupoId,
-                                       @RequestParam("accion") String accion,
-                                       @RequestParam("solicitudIds") List<Integer> solicitudIds,
+    public String gestionarSolicitudes(@RequestParam("grupoId") int grupoId, @RequestParam("accion") String accion, @RequestParam("solicitudIds") List<Integer> solicitudIds,
                                        Model model) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-
-        Grupo grupo = null;
         try {
-            grupo = grupoService.findGrupoById(grupoId);
-        } catch (GrupoException e) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
-        }
-        if (!gestorValido(grupo, usuario)) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
-        }
+            Grupo grupo = grupoService.findGrupoById(grupoId);
 
-        try {
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+
+            if (!Validadores.gestorValido(grupo, usuario)) {
+                model.addAttribute("content", ERROR_VIEW);
+                return INDEX_VIEW;
+            }
+
             if ("aceptar".equals(accion)) {
                 solicitudService.aceptarSolicitudes(String.valueOf(grupoId), solicitudIds);
             } else if ("rechazar".equals(accion)) {
                 solicitudService.eliminarSolicitudes(String.valueOf(grupoId), solicitudIds);
             }
-        } catch (Exception e) {
+
+        } catch (GrupoException e) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
+
         return "redirect:/grupos/" + grupoId + "/solicitudes";
     }
 
+
     @GetMapping("/estadisticas-grupo/{grupoId}")
     public String verEstadisticasGrupo(@PathVariable("grupoId") String grupoId, Model model) {
-        if (!validateId(grupoId)) {
+        if (!Validadores.validateId(grupoId)) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;
         }
@@ -403,7 +397,7 @@ public class GruposController {
             Usuario usuario = AuthUtils.getAuthUser(userService);
             Grupo grupo = grupoService.findGrupoById(idGrupo);
 
-            if (!gestorValido(grupo, usuario)) {
+            if (!Validadores.gestorValido(grupo, usuario)) {
                 model.addAttribute("content", ERROR_VIEW);
                 return INDEX_VIEW;
             }
@@ -435,7 +429,7 @@ public class GruposController {
         try {
             grupo = grupoService.findGrupoById(grupoId);
 
-            if (!gestorValido(grupo, usuarioGestor)) {
+            if (!Validadores.gestorValido(grupo, usuarioGestor)) {
                 model.addAttribute("content", "error");
                 return "index";
             }
@@ -454,7 +448,7 @@ public class GruposController {
     @GetMapping("/{grupoId}/usuario/{usuarioId}/{opcion}")
     public String verRelatosUsuarioGrupo(@PathVariable("grupoId") String grupoId, @PathVariable("usuarioId") String usuarioId, @PathVariable("opcion") String opcion, Model model) {
         try {
-            if (!validateId(usuarioId) || !validateId(grupoId)) {
+            if (!Validadores.validateId(usuarioId) || !Validadores.validateId(grupoId)) {
                 model.addAttribute("content", ERROR_VIEW);
                 return INDEX_VIEW;
             }
@@ -529,10 +523,6 @@ public class GruposController {
         }
     }
 
-    private Boolean gestorValido(Grupo grupo, Usuario usuario) {
-        return usuario.getId() == grupo.getUsuario().getId();
-    }
-
     private void prepararModeloBase(Model model, Grupo grupo) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
@@ -543,16 +533,6 @@ public class GruposController {
         model.addAttribute("idUsuarioActual", usuario.getId());
         model.addAttribute("listaRelatosPendientes", relatosPendientes);
         model.addAttribute("solicitudesPendientes", solicitudesPendientes);
-    }
-
-    private Boolean validateId(final String id) {
-        Boolean isNumber = Boolean.TRUE;
-        try {
-            Integer.parseInt(id);
-        } catch (NumberFormatException nfe) {
-            isNumber = Boolean.FALSE;
-        }
-        return isNumber;
     }
 }
 
