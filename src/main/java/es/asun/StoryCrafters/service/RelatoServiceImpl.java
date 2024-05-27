@@ -88,7 +88,7 @@ public class RelatoServiceImpl implements RelatoService {
     }
 
     @Override
-    public int actualizarRelato(RelatoDto relatoDto) throws CategoriaNotFoundException, RelatoException {
+    public void actualizarRelato(RelatoDto relatoDto) throws CategoriaNotFoundException, RelatoException {
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
         Relato relato = this.findRelatoByIdAndNotArchivado(relatoDto.getId());
@@ -105,8 +105,6 @@ public class RelatoServiceImpl implements RelatoService {
         relato.setCategorias(listaCategorias);
 
         relatoRepository.save(relato);
-
-        return relato.getId();
     }
 
     @Override

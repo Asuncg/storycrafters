@@ -25,4 +25,8 @@ public interface RelatoGrupoService {
     Map<Integer, Long> contarRelatosAprobadosPorUsuarioEnGrupo(Grupo grupo);
     void gestionarRelato(RelatoGrupoGestionDto relatoGrupoGestionDto);
     RelatoGrupoDto encontrarRelatoGrupoPorId(int id);
+
+    void actualizarRelatoGrupoEnviado(RelatoGrupo relatoGrupo, Relato relato);
+
+    void enviarNuevoRelatoGrupo(RelatoGrupo relatoGrupo, Relato relato, Grupo grupo);
 }

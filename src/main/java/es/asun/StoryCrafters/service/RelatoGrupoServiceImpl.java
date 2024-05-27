@@ -1,5 +1,6 @@
 package es.asun.StoryCrafters.service;
 
+import es.asun.StoryCrafters.entity.Categoria;
 import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.Relato;
 import es.asun.StoryCrafters.entity.RelatoGrupo;
@@ -12,10 +13,7 @@ import es.asun.StoryCrafters.utils.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static es.asun.StoryCrafters.utils.Constantes.*;
@@ -100,5 +98,44 @@ public class RelatoGrupoServiceImpl implements RelatoGrupoService {
         return Mappings.mapToRelatoGrupoDto(relatoGrupo);
     }
 
+    @Override
+    public void actualizarRelatoGrupoEnviado(RelatoGrupo relatoGrupo, Relato relato) {
+        relatoGrupo.setRelato(relato);
+        relatoGrupo.setTitulo(relato.getTitulo());
+        relatoGrupo.setTexto(relato.getTexto());
+        relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
+        relatoGrupo.setImagen(relato.getImagen());
+        relatoGrupo.setEstado(1);
+        relatoGrupo.setFeedback("");
+        relatoGrupo.setFechaModificacion(new Date());
+        relatoGrupo.setCategorias(asociarCategorias(relato));
+
+        this.guardarRelatoGrupo(relatoGrupo);
+    }
+
+    @Override
+    public void enviarNuevoRelatoGrupo(RelatoGrupo relatoGrupo, Relato relato, Grupo grupo) {
+        relatoGrupo.setRelato(relato);
+        relatoGrupo.setGrupo(grupo);
+        relatoGrupo.setTitulo(relato.getTitulo());
+        relatoGrupo.setTexto(relato.getTexto());
+        relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
+        relatoGrupo.setImagen(relato.getImagen());
+        relatoGrupo.setFechaModificacion(new Date());
+        relatoGrupo.setCategorias(asociarCategorias(relato));
+
+        this.guardarRelatoGrupo(relatoGrupo);
+    }
+
+    private List<Categoria> asociarCategorias(Relato relato) {
+        List<Categoria> categorias = new ArrayList<>();
+        for (Categoria categoria : relato.getCategorias()) {
+            Categoria nuevaCategoria = new Categoria();
+            nuevaCategoria.setId(categoria.getId());
+            nuevaCategoria.setNombre(categoria.getNombre());
+            categorias.add(nuevaCategoria);
+        }
+        return categorias;
+    }
 
 }

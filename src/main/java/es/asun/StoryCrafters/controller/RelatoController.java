@@ -9,7 +9,6 @@ import es.asun.StoryCrafters.model.RelatoPreviewDto;
 import es.asun.StoryCrafters.service.*;
 import es.asun.StoryCrafters.utils.AuthUtils;
 import es.asun.StoryCrafters.utils.Constantes;
-import es.asun.StoryCrafters.utils.Mappings;
 import es.asun.StoryCrafters.utils.Validadores;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -147,8 +146,8 @@ public class RelatoController {
                 int idRelato = relatoService.guardarNuevoRelato(relatoDto);
                 return new ResponseEntity<>(idRelato, HttpStatus.OK);
             } else {
-                int idRelato = relatoService.actualizarRelato(relatoDto);
-                return new ResponseEntity<>(idRelato, HttpStatus.OK);
+                relatoService.actualizarRelato(relatoDto);
+                return new ResponseEntity<>(relatoDto.getId(), HttpStatus.OK);
             }
         } catch (CategoriaNotFoundException | RelatoException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -174,76 +173,36 @@ public class RelatoController {
 
     @PostMapping("/publicar-relato")
     public ResponseEntity<Integer> publicarRelato(@RequestBody Map<String, Object> request) {
-        int idRelato = Integer.parseInt(request.get("idRelato").toString());
-        int idGrupo = Integer.parseInt(request.get("idGrupo").toString());
+        String idRelato = request.get("idRelato").toString();
+        String idGrupo = request.get("idGrupo").toString();
 
+        if (!Validadores.validateId(idRelato) || !Validadores.validateId(idGrupo)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        Grupo grupo = null;
         try {
-            grupo = grupoService.findGrupoById(idGrupo);
+            Grupo grupo = grupoService.findGrupoById(Integer.parseInt(idGrupo));
 
-            Relato relato = relatoService.findRelatoByIdAndNotArchivado(idRelato);
-
-            RelatoGrupo relatoGrupo = new RelatoGrupo();
+            Relato relato = relatoService.findRelatoByIdAndNotArchivado(Integer.parseInt(idRelato));
 
             Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoByRelatoAndGrupo(relato, grupo);
 
             if (relatoGrupoOptional.isPresent()) {
-                relatoGrupo = relatoGrupoOptional.get();
-
+                RelatoGrupo relatoGrupo = relatoGrupoOptional.get();
                 Usuario usuario = AuthUtils.getAuthUser(userService);
 
-                //Si existe, comprobar el estado: Aprobado o pendiente, y si es el autor o no del relato
                 if (relatoGrupo.getEstado() == 1 || relatoGrupo.getEstado() == 0 || usuario.getId() != relato.getUsuario().getId()) {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
 
-                relatoGrupo.setRelato(relato);
-                relatoGrupo.setTitulo(relato.getTitulo());
-                relatoGrupo.setTexto(relato.getTexto());
-                relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
-                relatoGrupo.setImagen(relato.getImagen());
-                relatoGrupo.setEstado(1);
-                relatoGrupo.setFeedback("");
-                relatoGrupo.setFechaModificacion(new Date());
-
-                // Crear nuevas instancias de las categorías y asociarlas al RelatoGrupo
-                List<Categoria> categorias = new ArrayList<>();
-                for (Categoria categoria : relato.getCategorias()) {
-                    Categoria nuevaCategoria = new Categoria();
-                    nuevaCategoria.setId(categoria.getId());
-                    nuevaCategoria.setNombre(categoria.getNombre());
-                    categorias.add(nuevaCategoria);
-                }
-                relatoGrupo.setCategorias(categorias);
-
-                relatoGrupoService.guardarRelatoGrupo(relatoGrupo);
+                relatoGrupoService.actualizarRelatoGrupoEnviado(relatoGrupo, relato);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                RelatoGrupo relatoGrupo = new RelatoGrupo();
+                relatoGrupoService.enviarNuevoRelatoGrupo(relatoGrupo, relato, grupo);
 
                 return new ResponseEntity<>(HttpStatus.OK);
-
             }
-
-            relatoGrupo.setRelato(relato);
-            relatoGrupo.setGrupo(grupo);
-            relatoGrupo.setTitulo(relato.getTitulo());
-            relatoGrupo.setTexto(relato.getTexto());
-            relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
-            relatoGrupo.setImagen(relato.getImagen());
-            relatoGrupo.setFechaModificacion(new Date());
-
-            // Crear nuevas instancias de las categorías y asociarlas al RelatoGrupo
-            List<Categoria> categorias = new ArrayList<>();
-            for (Categoria categoria : relato.getCategorias()) {
-                Categoria nuevaCategoria = new Categoria();
-                nuevaCategoria.setId(categoria.getId());
-                nuevaCategoria.setNombre(categoria.getNombre());
-                categorias.add(nuevaCategoria);
-            }
-            relatoGrupo.setCategorias(categorias);
-
-            relatoGrupoService.guardarRelatoGrupo(relatoGrupo);
-
-            return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (GrupoException | RelatoException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

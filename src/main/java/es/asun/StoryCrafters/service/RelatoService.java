@@ -20,7 +20,7 @@ public interface RelatoService {
 
     List<RelatoPreviewDto> findAllRelatoByUsuarioOrderByFecha(Usuario usuario);
 
-    int actualizarRelato(RelatoDto relatoDto) throws CategoriaNotFoundException, RelatoException;
+    void actualizarRelato(RelatoDto relatoDto) throws CategoriaNotFoundException, RelatoException;
 
     void archivarRelato(int id) throws RelatoException;
 
