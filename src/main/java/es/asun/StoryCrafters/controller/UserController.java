@@ -9,16 +9,13 @@ import es.asun.StoryCrafters.service.AvatarService;
 import es.asun.StoryCrafters.service.RelatoService;
 import es.asun.StoryCrafters.service.UserService;
 import es.asun.StoryCrafters.utils.AuthUtils;
+import es.asun.StoryCrafters.utils.Constantes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-
-import static es.asun.StoryCrafters.utils.Constantes.ERROR_VIEW;
-import static es.asun.StoryCrafters.utils.Constantes.INDEX_VIEW;
 
 @Controller
 @RequestMapping("/user")
@@ -84,8 +81,8 @@ public class UserController {
 
             return "redirect:/user/profile";
         } catch (AvatarNotFoundException e) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
+            model.addAttribute("content", Constantes.ERROR_VIEW);
+            return Constantes.INDEX_VIEW;
         }
     }
 }

@@ -1,15 +1,16 @@
 package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.*;
-import es.asun.StoryCrafters.exceptions.BusinessException;
+import es.asun.StoryCrafters.exceptions.CategoriaNotFoundException;
 import es.asun.StoryCrafters.exceptions.GrupoException;
 import es.asun.StoryCrafters.exceptions.RelatoException;
 import es.asun.StoryCrafters.model.RelatoDto;
 import es.asun.StoryCrafters.model.RelatoPreviewDto;
 import es.asun.StoryCrafters.service.*;
 import es.asun.StoryCrafters.utils.AuthUtils;
+import es.asun.StoryCrafters.utils.Constantes;
 import es.asun.StoryCrafters.utils.Mappings;
-import org.springframework.beans.factory.annotation.Autowired;
+import es.asun.StoryCrafters.utils.Validadores;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
+import static es.asun.StoryCrafters.utils.Constantes.ERROR_VIEW;
 
 @Controller
 @RequestMapping("/relato")
@@ -29,12 +32,7 @@ public class RelatoController {
     private final GrupoService grupoService;
     private final RelatoGrupoService relatoGrupoService;
 
-    private static final String ERROR_VIEW = "views/error/error";
-    private static final String INDEX_VIEW = "index";
-
-    @Autowired
-    public RelatoController(UserService userService, RelatoService relatoService, CategoriaService categoriaService,
-                            ImagenesService imagenesService, GrupoService grupoService, RelatoGrupoService relatoGrupoService) {
+    public RelatoController(UserService userService, RelatoService relatoService, CategoriaService categoriaService, ImagenesService imagenesService, GrupoService grupoService, RelatoGrupoService relatoGrupoService) {
         this.userService = userService;
         this.relatoService = relatoService;
         this.categoriaService = categoriaService;
@@ -54,30 +52,33 @@ public class RelatoController {
         model.addAttribute("content", "views/relatos/mis-relatos");
         model.addAttribute("listaCategorias", listaCategorias);
         model.addAttribute("relatos", relatosDto);
-        return INDEX_VIEW;
+        return Constantes.INDEX_VIEW;
     }
 
     @GetMapping("/relatos/{id}")
     public String verRelato(Model model, @PathVariable String id) {
-        int idRelato = Integer.parseInt(id);
-        Relato relato;
+        if (!Validadores.validateId(id)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return Constantes.INDEX_VIEW;
+        }
+
         try {
-            relato = relatoService.findRelatoByIdAndNotArchivado(idRelato);
+            Relato relato = relatoService.findRelatoByIdAndNotArchivado(Integer.parseInt(id));
+
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+
+            if (usuario.getId() != relato.getUsuario().getId()) {
+                model.addAttribute("content", ERROR_VIEW);
+                return Constantes.INDEX_VIEW;
+            }
+
+            model.addAttribute("relato", relato);
+            model.addAttribute("content", "views/relatos/vista-relato");
+            return Constantes.INDEX_VIEW;
         } catch (RelatoException e) {
             model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
+            return Constantes.INDEX_VIEW;
         }
-
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-
-        if (usuario.getId() != relato.getUsuario().getId()) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
-        }
-
-        model.addAttribute("relato", relato);
-        model.addAttribute("content", "views/relatos/vista-relato");
-        return INDEX_VIEW;
     }
 
     @GetMapping("/nuevo-relato-imagen")
@@ -87,7 +88,7 @@ public class RelatoController {
 
         model.addAttribute("content", "views/relatos/nuevo-relato-imagen");
         model.addAttribute("imagenes", listaImagenes);
-        return INDEX_VIEW;
+        return Constantes.INDEX_VIEW;
     }
 
     @GetMapping("/nuevo-relato")
@@ -108,98 +109,66 @@ public class RelatoController {
         model.addAttribute("firma", firma);
         model.addAttribute("imagen", imagen);
         model.addAttribute("relato", new RelatoDto());
-        return INDEX_VIEW;
+        return Constantes.INDEX_VIEW;
     }
 
     @GetMapping("/editar-relato/{id}")
     public String editarRelato(Model model, @PathVariable String id) {
-        int idRelato = Integer.parseInt(id);
-        Relato relato;
+        if (!Validadores.validateId(id)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return Constantes.INDEX_VIEW;
+        }
+
         try {
-            relato = relatoService.findRelatoByIdAndNotArchivado(idRelato);
+            Relato relato = relatoService.findRelatoByIdAndNotArchivado(Integer.parseInt(id));
+
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+
+            if (usuario.getId() != relato.getUsuario().getId()) {
+                model.addAttribute("content", ERROR_VIEW);
+                return Constantes.INDEX_VIEW;
+            }
+
+            model.addAttribute("firma", usuario.getFirmaAutor());
+            model.addAttribute("relato", relato);
+            model.addAttribute("categorias", categoriaService.findAllCategories());
+            model.addAttribute("content", "views/relatos/editar-relato");
+            return Constantes.INDEX_VIEW;
         } catch (RelatoException e) {
             model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
+            return Constantes.INDEX_VIEW;
         }
-
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-
-        if (usuario.getId() != relato.getUsuario().getId()) {
-            model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
-        }
-
-        model.addAttribute("firma", usuario.getFirmaAutor());
-        model.addAttribute("relato", relato);
-        model.addAttribute("categorias", categoriaService.findAllCategories());
-        model.addAttribute("content", "views/relatos/editar-relato");
-        return INDEX_VIEW;
     }
 
     @PostMapping("/guardar-relato")
     public ResponseEntity<Integer> guardarRelato(@RequestBody RelatoDto relatoDto) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-
-        Relato relato;
-
-        List<Categoria> categorias = new ArrayList<>();
-        for (Integer idCategoria : relatoDto.getCategorias()) {
-            Optional<Categoria> categoriaOptional = categoriaService.findById(idCategoria);
-            categoriaOptional.ifPresent(categorias::add);
-        }
-
-        if (relatoDto.getId() == 0) {
-            Imagen imagen = imagenesService.findImageById(relatoDto.getIdImagen());
-
-            relato = Mappings.mapToRelato(relatoDto, imagen);
-
-            relato.setUsuario(usuario);
-            relato.setCategorias(categorias);
-            relato.setFechaCreacion(new Date());
-        } else {
-            try {
-                relato = relatoService.findRelatoByIdAndNotArchivado(relatoDto.getId());
-            } catch (RelatoException e) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        try {
+            if (relatoDto.getId() == 0) {
+                int idRelato = relatoService.guardarNuevoRelato(relatoDto);
+                return new ResponseEntity<>(idRelato, HttpStatus.OK);
+            } else {
+                int idRelato = relatoService.actualizarRelato(relatoDto);
+                return new ResponseEntity<>(idRelato, HttpStatus.OK);
             }
-
-            if (relato.getUsuario().getId() != usuario.getId()) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-
-            relato.setTitulo(relatoDto.getTitulo());
-            relato.setTexto(relatoDto.getTexto());
-            relato.setFechaActualizacion(new Date());
-            relato.setCategorias(categorias);
+        } catch (CategoriaNotFoundException | RelatoException e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-
-        int idRelato = relatoService.guardarRelato(relato);
-        return new ResponseEntity<>(idRelato, HttpStatus.OK);
     }
 
 
     @GetMapping("/eliminar-relato/{id}")
     public String eliminarRelato(Model model, @PathVariable String id) {
-        int idRelato = Integer.parseInt(id);
+        if (!Validadores.validateId(id)) {
+            model.addAttribute("content", ERROR_VIEW);
+            return Constantes.INDEX_VIEW;
+        }
 
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-
-        Relato relato;
         try {
-            relato = relatoService.findRelatoByIdAndNotArchivado(idRelato);
-
-            if (usuario.getId() != relato.getUsuario().getId()) {
-                model.addAttribute("content", ERROR_VIEW);
-                return INDEX_VIEW;
-            }
-
-            relato.setArchivado(true);
-
-            relatoService.guardarRelato(relato);
+            relatoService.archivarRelato(Integer.parseInt(id));
             return "redirect:/relato/mis-relatos";
         } catch (RelatoException e) {
             model.addAttribute("content", ERROR_VIEW);
-            return INDEX_VIEW;
+            return Constantes.INDEX_VIEW;
         }
     }
 
