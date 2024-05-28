@@ -180,4 +180,9 @@ public class GrupoServiceImpl implements GrupoService {
         model.addAttribute("content", "views/grupos/grupo-mis-relatos");
     }
 
+    @Override
+    public Boolean existeCodigoAcceso(String codigoAcceso) {
+        return grupoRepository.existsByCodigoAcceso(codigoAcceso);
+    }
+
 }

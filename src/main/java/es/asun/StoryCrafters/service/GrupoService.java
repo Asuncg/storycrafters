@@ -30,5 +30,6 @@ public interface GrupoService {
     void abandonarGrupo(Usuario usuario, String grupoId) throws GrupoException;
     void mostrarVista(Grupo grupo, String opcion, Model model, Usuario usuario) throws GrupoException;
     void verMisRelatosGrupo(Grupo grupo, Usuario usuarioActual, Model model);
+    Boolean existeCodigoAcceso(String codigoAcceso);
 }
 

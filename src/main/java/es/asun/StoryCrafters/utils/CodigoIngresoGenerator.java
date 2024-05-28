@@ -1,16 +1,33 @@
 package es.asun.StoryCrafters.utils;
 
-import java.security.SecureRandom;
-import java.util.Base64;
+import es.asun.StoryCrafters.repository.GrupoRepository;
+import es.asun.StoryCrafters.service.GrupoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
+
+@Component
 public class CodigoIngresoGenerator {
+
     private static final int LONGITUD_CODIGO = 8;
+    private static final String CARACTERES = "abcdefghijklmnopqrstuvwxyz0123456789";
+    private static final SecureRandom random = new SecureRandom();
+
+    @Autowired
+    private static GrupoService grupoService;
 
     public static String generarCodigoIngreso() {
-        SecureRandom random = new SecureRandom();
-        byte[] codigoBytes = new byte[LONGITUD_CODIGO];
-        random.nextBytes(codigoBytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(codigoBytes);
-    }
+        String codigo;
+        do {
+            StringBuilder codigoBuilder = new StringBuilder(LONGITUD_CODIGO);
+            for (int i = 0; i < LONGITUD_CODIGO; i++) {
+                int index = random.nextInt(CARACTERES.length());
+                codigoBuilder.append(CARACTERES.charAt(index));
+            }
+            codigo = codigoBuilder.toString();
+        } while (grupoService.existeCodigoAcceso(codigo));
 
+        return codigo;
+    }
 }

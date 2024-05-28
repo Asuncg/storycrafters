@@ -38,4 +38,17 @@ function confirmarEliminacionUsuario(link) {
     };
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('copy-icon').addEventListener('click', function() {
+        var codigoAcceso = document.getElementById('codigo-acceso').innerText;
 
+        var tempInput = document.createElement('input');
+        tempInput.value = codigoAcceso;
+        document.body.appendChild(tempInput);
+
+        tempInput.select();
+        document.execCommand('copy');
+
+        document.body.removeChild(tempInput);
+    });
+});

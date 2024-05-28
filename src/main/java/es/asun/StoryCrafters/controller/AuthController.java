@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -24,8 +22,6 @@ import java.util.Optional;
 public class AuthController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private AvatarService avatarService;
 
     @GetMapping(value = {"/", "/index"})
     public String home(Model model) {
@@ -76,7 +72,42 @@ public class AuthController {
         }
 
         return "redirect:/registro?success";
+    }
 
+    @GetMapping("/recuperar-password")
+    public String showForgotPasswordPage() {
+        return "recuperar-password";
+    }
+
+    @PostMapping("/recuperar-password")
+    public String processForgotPassword(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
+        boolean result = userService.processForgotPassword(email);
+        if (result) {
+            redirectAttributes.addAttribute("success", true);
+        } else {
+            redirectAttributes.addAttribute("error", true);
+        }
+        return "redirect:/recuperar-password";
+    }
+
+
+    @GetMapping("/restablecer-password")
+    public String showResetPasswordPage(@RequestParam("token") String token, Model model) {
+        model.addAttribute("token", token);
+        return "restablecer-password";
+    }
+
+    @PostMapping("/restablecer-password")
+    public String processResetPassword(@RequestParam("token") String token,
+                                       @RequestParam("newPassword") String newPassword,
+                                       RedirectAttributes redirectAttributes) {
+        boolean result = userService.resetPassword(token, newPassword);
+        if (result) {
+            redirectAttributes.addAttribute("success", true);
+        } else {
+            redirectAttributes.addAttribute("error", true);
+        }
+        return "redirect:/restablecer-password";
     }
 }
 

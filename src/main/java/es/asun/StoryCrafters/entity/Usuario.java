@@ -33,6 +33,9 @@ public class Usuario {
     @Column(nullable = false, length = 64)
     private String password;
 
+    @Column(name= "resetToken", length = 100)
+    private String resetToken;
+
     @Column(name = "activo", length = 1, columnDefinition = "int default 1")
     private boolean activo = true;
 

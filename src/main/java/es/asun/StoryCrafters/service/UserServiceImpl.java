@@ -13,21 +13,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final AvatarService avatarService;
+    private final EmailService emailService;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           AvatarService avatarService) {
+                           AvatarService avatarService, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.avatarService = avatarService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -85,7 +87,40 @@ public class UserServiceImpl implements UserService {
         return usuarioOptional.get();
     }
 
-
     private void updateValidation() {
+    }
+
+    public boolean processForgotPassword(String email) {
+        Optional<Usuario> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            Usuario usuario = userOptional.get();
+            String token = UUID.randomUUID().toString();
+            usuario.setResetToken(token);
+            userRepository.save(usuario);
+
+            String resetLink = "https://storycrafters-production.up.railway.app/restablecer-password?token=" + token;
+            String message = "Para restablecer tu contraseña, haz clic en el siguiente enlace: " + resetLink;
+
+            emailService.sendEmail(usuario.getEmail(), "Restablecer Contraseña", message);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean resetPassword(String token, String newPassword) {
+        Optional<Usuario> userOptional = userRepository.findByResetToken(token);
+        if (userOptional.isPresent()) {
+            Usuario user = userOptional.get();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setResetToken(null);  // Eliminar el token después de usarlo
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Optional<Usuario> encontrarUsuarioPorResetToken(String resetToken) {
+        return userRepository.findByResetToken(resetToken);
     }
 }

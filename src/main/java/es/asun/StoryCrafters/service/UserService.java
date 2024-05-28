@@ -19,4 +19,9 @@ public interface UserService {
 
     Usuario findUserById(int id) throws UsuarioException;
 
+    boolean processForgotPassword(String email);
+
+    boolean resetPassword(String token, String newPassword);
+
+    Optional<Usuario> encontrarUsuarioPorResetToken(String resetToken);
 }
