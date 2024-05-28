@@ -6,6 +6,11 @@
 .nav-grupos a {
     color: #fff;
     font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.nav-grupos a:hover {
+    color: #ffae62;
 }
 
 .estado-aprobado {

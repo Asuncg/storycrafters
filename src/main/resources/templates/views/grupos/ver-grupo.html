@@ -5,7 +5,7 @@
     <header class="lh-1 py-3">
         <div class="row">
             <div class="col-sm-12 text-center text-uppercase">
-                <h1 class ="titulo-grupo" th:text="${grupo.nombre}"></h1>
+                <h1 class="titulo-grupo" th:text="${grupo.nombre}"></h1>
             </div>
         </div>
         <div class="col-sm text-right text-uppercase align-self-end codigo-acceso" th:if="${idUsuarioActual eq grupo.usuario.id}">
@@ -15,7 +15,7 @@
         </div>
     </header>
     <hr class="mt-0 mb-2">
-    <nav class="nav nav-underline justify-content-between mx-5">
+    <nav class="nav nav-underline justify-content-center mx-5">
         <th:block th:include="fragments/navgrupo.html :: nav"></th:block>
     </nav>
 </div>
@@ -42,12 +42,12 @@
         <div th:if="${not #lists.isEmpty(listaRelatosAprobados)}" class="row" id="relatos"
              style="display: flex; flex-wrap: wrap;">
             <th:block th:each="relato : ${listaRelatosAprobados}">
-                <div class="col-md-4 mb-4" th:id="'relato-' + ${relato.id}">
+                <div class="col-md-3 mb-4" th:id="'relato-' + ${relato.id}">
                     <a th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}">
                         <div class="card card-relatos d-flex">
                             <img class="card-img-top" th:src="${relato.imagen.url}" alt="Card image cap">
                             <div class="card-body">
-                                <h5 class="card-title text-center"><a th:utext="${relato.titulo}" th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}"></a></h5>
+                                <h6 class="card-title text-center"><a th:utext="${relato.titulo}" th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}"></a></h6>
                                 <hr class="mt-0">
                                 <p class="card-text text-center"><small>Fecha de Publicación: </small><small class="text-muted text-center fechaPublicacion" th:text="${#dates.format(relato.fechaPublicacion, 'dd/MM/yyyy')}"></small></p>
                                 <input type="hidden" class="categorias" th:each="categoria : ${relato.categorias}"

@@ -1,17 +1,19 @@
-<nav>
-    <a class="nav-item nav-link link-body-emphasis active" th:href="@{'/grupos/' + ${grupo.id} + '/publicaciones'}">Publicaciones</a>
-    <a class="nav-item nav-link link-body-emphasis" href="#" th:href="@{'/grupos/' + ${grupo.id} + '/mis-relatos'}">Mis Relatos</a>
-    <a class="nav-item nav-link link-body-emphasis" th:href="@{'/grupos/' + ${grupo.id} + '/usuarios'}">Usuarios</a>
-    <a class="nav-item nav-link link-body-emphasis" th:href="@{'/grupos/' + ${grupo.id} + '/gestionar-relatos'}" th:if="${idUsuarioActual eq grupo.usuario.id}">Gestionar Relatos
-        <span th:if="${not #lists.isEmpty(listaRelatosPendientes)}"
-              class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle">
+<nav class="d-flex justify-content-center">
+    <div class="nav">
+        <a class="nav-item nav-link link-body-emphasis active mx-2" th:href="@{'/grupos/' + ${grupo.id} + '/publicaciones'}">Publicaciones</a>
+        <a class="nav-item nav-link link-body-emphasis mx-2" href="#" th:href="@{'/grupos/' + ${grupo.id} + '/mis-relatos'}">Mis Relatos</a>
+        <a class="nav-item nav-link link-body-emphasis mx-2" th:href="@{'/grupos/' + ${grupo.id} + '/usuarios'}">Usuarios</a>
+        <a class="nav-item nav-link link-body-emphasis mx-2" th:href="@{'/grupos/' + ${grupo.id} + '/gestionar-relatos'}" th:if="${idUsuarioActual eq grupo.usuario.id}">Gestionar Relatos
+            <span th:if="${not #lists.isEmpty(listaRelatosPendientes)}"
+                  class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle">
         </span>
-    </a>
-    <a class="nav-item nav-link link-body-emphasis" th:href="@{'/grupos/' + ${grupo.id} + '/solicitudes'}" th:if="${idUsuarioActual eq grupo.usuario.id}">Solicitudes de Unión
-        <span th:if="${not #lists.isEmpty(solicitudesPendientes)}"
-              class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle">
+        </a>
+        <a class="nav-item nav-link link-body-emphasis mx-2" th:href="@{'/grupos/' + ${grupo.id} + '/solicitudes'}" th:if="${idUsuarioActual eq grupo.usuario.id}">Solicitudes de Unión
+            <span th:if="${not #lists.isEmpty(solicitudesPendientes)}"
+                  class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle">
         </span>
-    </a>
-
+        </a>
+    </div>
 </nav>
+
 

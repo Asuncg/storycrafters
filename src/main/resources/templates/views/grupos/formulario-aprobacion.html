@@ -2,12 +2,11 @@
 <script src="/js/grupos.js"></script>
 <link rel="stylesheet" href="/css/relatos.css">
 <script src="/js/vistarelato.js"></script>
-
 <div class="nav-scroller py-1 mb-3 nav-grupos">
     <header class="lh-1 py-3">
         <div class="row">
             <div class="col-sm-12 text-center text-uppercase">
-                <h1 class ="titulo-grupo" th:text="${grupo.nombre}"></h1>
+                <h1 class="titulo-grupo" th:text="${grupo.nombre}"></h1>
             </div>
         </div>
         <div class="col-sm text-right text-uppercase align-self-end codigo-acceso" th:if="${idUsuarioActual eq grupo.usuario.id}">
@@ -17,7 +16,7 @@
         </div>
     </header>
     <hr class="mt-0 mb-2">
-    <nav class="nav nav-underline justify-content-between mx-5">
+    <nav class="nav nav-underline justify-content-center mx-5">
         <th:block th:include="fragments/navgrupo.html :: nav"></th:block>
     </nav>
 </div>
