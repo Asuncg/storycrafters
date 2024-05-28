@@ -40,4 +40,9 @@ public class Grupo {
     @Column(nullable = false, unique = true, length = 15)
     private String codigoAcceso;
 
+    @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RelatoGrupo> relatoGrupos;
+
+    @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Solicitud> solicitudesIngresoGrupos;
 }

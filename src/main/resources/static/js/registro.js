@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Obtener los elementos de los campos y el botón de registro
     var firstNameInput = document.getElementById("firstName");
     var lastNameInput = document.getElementById("lastName");
     var emailInput = document.getElementById("email");

@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
     var passwordInput = document.getElementById("password");
     var togglePasswordButton = document.getElementById("togglePassword");
 
-    // Agregar evento de clic al botón de alternar contraseña
     togglePasswordButton.addEventListener("click", function() {
         togglePassword(passwordInput);
     });

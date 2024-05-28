@@ -3336,12 +3336,12 @@ fieldset:disabled a.btn {
 
 .btn-link {
     font-weight: 400;
-    color: #007bff;
+    color: #323232;
     text-decoration: none;
 }
 
 .btn-link:hover {
-    color: #0056b3;
+    color: #323232;
     text-decoration: underline;
 }
 
@@ -11392,12 +11392,12 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 body {
-    font-family: "Poppins", Arial, sans-serif;
+    font-family: "Helvetica Neue", Arial, sans-serif;
     font-size: 14px;
     line-height: 1.8;
     font-weight: normal;
     background-image: url("../images/waffle-bg.jpg");
-    color: gray;
+    color: rgb(128, 128, 128);
 }
 
 a {
@@ -11431,8 +11431,9 @@ h1, h2, h3, h4, h5,
 .h1, .h2, .h3, .h4, .h5 {
     line-height: 1.5;
     font-weight: 400;
-    font-family: "Poppins", Arial, sans-serif;
-    color: #000;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #323232;
+    font-weight: bold;
 }
 
 .ftco-section {

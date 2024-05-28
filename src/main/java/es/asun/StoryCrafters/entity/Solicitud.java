@@ -22,6 +22,6 @@ public class Solicitud {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "grupo_id")
+    @JoinColumn(name = "grupo_id", nullable = false)
     private Grupo grupo;
 }

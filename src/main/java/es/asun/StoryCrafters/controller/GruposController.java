@@ -84,7 +84,7 @@ public class GruposController {
 
             grupoService.eliminarGrupo(Integer.parseInt(id));
 
-            model.addAttribute("content", "views/error/error");
+            model.addAttribute("content", "views/grupos/mis-grupos");
             return INDEX_VIEW;
         } catch (GrupoException e) {
             model.addAttribute("content", ERROR_VIEW);
@@ -474,7 +474,7 @@ public class GruposController {
         relatoGrupoService.eliminarRelatoGrupo(Integer.parseInt(id));
 
         if (vista.equals("mis-relatos")) {
-            return "redirect:/grupos/mis-relatos/" + relatoGrupo.getGrupo().getId();
+            return "redirect:/grupos/" + relatoGrupo.getGrupo().getId() +"/mis-relatos";
         } else if (vista.equals("gestionar-relatos")) {
             return "redirect:/grupos/" + relatoGrupo.getGrupo().getId() + "/gestionar-relatos";
         } else {

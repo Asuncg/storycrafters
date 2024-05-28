@@ -47,10 +47,8 @@ function guardarRelato() {
     var idRelato = document.getElementById('idRelato').value; // Obtener el ID del relato, si está presente
     var firmaAutor = document.getElementById('firma-relato').innerText;
 
-    // Obtener las categorías seleccionadas
     var categoriasSeleccionadas = obtenerCategoriasSeleccionadas();
 
-    // Crear un objeto relatoDto
     var relatoDto = {
         id: idRelato,
         titulo: titulo,
@@ -60,7 +58,6 @@ function guardarRelato() {
         categorias: categoriasSeleccionadas
     };
 
-    // Definir la URL de la solicitud Ajax
     var url = '/relato/guardar-relato';
 
     // Realizar la petición Ajax
@@ -96,11 +93,9 @@ function obtenerCategoriasSeleccionadas() {
     return categoriasSeleccionadas;
 }
 
-// Variable para controlar si se han realizado cambios
 var cambiosPendientes = false;
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Detectar cambios en el editor
     var tituloRelato = document.getElementById('titulo-relato');
     var textoRelato = document.getElementById('texto-relato');
 
@@ -125,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
-
 
 function handleGuardarRelatoResponse(idRelato) {
     document.getElementById('idRelato').value = idRelato;

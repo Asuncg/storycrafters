@@ -11,7 +11,6 @@ function selectAvatar(element) {
 function saveChanges() {
     var selectedAvatarId = document.getElementById('selected-avatar-id').value;
     if (selectedAvatarId) {
-        // Enviar el formulario para guardar el avatar seleccionado
         document.getElementById('avatar-form').submit();
     } else {
         alert("Por favor, selecciona un avatar antes de guardar los cambios.");

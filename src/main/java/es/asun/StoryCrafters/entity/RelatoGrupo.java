@@ -23,7 +23,7 @@ public class RelatoGrupo {
     private Relato relato;
 
     @ManyToOne
-    @JoinColumn(name = "id_grupo")
+    @JoinColumn(name = "id_grupo", nullable = false)
     private Grupo grupo;
 
     @Column(nullable = false, name = "titulo", length = 150)
