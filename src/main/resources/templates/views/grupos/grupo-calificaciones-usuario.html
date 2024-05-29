@@ -37,11 +37,15 @@
                     <div class="col-sm-1 text-center">
                         <input type="checkbox" id="checkboxSeleccionarTodosLosRelatos" onchange="toggleSeleccionarTodosLosRelatos()">
                     </div>
-                    <div class="col-sm-5 text-left">Título</div>
+                    <div class="col-sm-5 text-left">
+                        Título
+                    </div>
                     <div class="col-sm-4 text-center">
                         Fecha de publicación
                     </div>
-                    <div class="col-sm-2 text-left">Calificación</div>
+                    <div class="col-sm-2 text-left">
+                        Calificación
+                    </div>
                 </div>
                 <div th:if="${#lists.isEmpty(listaRelatosUsuario)}" class="col-sm-auto text-center" role="alert">
                     <h2>Aquí no hay nada...</h2>
