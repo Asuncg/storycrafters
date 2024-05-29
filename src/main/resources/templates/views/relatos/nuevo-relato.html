@@ -75,9 +75,11 @@
     <div class="row justify-content-md-center">
         <div class="col-md-10">
             <div class="editor-text">
-                <div class="col-md-12 justify-content-center align-items-center text-uppercase" contenteditable="true"
-                     id="titulo-relato" th:style="'background-image: url(' + ${imagen.url} + '); opacity: 0.5;'"
-                     placeholder="Título del relato"></div>
+                <div class="col-md-12 justify-content-center align-items-center text-uppercase fondo-relato" contenteditable="true"
+                      th:style="'background-image: url(' + ${imagen.url} + '); opacity: 0.75;'"
+                     placeholder="Título del relato">
+                    <div class="floating-title" id="titulo-relato" contenteditable="true">Escribe tu título aquí</div>
+                </div>
 
                 <div class="col-md-12" contenteditable="true" id="texto-relato" placeholder="Comienza tu relato"></div>
             </div>
@@ -88,6 +90,7 @@
             <input type="hidden" id="idRelato" th:value="${idRelato}">
         </div>
     </div>
+
     <!-- Modal de éxito -->
     <div class="modal fade" id="modalExito" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">

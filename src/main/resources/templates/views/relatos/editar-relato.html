@@ -75,10 +75,12 @@
     <div class="row justify-content-md-center">
         <div class="col-md-10">
             <div class="editor-text">
-                <div class="col-md-12 justify-content-center align-items-center" contenteditable="true"
-                     id="titulo-relato" th:style="'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.5;'"
-                     th:utext="${relato.titulo}"></div>
-                <div class="col-md-12" contenteditable="true" id="texto-relato" th:utext="${relato.texto}"></div>
+                <div class="col-md-12 justify-content-center align-items-center text-uppercase fondo-relato" contenteditable="true"
+                     th:style="'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.75;'"
+                     placeholder="Título del relato">
+                    <div class="floating-title" id="titulo-relato" contenteditable="true" th:utext="${relato.titulo}">Escribe tu título aquí</div>
+                </div>
+                    <div class="col-md-12" contenteditable="true" id="texto-relato" th:utext="${relato.texto}"></div>
             </div>
             <div class="row" id="info-relato">
                 <div class="col-md-auto" id="firma-autor">Firma de Autor: <span id="firma-relato"

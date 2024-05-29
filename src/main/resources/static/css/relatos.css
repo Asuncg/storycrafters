@@ -1,6 +1,7 @@
 #editor-text {
     box-shadow: 5px 5px 10px -5px rgba(0, 0, 0, 0.75);
     border-radius: .5rem;
+    position: relative;
 }
 
 .editor-bar {
@@ -9,23 +10,36 @@
     background-color: #1693a5;
 }
 
-#titulo-relato {
+.fondo-relato {
     min-height: 250px;
-    background-color: #EBEDEF;
-    font-size: 32px;
     background-size: cover;
     background-position: center;
-    color: black;
-    margin-top: 20px;
     border-top-left-radius: .5rem;
     border-top-right-radius: .5rem;
+}
+
+.floating-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.0);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 80%;
+    font-size: 48px;
+    color: black;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: white;
+    font-weight: 900;
 }
 
 #texto-relato {
     min-height: 500px;
     background-color: #EBEDEF;
     text-align: left;
-    font-size: 16px;
+    font-size: 20px;
     border-bottom-left-radius: .5rem;
     border-bottom-right-radius: .5rem;
 }
@@ -43,16 +57,14 @@
     text-align: right;
 }
 
-/* Estilos para los elementos div editables */
 .editor-text div[contenteditable="true"] {
     margin: 0 auto;
-    background-color: #e5e7ea;
+    background-color: rgba(255, 255, 255, 0.0);
     padding-top: 20px;
 }
 
-/* Estilos para el borde inferior del último elemento */
 .editor-text div[contenteditable="true"]:last-child {
-    margin-bottom: 0; /* Elimina el margen inferior del último elemento */
+    margin-bottom: 0;
 }
 
 [contenteditable=true]:empty:before {
@@ -86,7 +98,7 @@
 
 .vista-texto-relato {
     padding: 25px;
-    font-size: 16px;
+    font-size: 20px;
     min-height: 500px;
     border-bottom-left-radius: .5rem;
     border-bottom-right-radius: .5rem;
@@ -103,4 +115,6 @@
 .vista-relato-autor img {
     width: 8%;
 }
+
+
 

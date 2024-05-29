@@ -43,12 +43,12 @@
     </div>
     <span class="badge text-bg-primary" th:each="categoria : ${relato.categorias}" th:text="${categoria.nombre}"></span>
     <div class="row vista-relato">
-
         <div class="col-sm-12 vista-relato-separador">
-            <div class="row">
+            <div class="row editor-text">
                 <div class="col-md-12 vista-titulo-relato text-center"
-                     th:style="'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.5;'"
-                     th:utext="${relato.titulo}"></div>
+                     th:style="'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.75;'">
+                    <div class="floating-title text-uppercase" id="titulo-relato" contenteditable="true" th:utext="${relato.titulo}">Escribe tu título aquí</div>
+                </div>
             </div>
             <div class="row justify-content-md-center">
                 <div class="col-md-12 vista-texto-relato" th:utext="${relato.texto}"></div>

@@ -137,6 +137,7 @@ public class RelatoController {
     }
 
     @PostMapping("/guardar-relato")
+    @ResponseBody
     public ResponseEntity<Integer> guardarRelato(@RequestBody RelatoDto relatoDto) {
         try {
             if (relatoDto.getId() == 0) {
@@ -169,6 +170,7 @@ public class RelatoController {
     }
 
     @PostMapping("/publicar-relato")
+    @ResponseBody
     public ResponseEntity<Integer> publicarRelato(@RequestBody Map<String, Object> request) {
         String idRelato = request.get("idRelato").toString();
         String idGrupo = request.get("idGrupo").toString();
