@@ -16,6 +16,8 @@ public interface GrupoRepository extends JpaRepository<Grupo, Integer> {
 
     boolean existsByCodigoAcceso(String codigoAcceso);
 
+    List<Grupo> findByUsuariosContains(Usuario usuario);
+
 
 }
 

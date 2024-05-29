@@ -6,30 +6,35 @@
                     <div class="col-md-12">
                         <div class="col-md-4 profile-custom text-center text-white pb-5">
                             <img th:src="${currentUser.avatar.url}" alt="Avatar" class="img-fluid mt-5 mb-3 rounded-circle">
-                            <h5 th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}" ></h5>
+                            <h5 style="color: white;" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}" ></h5>
                         </div>
                         <div class="card-body p-4">
-                            <h6>Información</h6>
+                            <h6 class="font-weight-bold text-uppercase mb-1">Información</h6>
                             <hr class="mt-0 mb-4">
                             <div class="row pt-1">
                                 <div class="col-6 mb-3">
-                                    <h6>Email</h6>
+                                    <h6 class="text-uppercase titulos-perfil">Email</h6>
                                     <p class="text-muted" th:text="${currentUser.email}"></p>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <h6>Firma de Autor</h6>
+                                    <h6 class="titulos-perfil text-uppercase">Firma de Autor</h6>
                                     <p class="text-muted" th:text="${currentUser.firmaAutor}"></p>
                                 </div>
                             </div>
-                            <h6>Relatos</h6>
+                            <h6 class="font-weight-bold text-uppercase mb-1">Relatos y Grupos</h6>
                             <hr class="mt-0 mb-4">
                             <div class="row pt-1">
-                                <div class="col-6 mb-3">
-                                    <h6>Relatos escritos:</h6>
-                                    <p class="text-muted" th:text="${numRelatos}"></p>
+                                <div class="col-4 mb-3">
+                                    <h6 class="titulos-perfil text-uppercase">Relatos escritos:</h6>
+                                    <span class="text-muted" th:text="${numRelatos}"></span> <i class="fa-solid fa-book ml-2"></i>
                                 </div>
-                                <div class="col-6 mb-3">
-
+                                <div class="col-4 mb-3">
+                                    <h6 class="titulos-perfil text-uppercase">Relatos publicados:</h6>
+                                    <span class="text-muted" th:text="${numRelatosGrupo}"></span> <i class="fa-solid fa-book ml-2"><i class="fa-solid fa-user-group"></i></i>
+                                </div>
+                                <div class="col-4 mb-3">
+                                    <h6 class="titulos-perfil text-uppercase">Grupos:</h6>
+                                    <span class="text-muted" th:text="${numGrupos}"></span> <i class="fa-solid fa-user-group ml-2"></i>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-start">

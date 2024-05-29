@@ -139,6 +139,11 @@ public class RelatoGrupoServiceImpl implements RelatoGrupoService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<RelatoGrupo> encontrarTodosRelatosGrupoPorUsuarioAprobados(Usuario usuario) {
+        return relatoGrupoRepository.findByRelato_UsuarioAndEstadoEquals(usuario, ESTADO_APROBADO);
+    }
+
     private List<Categoria> asociarCategorias(Relato relato) {
         List<Categoria> categorias = new ArrayList<>();
         for (Categoria categoria : relato.getCategorias()) {

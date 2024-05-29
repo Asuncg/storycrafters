@@ -1,13 +1,9 @@
 package es.asun.StoryCrafters.controller;
 
-import es.asun.StoryCrafters.entity.Avatar;
-import es.asun.StoryCrafters.entity.Relato;
-import es.asun.StoryCrafters.entity.Usuario;
+import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.exceptions.AvatarNotFoundException;
 import es.asun.StoryCrafters.model.UserUpdateDto;
-import es.asun.StoryCrafters.service.AvatarService;
-import es.asun.StoryCrafters.service.RelatoService;
-import es.asun.StoryCrafters.service.UserService;
+import es.asun.StoryCrafters.service.*;
 import es.asun.StoryCrafters.utils.AuthUtils;
 import es.asun.StoryCrafters.utils.Constantes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +16,20 @@ import java.util.List;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    private final UserService userService;
-
-    private final AvatarService avatarService;
-
-    private final RelatoService relatoService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
-    public UserController(UserService userService, AvatarService avatarService, RelatoService relatoService) {
-        this.userService = userService;
-        this.avatarService = avatarService;
-        this.relatoService = relatoService;
-    }
+    private AvatarService avatarService;
+
+    @Autowired
+    private RelatoService relatoService;
+
+    @Autowired
+    private GrupoService grupoService;
+
+    @Autowired
+    private RelatoGrupoService relatoGrupoService;
 
     @GetMapping(value= {"/profile"})
     public String viewprofile(Model model) {
@@ -40,8 +38,16 @@ public class UserController {
         List<Relato> listaRelatos = relatoService.findAllRelatosByUsuarioAndNotArchivado(usuario);
         int numRelatos = listaRelatos.size();
 
+        List<Grupo> listaGrupos = grupoService.encontrarGruposContieneUsuario(usuario);
+        int numGrupos = listaGrupos.size();
+
+        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.encontrarTodosRelatosGrupoPorUsuarioAprobados(usuario);
+        int numRelatosGrupo = listaRelatosGrupo.size();
+
         model.addAttribute("content", "views/profile");
         model.addAttribute("numRelatos", numRelatos);
+        model.addAttribute("numGrupos", numGrupos);
+        model.addAttribute("numRelatosGrupo", numRelatosGrupo);
         return "index";
     }
 

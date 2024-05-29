@@ -44,8 +44,9 @@
         <div class="col-sm-12 vista-relato-separador">
             <div class="row">
                 <div class="col-md-12 vista-titulo-relato text-center"
-                     th:style="'background-image: url(' + ${relatoGrupo.imagen.url} + '); opacity: 0.5;'"
-                     th:utext="${relatoGrupo.titulo}"></div>
+                     th:style="'background-image: url(' + ${relatoGrupo.imagen.url} + '); opacity: 0.75;'">
+                    <div class="floating-title text-uppercase" id="titulo-relato" contenteditable="true"  th:utext="${relatoGrupo.titulo}"></div>
+                </div>
             </div>
             <div class="row justify-content-md-center">
                 <div class="col-md-12 vista-texto-relato" th:utext="${relatoGrupo.texto}"></div>

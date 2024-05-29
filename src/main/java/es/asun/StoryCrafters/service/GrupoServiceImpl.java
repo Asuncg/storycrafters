@@ -185,4 +185,9 @@ public class GrupoServiceImpl implements GrupoService {
         return grupoRepository.existsByCodigoAcceso(codigoAcceso);
     }
 
+    @Override
+    public List<Grupo> encontrarGruposContieneUsuario(Usuario usuario) {
+        return grupoRepository.findByUsuariosContains(usuario);
+    }
+
 }

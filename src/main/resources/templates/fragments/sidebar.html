@@ -10,7 +10,7 @@
         <div class="col-md-4 text-center text-white p-2">
             <a th:href="@{/user/profile}">
                 <img th:src="${currentUser.avatar.url}" alt="Avatar" class="img-fluid rounded-circle" style="border: 1px solid #061c28; width: 25%;">
-                <h6 style="color: white;" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}"></h6>
+                <h6 style="color: white;" class="mt-3" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}"></h6>
             </a>
         </div>
         <ul class="list-unstyled components mb-5">
