@@ -73,9 +73,7 @@ public class GruposController {
 
         try {
             Usuario usuario = AuthUtils.getAuthUser(userService);
-            Grupo grupo;
-
-            grupo = grupoService.findGrupoById(Integer.parseInt(id));
+            Grupo grupo = grupoService.findGrupoById(Integer.parseInt(id));
 
             if (!Validadores.gestorValido(grupo, usuario)) {
                 model.addAttribute("content", "views/error/error");
@@ -84,8 +82,7 @@ public class GruposController {
 
             grupoService.eliminarGrupo(Integer.parseInt(id));
 
-            model.addAttribute("content", "views/grupos/mis-grupos");
-            return INDEX_VIEW;
+            return "redirect:/grupos/";
         } catch (GrupoException e) {
             model.addAttribute("content", ERROR_VIEW);
             return INDEX_VIEW;

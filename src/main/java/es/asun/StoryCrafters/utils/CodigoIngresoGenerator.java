@@ -1,6 +1,5 @@
 package es.asun.StoryCrafters.utils;
 
-import es.asun.StoryCrafters.repository.GrupoRepository;
 import es.asun.StoryCrafters.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,10 +13,7 @@ public class CodigoIngresoGenerator {
     private static final String CARACTERES = "abcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom random = new SecureRandom();
 
-    @Autowired
-    private static GrupoService grupoService;
-
-    public static String generarCodigoIngreso() {
+    public static String generarCodigoIngreso(GrupoService grupoService) {
         String codigo;
         do {
             StringBuilder codigoBuilder = new StringBuilder(LONGITUD_CODIGO);

@@ -49,7 +49,7 @@ public class GrupoServiceImpl implements GrupoService {
         List<Usuario> listaUsuarios = new ArrayList<>();
         listaUsuarios.add(usuario);
 
-        String codigoAcceso = CodigoIngresoGenerator.generarCodigoIngreso();
+        String codigoAcceso = CodigoIngresoGenerator.generarCodigoIngreso(this);
 
         grupo = Mappings.mapToGrupo(grupoDto);
         grupo.setUsuario(usuario);
