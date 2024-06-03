@@ -12,6 +12,7 @@ public class SupportController {
     @GetMapping(value= {"/faq"})
     public String viewFaq(Model model) {
         model.addAttribute("content", "views/support/faq");
+        model.addAttribute("currentPage", "ayuda");
         return "index";
     }
 }

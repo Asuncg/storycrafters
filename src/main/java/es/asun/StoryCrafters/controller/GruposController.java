@@ -47,6 +47,7 @@ public class GruposController {
 
         model.addAttribute("grupos", grupos);
         model.addAttribute("content", "views/grupos/mis-grupos");
+        model.addAttribute("currentPage", "grupos");
         model.addAttribute("idUsuarioActual", usuario.getId());
         return INDEX_VIEW;
     }

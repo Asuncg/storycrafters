@@ -46,6 +46,7 @@ public class RelatoController {
         List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
         model.addAttribute("content", "views/relatos/mis-relatos");
+        model.addAttribute("currentPage", "misRelatos");
         model.addAttribute("listaCategorias", listaCategorias);
         model.addAttribute("relatos", relatosDto);
         return Constantes.INDEX_VIEW;
@@ -83,6 +84,7 @@ public class RelatoController {
         List<Imagen> listaImagenes = imagenesService.findAllImagenes();
 
         model.addAttribute("content", "views/relatos/nuevo-relato-imagen");
+        model.addAttribute("currentPage", "nuevoRelato");
         model.addAttribute("imagenes", listaImagenes);
         return Constantes.INDEX_VIEW;
     }

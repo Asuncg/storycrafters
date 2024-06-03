@@ -27,7 +27,7 @@ public class AuthController {
     public String home(Model model) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         model.addAttribute("usuario", new UserUpdateDto(usuario));
-
+        model.addAttribute("currentPage", "home");
         model.addAttribute("content", "views/home");
         return "index";
     }
