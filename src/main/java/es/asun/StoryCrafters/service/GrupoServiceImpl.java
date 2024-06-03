@@ -108,25 +108,26 @@ public class GrupoServiceImpl implements GrupoService {
     }
 
     @Override
-    public void enviarInvitacion(int idGrupo, String email) throws GrupoException, UsuarioException, UserAlreadyExistsException {
+    public void enviarInvitacion(int idGrupo, String email) throws GrupoException, UserAlreadyExistsException {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Grupo grupo = this.findGrupoById(idGrupo);
 
         if (!Validadores.gestorValido(grupo, usuario)) {
             throw new UnauthorizedAccessException("Acceso Denegado");
         }
+
         Optional<Usuario> usuarioGrupoOptional = userService.findUserByEmail(email);
 
-        if (usuarioGrupoOptional.isEmpty()){
-            throw new UsuarioException("El usuario no existe");
-        }
-        Usuario usuarioGrupo = usuarioGrupoOptional.get();
+        if (usuarioGrupoOptional.isPresent()){
+            Optional<Grupo> grupoOptional = grupoRepository.findGrupoByIdAndUsuariosContains(grupo.getId(), usuarioGrupoOptional.get());
 
-        if (yaExisteUsuario(usuarioGrupo)) {
-            throw new UserAlreadyExistsException("Este usuario ya existe en el grupo");
+            if (grupoOptional.isPresent()){
+                throw new UserAlreadyExistsException("Este usuario ya existe en el grupo");
+            } else {
+                emailService.enviarInvitacion(email, grupo.getCodigoAcceso(), grupo.getDescripcion(), grupo.getNombre(), usuario.getFirstName());
+            }
         }
         emailService.enviarInvitacion(email, grupo.getCodigoAcceso(), grupo.getDescripcion(), grupo.getNombre(), usuario.getFirstName());
-
     }
 
     @Override
@@ -194,10 +195,6 @@ public class GrupoServiceImpl implements GrupoService {
         return grupoRepository.existsByCodigoAcceso(codigoAcceso);
     }
 
-    @Override
-    public boolean yaExisteUsuario(Usuario usuario) {
-        return grupoRepository.existsByUsuariosContains(usuario);
-    }
 
     @Override
     public List<Grupo> encontrarGruposContieneUsuario(Usuario usuario) {

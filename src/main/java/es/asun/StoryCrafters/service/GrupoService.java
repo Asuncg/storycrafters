@@ -33,7 +33,6 @@ public interface GrupoService {
     void mostrarVista(Grupo grupo, String opcion, Model model, Usuario usuario) throws GrupoException;
     void verMisRelatosGrupo(Grupo grupo, Usuario usuarioActual, Model model);
     boolean existeCodigoAcceso(String codigoAcceso);
-    boolean yaExisteUsuario(Usuario usuario);
     List<Grupo> encontrarGruposContieneUsuario(Usuario usuario);
 }
 
