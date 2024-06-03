@@ -135,21 +135,23 @@ public class GruposController {
 
     @PostMapping("/invitar-usuarios")
     @ResponseBody
-    public ResponseEntity<String> invitarUsuarios(@RequestBody Map<String, Object> request) {
-        if (!request.containsKey("groupId") || !request.containsKey("emails")) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> invitarUsuario(@RequestParam("groupId") int groupId, @RequestParam("email") String email) {
+        if (!Validadores.isValidEmail(email)) {
+            return new ResponseEntity<>("Formato de correo electrónico no válido", HttpStatus.BAD_REQUEST);
         }
-
-        int idGrupo = Integer.parseInt(request.get("groupId").toString());
-        List<String> emails = (List<String>) request.get("emails");
 
         try {
-            grupoService.enviarInvitacion(idGrupo, emails);
+            grupoService.enviarInvitacion(groupId, email);
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (UserAlreadyExistsException e) {
+            return new ResponseEntity<>("Ya hay un usuario con este correo en el grupo", HttpStatus.CONFLICT);
         } catch (UnauthorizedAccessException | GrupoException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (UsuarioException e) {
+            throw new RuntimeException(e);
         }
     }
+
 
     @PostMapping("/ingresar-invitacion")
     @ResponseBody

@@ -33,7 +33,7 @@ public class GrupoServiceImpl implements GrupoService {
     private CategoriaService categoriaService;
 
     @Autowired
-    private  RelatoGrupoService relatoGrupoService;
+    private RelatoGrupoService relatoGrupoService;
 
     @Override
     public void guardarGrupo(Grupo grupo) {
@@ -108,17 +108,25 @@ public class GrupoServiceImpl implements GrupoService {
     }
 
     @Override
-    public void enviarInvitacion(int idGrupo, List<String> emails) throws GrupoException {
+    public void enviarInvitacion(int idGrupo, String email) throws GrupoException, UsuarioException, UserAlreadyExistsException {
         Usuario usuario = AuthUtils.getAuthUser(userService);
         Grupo grupo = this.findGrupoById(idGrupo);
 
         if (!Validadores.gestorValido(grupo, usuario)) {
             throw new UnauthorizedAccessException("Acceso Denegado");
         }
+        Optional<Usuario> usuarioGrupoOptional = userService.findUserByEmail(email);
 
-        for (String email : emails) {
-            emailService.enviarInvitacion(email, grupo.getCodigoAcceso(), grupo.getDescripcion(), grupo.getNombre(), usuario.getFirstName());
+        if (usuarioGrupoOptional.isEmpty()){
+            throw new UsuarioException("El usuario no existe");
         }
+        Usuario usuarioGrupo = usuarioGrupoOptional.get();
+
+        if (yaExisteUsuario(usuarioGrupo)) {
+            throw new UserAlreadyExistsException("Este usuario ya existe en el grupo");
+        }
+        emailService.enviarInvitacion(email, grupo.getCodigoAcceso(), grupo.getDescripcion(), grupo.getNombre(), usuario.getFirstName());
+
     }
 
     @Override
@@ -168,6 +176,7 @@ public class GrupoServiceImpl implements GrupoService {
                 throw new GrupoException("Opción no válida");
         }
     }
+
     @Override
     public void verMisRelatosGrupo(Grupo grupo, Usuario usuarioActual, Model model) {
         List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
@@ -181,8 +190,13 @@ public class GrupoServiceImpl implements GrupoService {
     }
 
     @Override
-    public Boolean existeCodigoAcceso(String codigoAcceso) {
+    public boolean existeCodigoAcceso(String codigoAcceso) {
         return grupoRepository.existsByCodigoAcceso(codigoAcceso);
+    }
+
+    @Override
+    public boolean yaExisteUsuario(Usuario usuario) {
+        return grupoRepository.existsByUsuariosContains(usuario);
     }
 
     @Override

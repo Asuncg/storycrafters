@@ -3,6 +3,8 @@ package es.asun.StoryCrafters.service;
 import es.asun.StoryCrafters.entity.Grupo;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.exceptions.GrupoException;
+import es.asun.StoryCrafters.exceptions.UserAlreadyExistsException;
+import es.asun.StoryCrafters.exceptions.UsuarioException;
 import es.asun.StoryCrafters.model.GrupoDto;
 import org.springframework.ui.Model;
 
@@ -26,12 +28,12 @@ public interface GrupoService {
 
     void eliminarGrupo(int id);
 
-    void enviarInvitacion(int idGrupo, List<String> emails) throws GrupoException;
+    void enviarInvitacion(int idGrupo, String email) throws GrupoException, UsuarioException, UserAlreadyExistsException;
     void abandonarGrupo(Usuario usuario, String grupoId) throws GrupoException;
     void mostrarVista(Grupo grupo, String opcion, Model model, Usuario usuario) throws GrupoException;
     void verMisRelatosGrupo(Grupo grupo, Usuario usuarioActual, Model model);
-    Boolean existeCodigoAcceso(String codigoAcceso);
-
+    boolean existeCodigoAcceso(String codigoAcceso);
+    boolean yaExisteUsuario(Usuario usuario);
     List<Grupo> encontrarGruposContieneUsuario(Usuario usuario);
 }
 
