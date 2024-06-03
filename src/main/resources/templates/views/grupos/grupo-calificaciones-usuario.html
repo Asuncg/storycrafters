@@ -57,7 +57,7 @@
                         <input type="checkbox" name="relatoIds" th:value="${relato.id}"/>
                     </div>
                     <div class="col-sm-5">
-                        <a th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}">
+                        <a th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}">
                             <div th:text="${relato.titulo}"></div>
                         </a>
                     </div>
