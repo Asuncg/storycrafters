@@ -11396,7 +11396,8 @@ body {
     font-size: 14px;
     line-height: 1.8;
     font-weight: normal;
-    background-image: url("../images/waffle-bg.jpg");
+    /*background-image: url("../images/waffle-bg.jpg");*/
+    background-color: #d2e4e6;
     color: rgb(128, 128, 128);
 }
 

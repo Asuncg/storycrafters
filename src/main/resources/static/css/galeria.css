@@ -1,11 +1,18 @@
-/* Estilo para el efecto de hover */
-.gallery-img:hover img {
-    border: 4px solid #007bff; /* Cambia el color del borde al pasar el ratón por encima */
-
+.image-box {
+    position: relative;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 25px;
+}
+.image-box img {
+    max-width: 100%;
+    transition: all 0.3s;
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: scale(1);
 }
 
-/* Estilo para la imagen seleccionada */
-.gallery-img.selected img {
-    border: 4px solid #ffae62; /* Cambia el color del borde cuando la imagen está seleccionada */
+.image-box:hover img {
+    transform: scale(1.1);
 }
-

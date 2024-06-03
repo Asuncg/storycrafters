@@ -1,12 +1,14 @@
-// Función para seleccionar la imagen al hacer clic en ella
-function selectImage(image) {
-    document.querySelectorAll('.gallery-img').forEach(function(item) {
-        item.classList.remove('selected');
-    });
+function selectImage(element) {
+    const imageId = element.getAttribute('data-imagen-id');
 
-    var radioInput = image.parentNode.querySelector('input[type="radio"]');
-    radioInput.checked = true;
+    if (imageId === '1') {
+        var noImageModal = new bootstrap.Modal(document.getElementById('noImageModal'));
+        noImageModal.show();
+    } else {
+        var modalImage = document.getElementById('selectedImage');
+        modalImage.src = element.src;
 
-    image.parentNode.classList.add('selected');
+        var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        confirmationModal.show();
+    }
 }
-

@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Agregar un evento de escucha a los campos para verificar cambios
     [firstNameInput, lastNameInput, emailInput, passwordInput, confirmPasswordInput].forEach(function (input) {
         input.addEventListener("input", validarCampos);
+        input.addEventListener("blur", validarCampos); // Agregar evento blur para validar cuando el campo pierda el foco
     });
 
     // Función para validar los campos y habilitar o deshabilitar el botón de registro
@@ -34,27 +35,43 @@ document.addEventListener("DOMContentLoaded", function () {
         var password = passwordInput.value;
         var confirmPassword = confirmPasswordInput.value;
 
-        // Validar la longitud de la contraseña
         var longitudMinima = password.length >= 8;
 
-        // Mostrar mensaje de error si la longitud de la contraseña es insuficiente
+        var emailValido = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
+
+
+        var emailError = document.getElementById("emailError");
+        if (emailError) {
+            if (!emailValido && email !== "") {
+                emailError.textContent = "Formato de correo electrónico inválido.";
+                emailInput.classList.add("is-invalid");
+            } else {
+                emailError.textContent = "";
+                emailInput.classList.remove("is-invalid");
+            }
+        }
+
         var passwordLengthError = document.getElementById("passwordLengthError");
-        if (!longitudMinima) {
-            passwordLengthError.textContent = "La contraseña debe tener al menos 8 caracteres.";
-            passwordInput.classList.add("is-invalid");
-        } else {
-            passwordLengthError.textContent = "";
-            passwordInput.classList.remove("is-invalid");
+        if (passwordLengthError) {
+            if (!longitudMinima && password !== "") {
+                passwordLengthError.textContent = "La contraseña debe tener al menos 8 caracteres.";
+                passwordInput.classList.add("is-invalid");
+            } else {
+                passwordLengthError.textContent = "";
+                passwordInput.classList.remove("is-invalid");
+            }
         }
 
         // Mostrar mensaje de error si las contraseñas no coinciden
         var passwordMatchError = document.getElementById("passwordMatchError");
-        if (password !== confirmPassword) {
-            passwordMatchError.textContent = "Las contraseñas no coinciden.";
-            confirmPasswordInput.classList.add("is-invalid");
-        } else {
-            passwordMatchError.textContent = "";
-            confirmPasswordInput.classList.remove("is-invalid");
+        if (passwordMatchError) {
+            if (password !== confirmPassword && confirmPassword !== "") { // Validar solo si el campo no está vacío
+                passwordMatchError.textContent = "Las contraseñas no coinciden.";
+                confirmPasswordInput.classList.add("is-invalid");
+            } else {
+                passwordMatchError.textContent = "";
+                confirmPasswordInput.classList.remove("is-invalid");
+            }
         }
 
         // Verificar si los campos obligatorios están completos y si las contraseñas coinciden
@@ -62,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var contrasenasCoinciden = password === confirmPassword;
 
         // Habilitar o deshabilitar el botón de registro en consecuencia
-        if (camposCompletos && contrasenasCoinciden && longitudMinima) {
+        if (camposCompletos && contrasenasCoinciden && longitudMinima && emailValido) {
             registrationButton.removeAttribute("disabled");
         } else {
             registrationButton.setAttribute("disabled", "disabled");

@@ -13,11 +13,11 @@
 
 <body>
 <div class="container p-4 p-md-5 pt-5">
-    <div class="row justify-content-md-center">
-        <div class="col-md-10">
+    <div class="row justify-content-md-center mt-5">
+        <div class="col-md-8">
             <div class="card shadow h-100">
                 <div class="card-header text-center">
-                    <img src="/images/login.png" class="img-fluid" alt="logo StoryCrafters">
+                    <img src="/images/login.svg" class="img-fluid" alt="logo StoryCrafters">
                 </div>
                 <div th:if="${param.success}">
                     <div class="alert alert-info">
@@ -29,7 +29,7 @@
                         Esta email ya está registrado.
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body mx-3">
                     <form class="row g-3" id="registrationForm" method="post" role="form"
                           th:action="@{/registro/save}" th:object="${usuario}">
                         <div class="col-md-6 form-group mb-3">
@@ -59,6 +59,7 @@
                                                               type="email" required/>
                             <p th:errors="*{email}" class="text-danger"
                                th:if="${#fields.hasErrors('email')}"></p>
+                            <div class="invalid-feedback" id="emailError"></div>
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
@@ -96,6 +97,25 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de registro exitoso -->
+<div class="modal fade" id="registroExitosoModal" tabindex="-1" aria-labelledby="registroExitosoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registroExitosoModalLabel">¡Registro exitoso!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Te has registrado correctamente. Haz clic en el botón para ir al inicio de sesión.
+            </div>
+            <div class="modal-footer">
+                <a href="/login" class="btn btn-primary">Ir al inicio de sesión</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/popper.js"></script>
