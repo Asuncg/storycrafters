@@ -23,5 +23,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     categoriaSelect.addEventListener('change', filterRelatos);
-    searchInput.addEventListener('keyup', filterRelatos);
+    searchInput.addEventListener('input', filterRelatos); // Cambiado de 'keyup' a 'input'
 });
