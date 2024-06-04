@@ -75,11 +75,6 @@
                 </div>
                     <div class="col-md-12 p-5" contenteditable="true" id="texto-relato" th:utext="${relato.texto}"></div>
             </div>
-            <div class="col-md-auto" id="firma-autor">
-                Firma de Autor:
-                <span id="firma-relato" th:text="${firma}"></span>
-                <a th:if="${firma == null || firma.isEmpty()}" th:href="@{/user/edit}">Configura tu firma aquí</a>
-            </div>
             <input type="hidden" id="idImagen" th:value="${relato.imagen.id}">
             <input type="hidden" id="idRelato" th:value="${relato.id}">
         </div>

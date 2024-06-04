@@ -43,7 +43,7 @@ function guardarRelato() {
     var titulo = document.getElementById('titulo-relato').innerHTML;
     var texto = document.getElementById('texto-relato').innerHTML;
     var idImagen = document.getElementById('idImagen').value;
-    var idRelato = document.getElementById('idRelato').value; // Obtener el ID del relato, si está presente
+    var idRelato = document.getElementById('idRelato').value;
     var firmaAutor = document.getElementById('firma-relato').innerText;
 
     var categoriasSeleccionadas = obtenerCategoriasSeleccionadas();
