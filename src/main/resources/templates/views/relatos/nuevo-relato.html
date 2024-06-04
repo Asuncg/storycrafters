@@ -69,16 +69,17 @@
     <div class="row justify-content-md-center">
         <div class="col-md-10">
             <div class="editor-text">
-                <div class="col-md-12 justify-content-center align-items-center text-uppercase fondo-relato"
-                     th:style="${imagen != null && imagen.url != null && !imagen.url.isEmpty()} ? 'background-image: url(' + ${imagen.url} + '); opacity: 0.75;' : 'background-color: white; opacity: 1;'"
-                     placeholder="Título del relato">
+                <div class="col-md-12 justify-content-center align-items-center fondo-relato"
+                     th:style="${imagen != null && imagen.url != null && !imagen.url.isEmpty()} ? 'background-image: url(' + ${imagen.url} + '); opacity: 0.75;' : 'background-color: white; opacity: 1;'">
                     <div class="floating-title" id="titulo-relato" contenteditable="true" placeholder="Título del relato"></div>
                 </div>
 
-                <div class="col-md-12" contenteditable="true" id="texto-relato" placeholder="Comienza tu relato"></div>
+                <div class="col-md-12 p-5" contenteditable="true" id="texto-relato" placeholder="Comienza tu relato"></div>
             </div>
-            <div class="row" id="info-relato">
-                <div class="col-md-auto" id="firma-autor">Firma de Autor: <span id="firma-relato" th:text="${firma}"></span></div>
+            <div class="col-md-auto" id="firma-autor">
+                Firma de Autor:
+                <span id="firma-relato" th:text="${firma}"></span>
+                <a th:if="${firma == null || firma.isEmpty()}" th:href="@{/user/edit}">Configura tu firma aquí</a>
             </div>
             <input type="hidden" id="idImagen" th:value="${imagen.id}">
             <input type="hidden" id="idRelato" th:value="${idRelato}">

@@ -157,20 +157,18 @@ public class GruposController {
     @PostMapping("/ingresar-invitacion")
     @ResponseBody
     public ResponseEntity<Map<String, String>> ingresarInvitacion(@RequestParam("codigoInvitacion") String codigoInvitacion) {
-        Map<String, String> response = new HashMap<>();
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
         try {
             solicitudService.ingresarInvitacion(usuario, codigoInvitacion);
-            response.put("status", "success");
-            response.put("message", "¡Te has unido al grupo con éxito! Espera a que el gestor acepte la solicitud.");
-            return ResponseEntity.ok(response);
-        } catch (SolicitudException | GrupoException e) {
-            response.put("status", "error");
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (SolicitudException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (UsuarioException e) {
-            throw new RuntimeException(e);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch ( GrupoException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 

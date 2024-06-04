@@ -1,3 +1,4 @@
+//Hago la publicación de relato haciendo uso de prueba de las librerías de JQuery
 function publicarRelato() {
     var idRelato = document.getElementById('relatoId').value;
     var grupoId = document.getElementById('grupoId').value;

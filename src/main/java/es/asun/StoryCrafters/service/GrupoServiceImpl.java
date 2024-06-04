@@ -123,8 +123,6 @@ public class GrupoServiceImpl implements GrupoService {
 
             if (grupoOptional.isPresent()){
                 throw new UserAlreadyExistsException("Este usuario ya existe en el grupo");
-            } else {
-                emailService.enviarInvitacion(email, grupo.getCodigoAcceso(), grupo.getDescripcion(), grupo.getNombre(), usuario.getFirstName());
             }
         }
         emailService.enviarInvitacion(email, grupo.getCodigoAcceso(), grupo.getDescripcion(), grupo.getNombre(), usuario.getFirstName());

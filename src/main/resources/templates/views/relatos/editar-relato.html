@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/css/relatos.css">
+<script src="/js/relatos.js"></script>
 <!-- Contenido principal -->
 <div class="container text-center">
     <div class="row justify-content-sm-center">
@@ -68,15 +69,16 @@
     <div class="row justify-content-md-center">
         <div class="col-md-10">
             <div class="editor-text">
-                <div class="col-md-12 justify-content-center align-items-center text-uppercase fondo-relato" contenteditable="true"
-                     th:style="'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.75;'">
+                <div class="col-md-12 justify-content-center align-items-center fondo-relato"
+                     th:style="${relato.imagen.id != 1 || !relato.imagen.url.isEmpty()} ? 'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.75;' : 'background-color: white; opacity: 1;'">
                     <div class="floating-title" id="titulo-relato" contenteditable="true" th:utext="${relato.titulo}" placeholder="Título del relato"></div>
                 </div>
-                    <div class="col-md-12" contenteditable="true" id="texto-relato" th:utext="${relato.texto}"></div>
+                    <div class="col-md-12 p-5" contenteditable="true" id="texto-relato" th:utext="${relato.texto}"></div>
             </div>
-            <div class="row" id="info-relato">
-                <div class="col-md-auto" id="firma-autor">Firma de Autor: <span id="firma-relato"
-                        th:text="${firma}"></span></div>
+            <div class="col-md-auto" id="firma-autor">
+                Firma de Autor:
+                <span id="firma-relato" th:text="${firma}"></span>
+                <a th:if="${firma == null || firma.isEmpty()}" th:href="@{/user/edit}">Configura tu firma aquí</a>
             </div>
             <input type="hidden" id="idImagen" th:value="${relato.imagen.id}">
             <input type="hidden" id="idRelato" th:value="${relato.id}">

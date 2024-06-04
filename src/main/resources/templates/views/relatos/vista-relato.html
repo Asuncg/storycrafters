@@ -5,7 +5,7 @@
     <div class="row vista-relato-autor">
         <div class="col-sm-6">
             <img th:src="${relato.usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
-            <span th:text="${relato.usuario.firmaAutor}"></span>
+            <span th:text="${relato.usuario.firmaAutor}"></span> <a th:if="${relato.usuario.firmaAutor == null || relato.usuario.firmaAutor.isEmpty()}" th:href="@{/user/edit}">Configura tu firma aquí</a>
         </div>
         <div class="col-sm-6" style="">
             <div class="row justify-content-end">

@@ -1,4 +1,3 @@
-// Definir la función togglePassword en el ámbito global
 function togglePassword(id) {
     const passwordField = document.getElementById(id);
     const toggleIcon = document.querySelector(`#toggle${id.charAt(0).toUpperCase() + id.slice(1)}`);
@@ -21,13 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var confirmPasswordInput = document.getElementById("confirmPassword");
     var registrationButton = document.querySelector("button[type='submit']");
 
-    // Agregar un evento de escucha a los campos para verificar cambios
     [firstNameInput, lastNameInput, emailInput, passwordInput, confirmPasswordInput].forEach(function (input) {
         input.addEventListener("input", validarCampos);
-        input.addEventListener("blur", validarCampos); // Agregar evento blur para validar cuando el campo pierda el foco
+        input.addEventListener("blur", validarCampos);
     });
 
-    // Función para validar los campos y habilitar o deshabilitar el botón de registro
     function validarCampos() {
         var firstName = firstNameInput.value.trim();
         var lastName = lastNameInput.value.trim();
@@ -62,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Mostrar mensaje de error si las contraseñas no coinciden
         var passwordMatchError = document.getElementById("passwordMatchError");
         if (passwordMatchError) {
             if (password !== confirmPassword && confirmPassword !== "") { // Validar solo si el campo no está vacío
@@ -74,11 +70,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Verificar si los campos obligatorios están completos y si las contraseñas coinciden
         var camposCompletos = firstName && email && password && confirmPassword;
         var contrasenasCoinciden = password === confirmPassword;
 
-        // Habilitar o deshabilitar el botón de registro en consecuencia
         if (camposCompletos && contrasenasCoinciden && longitudMinima && emailValido) {
             registrationButton.removeAttribute("disabled");
         } else {
@@ -86,7 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Asignar la función togglePassword a los íconos
     document.getElementById("togglePassword").addEventListener("click", function() {
         togglePassword('password');
     });
@@ -94,11 +87,10 @@ document.addEventListener("DOMContentLoaded", function () {
         togglePassword('confirmPassword');
     });
 
-    // Redirigir al usuario a la página de inicio de sesión después de un registro exitoso
     const successAlert = document.querySelector(".alert.alert-info");
     if (successAlert && successAlert.textContent.includes("Te has registrado correctamente")) {
         setTimeout(function() {
-            window.location.href = "/login"; // Cambiar la URL según sea necesario
-        }, 3000); // Redirige después de 3 segundos
+            window.location.href = "/login";
+        }, 3000);
     }
 });

@@ -96,7 +96,7 @@ public class SolicitudServiceImpl implements SolicitudService {
             throw new GrupoException("Ya eres miembro de este grupo.");
         }
 
-        if (usuario.getFirmaAutor().isEmpty()) {
+        if (usuario.getFirmaAutor() == null || usuario.getFirmaAutor().isEmpty()) {
             throw new UsuarioException("Debes tener una firma de Autor para poder publicar tus obras antes de entrar a un grupo. Configúrala en tu perfil!");
         }
 

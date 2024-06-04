@@ -8,42 +8,61 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     var submitInvitacionBtn = document.getElementById('submitInvitacionBtn');
+    var codigoInvitacionInput = document.getElementById('codigoInvitacion');
+    var invitationMessage = document.getElementById('invitationMessage');
+    var ingresarInvitacionModal = document.getElementById('ingresarInvitacionModal');
+
+// Función para resetear el input y ocultar el mensaje
+    function resetInputAndMessage() {
+        codigoInvitacionInput.value = '';
+        invitationMessage.style.display = 'none';
+        invitationMessage.className = '';
+        invitationMessage.textContent = '';
+    }
+
     submitInvitacionBtn.addEventListener('click', function () {
-        var codigoInvitacion = document.getElementById('codigoInvitacion').value;
+        var codigoInvitacion = codigoInvitacionInput.value;
         fetch('/grupos/ingresar-invitacion', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: new URLSearchParams({ codigoInvitacion: codigoInvitacion })
+            body: new URLSearchParams({codigoInvitacion: codigoInvitacion})
         })
             .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.message || 'Hubo un error al intentar ingresar al grupo.');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                var invitationMessage = document.getElementById('invitationMessage');
                 invitationMessage.style.display = 'block';
-                if (data.status === 'success') {
+
+                if (response.ok) {
                     invitationMessage.className = 'alert alert-success';
-                    invitationMessage.textContent = data.message;
+                    invitationMessage.textContent = 'Invitación ingresada correctamente.';
+                } else if (response.status === 409) {
+                    invitationMessage.className = 'alert alert-danger';
+                    invitationMessage.textContent = 'Necesitas configurar una firma de autor en tu perfil antes de entrar a un grupo';
+                } else if (response.status === 401) {
+                    invitationMessage.className = 'alert alert-danger';
+                    invitationMessage.textContent = 'Ya perteneces a este grupo.';
+                } else if (response.status === 400) {
+                    invitationMessage.className = 'alert alert-danger';
+                    invitationMessage.textContent = 'Ya has enviado una solicitud a este grupo.';
                 } else {
                     invitationMessage.className = 'alert alert-danger';
-                    invitationMessage.textContent = data.message;
+                    invitationMessage.textContent = 'Hubo un error al intentar ingresar al grupo.';
                 }
             })
             .catch(error => {
-                var invitationMessage = document.getElementById('invitationMessage');
                 invitationMessage.className = 'alert alert-danger';
-                invitationMessage.textContent = error.message;
+                invitationMessage.textContent = 'Hubo un problema con tu operación de fetch.';
                 invitationMessage.style.display = 'block';
                 console.error('There has been a problem with your fetch operation:', error);
             });
     });
+
+// Resetea el input y el mensaje cuando se hace clic en el input
+    codigoInvitacionInput.addEventListener('click', resetInputAndMessage);
+
+// Resetea el input y el mensaje cuando el modal se cierra
+    ingresarInvitacionModal.addEventListener('hidden.bs.modal', resetInputAndMessage);
+
 });
 
 function openInvitationModal(element) {
@@ -69,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
         invitationMessage.style.display = 'none';
     });
 });
+
 function isValidEmail(email) {
     var emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
     return emailRegex.test(email);

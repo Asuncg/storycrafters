@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function guardarRelato() {
-    // Obtener los datos del formulario
     var titulo = document.getElementById('titulo-relato').innerHTML;
     var texto = document.getElementById('texto-relato').innerHTML;
     var idImagen = document.getElementById('idImagen').value;
@@ -48,6 +47,11 @@ function guardarRelato() {
     var firmaAutor = document.getElementById('firma-relato').innerText;
 
     var categoriasSeleccionadas = obtenerCategoriasSeleccionadas();
+
+    if (!titulo) {
+        alert('El título no puede estar vacío.');
+        return;
+    }
 
     var relatoDto = {
         id: idRelato,
@@ -60,14 +64,14 @@ function guardarRelato() {
 
     var url = '/relato/guardar-relato';
 
-    // Realizar la petición Ajax
+    // Petición Ajax
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function () {
         if (xhr.status === 200) {
-            var idRelato = xhr.responseText; // Obtener el ID del relato desde la respuesta
-            handleGuardarRelatoResponse(idRelato); // Actualizar el valor del input
+            var idRelato = xhr.responseText;
+            handleGuardarRelatoResponse(idRelato);
             cambiosPendientes = false;
             // Mostrar el modal de éxito
             $('#modalExito').modal('show');
@@ -97,6 +101,16 @@ var cambiosPendientes = false;
 
 document.addEventListener('DOMContentLoaded', function () {
     var tituloRelato = document.getElementById('titulo-relato');
+
+    if (tituloRelato) {
+        tituloRelato.addEventListener('input', function () {
+            if (this.textContent.length > 50) {
+                this.textContent = this.textContent.substring(0, 50);
+                alert('Has alcanzado el límite máximo de 50 caracteres para el título.');
+            }
+        });
+    }
+
     var textoRelato = document.getElementById('texto-relato');
 
     if (tituloRelato) {
@@ -114,8 +128,8 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('beforeunload', function (e) {
         if (cambiosPendientes) {
             var mensaje = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
-            e.returnValue = mensaje; // Estándar para la mayoría de los navegadores
-            return mensaje; // Requerido para algunos navegadores
+            e.returnValue = mensaje;
+            return mensaje;
         }
     });
 
