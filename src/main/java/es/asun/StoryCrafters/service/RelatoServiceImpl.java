@@ -50,6 +50,7 @@ public class RelatoServiceImpl implements RelatoService {
 
         relato = Mappings.mapToRelato(relatoDto, imagen);
 
+        relato.setFirmaAutor(usuario.getFirmaAutor());
         relato.setUsuario(usuario);
         relato.setCategorias(listaCategorias);
         relato.setFechaCreacion(new Date());
@@ -99,6 +100,7 @@ public class RelatoServiceImpl implements RelatoService {
 
         List<Categoria> listaCategorias = categoriaService.encontrarCategoriasPorRelato(relatoDto);
 
+        relato.setFirmaAutor(usuario.getFirmaAutor());
         relato.setTitulo(relatoDto.getTitulo());
         relato.setTexto(relatoDto.getTexto());
         relato.setFechaActualizacion(new Date());

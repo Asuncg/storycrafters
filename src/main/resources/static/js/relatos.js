@@ -44,7 +44,6 @@ function guardarRelato() {
     var texto = document.getElementById('texto-relato').innerHTML;
     var idImagen = document.getElementById('idImagen').value;
     var idRelato = document.getElementById('idRelato').value;
-    var firmaAutor = document.getElementById('firma-relato').innerText;
 
     var categoriasSeleccionadas = obtenerCategoriasSeleccionadas();
 
@@ -58,7 +57,6 @@ function guardarRelato() {
         titulo: titulo,
         texto: texto,
         idImagen: idImagen,
-        firmaAutor: firmaAutor,
         categorias: categoriasSeleccionadas
     };
 

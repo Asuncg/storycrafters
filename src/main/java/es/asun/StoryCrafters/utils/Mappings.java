@@ -16,7 +16,6 @@ public class Mappings {
         relato.setId(relatoDto.getId());
         relato.setTitulo(relatoDto.getTitulo());
         relato.setTexto(relatoDto.getTexto());
-        relato.setFirmaAutor(relatoDto.getFirmaAutor());
         relato.setImagen(imagen);
         relato.setFechaActualizacion(new Date());
 
