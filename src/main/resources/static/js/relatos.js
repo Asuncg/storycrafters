@@ -48,7 +48,7 @@ function guardarRelato() {
     var categoriasSeleccionadas = obtenerCategoriasSeleccionadas();
 
     if (!titulo) {
-        alert('El título no puede estar vacío.');
+        $('#modalTituloError').modal('show');
         return;
     }
 

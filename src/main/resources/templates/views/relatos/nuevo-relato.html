@@ -86,7 +86,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    El relato se ha guardado correctamente.
+                    El relato se ha guardado correctamente. <i class="fa-solid fa-check fa-beat fa-lg" style="color: #539e33;"></i>
                 </div>
             </div>
         </div>
@@ -97,31 +97,23 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    Ha ocurrido un error al guardar el relato. Por favor, inténtalo de nuevo.
+                    Ha ocurrido un error al guardar el relato. Por favor, inténtalo de nuevo. <i class="fa-solid fa-circle-exclamation fa-beat fa-xl" style="color: #91241d;"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="previsualizarRelatoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<!-- Modal de error de firma no configurada-->
+<div class="modal fade" id="modalTituloError" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Vista previa del relato</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <h4 id="modal-titulo-relato"></h4>
-                <div id="modal-texto-relato"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <div class="modal-body text-center">
+                El relato debe tener un título antes de guardarlo. <i class="fa-solid fa-circle-exclamation fa-beat fa-xl" style="color: #91241d;"></i> <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
             </div>
         </div>
     </div>
 </div>
-
 

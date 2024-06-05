@@ -46,7 +46,7 @@
         <div class="col-sm-12 vista-relato-separador">
             <div class="row editor-text">
                 <div class="col-md-12 vista-titulo-relato text-center"
-                     th:style="'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.75;'">
+                     th:style="${relato.imagen.id != 1} ? 'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.75;' : 'background-color: #f8f9fb; opacity: 1;'">
                     <div class="floating-title text-uppercase" id="titulo-relato" th:utext="${relato.titulo}"></div>
                 </div>
             </div>
@@ -147,4 +147,19 @@
         </div>
     </div>
 </div>
+<!-- Modal de error de firma no configurada-->
+<div class="modal fade" id="modalFirmaError" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                Debes tener una <a th:href="@{/user/edit}">firma de autor</a> antes de poder enviar tu relato a publicar!.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <a class="btn btn-primary" th:href="@{/user/edit}">Editar Firma</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 

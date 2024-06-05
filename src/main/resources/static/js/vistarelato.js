@@ -30,6 +30,13 @@ function publicarRelato() {
             setTimeout(function () {
                 $('#modalError').modal('hide');
             }, 3000);
+        } else if (xhr.status === 404) {
+            $('#publicarRelatoModal').modal('hide');
+
+            $('#modalFirmaError').modal('show');
+            setTimeout(function () {
+                $('#modalFirmaError').modal('hide');
+            }, 3000);
         } else {
             console.error('Error al publicar el relato: ', xhr.statusText);
         }

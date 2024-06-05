@@ -70,7 +70,7 @@
         <div class="col-md-10">
             <div class="editor-text">
                 <div class="col-md-12 justify-content-center align-items-center fondo-relato"
-                     th:style="${relato.imagen.id != 1 || !relato.imagen.url.isEmpty()} ? 'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.75;' : 'background-color: white; opacity: 1;'">
+                     th:style="${relato.imagen.id != 1} ? 'background-image: url(' + ${relato.imagen.url} + '); opacity: 0.75;' : 'background-color: #f8f9fb; opacity: 1;'">
                     <div class="floating-title" id="titulo-relato" contenteditable="true" th:utext="${relato.titulo}" placeholder="Título del relato"></div>
                 </div>
                     <div class="col-md-12 p-5" contenteditable="true" id="texto-relato" th:utext="${relato.texto}"></div>
@@ -84,7 +84,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    El relato se ha guardado correctamente.
+                    El relato se ha guardado correctamente. <i class="fa-solid fa-check fa-beat fa-xl" style="color: #539e33;"></i>
                 </div>
             </div>
         </div>
@@ -94,8 +94,20 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    Ha ocurrido un error al guardar el relato. Por favor, inténtalo de nuevo.
+                    Ha ocurrido un error al guardar el relato. Por favor, inténtalo de nuevo. <i class="fa-solid fa-circle-exclamation fa-beat fa-xl" style="color: #91241d;"></i>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal de error de firma no configurada-->
+<div class="modal fade" id="modalTituloError" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                El relato debe tener un título antes de guardarlo. <i class="fa-solid fa-circle-exclamation fa-beat fa-xl" style="color: #91241d;"></i> <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
             </div>
         </div>
     </div>

@@ -45,7 +45,7 @@
                 <div class="col-md-3 mb-4" th:id="'relato-' + ${relato.id}">
                     <a th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}">
                         <div class="card card-relatos d-flex">
-                            <img class="card-img-top" th:src="${relato.imagen.url}" alt="Card image cap">
+                            <img class="card-img-top" th:src="${relato.imagen.id != 1} ? ${relato.imagen.url} : '/images/libro.svg'" alt="Card image cap">
                             <div class="card-body">
                                 <h6 class="card-title text-center"><a th:utext="${relato.titulo}" th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}"></a></h6>
                                 <hr class="mt-0">

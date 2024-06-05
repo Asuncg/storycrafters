@@ -23,8 +23,10 @@
 <div class="container">
     <div class="row vista-relato-autor">
         <div class="col-sm-6">
-            <img th:src="${relatoGrupo.relato.usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
-            <span th:text="${relatoGrupo.firmaAutor}"></span>
+            <a href="#" th:href="@{'/grupos/' + ${grupo.id} + '/usuario/'  + ${relatoGrupo.relato.usuario.id} + '/relatos'}">
+                <img th:src="${relatoGrupo.relato.usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
+                <span th:text="${relatoGrupo.firmaAutor}"></span>
+            </a>
         </div>
         <div class="col-sm-6" style="">
             <div class="row justify-content-end">
@@ -42,8 +44,9 @@
         <div class="col-sm-12 vista-relato-separador">
             <div class="row">
                 <div class="col-md-12 vista-titulo-relato text-center"
-                     th:style="'background-image: url(' + ${relatoGrupo.imagen.url} + '); opacity: 0.5;'"
-                     th:utext="${relatoGrupo.titulo}"></div>
+                     th:style="${relatoGrupo.imagen.id != 1} ? 'background-image: url(' + ${relatoGrupo.imagen.url} + '); opacity: 0.75;' : 'background-color: #f8f9fb; opacity: 1;'">
+                    <div class="floating-title text-uppercase" id="titulo-relato" contenteditable="true"  th:utext="${relatoGrupo.titulo}"></div>
+                </div>
             </div>
             <div class="row justify-content-md-center">
                 <div class="col-md-12 vista-texto-relato" th:utext="${relatoGrupo.texto}"></div>

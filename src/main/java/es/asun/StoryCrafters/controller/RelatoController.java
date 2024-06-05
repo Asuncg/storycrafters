@@ -186,6 +186,10 @@ public class RelatoController {
 
             Relato relato = relatoService.findRelatoByIdAndNotArchivado(Integer.parseInt(idRelato));
 
+            if (relato.getFirmaAutor() == null || relato.getFirmaAutor().isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
             Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoByRelatoAndGrupo(relato, grupo);
 
             if (relatoGrupoOptional.isPresent()) {
@@ -199,6 +203,8 @@ public class RelatoController {
                 relatoGrupoService.actualizarRelatoGrupoEnviado(relatoGrupo, relato);
             } else {
                 RelatoGrupo relatoGrupo = new RelatoGrupo();
+
+
                 relatoGrupoService.enviarNuevoRelatoGrupo(relatoGrupo, relato, grupo);
             }
 
