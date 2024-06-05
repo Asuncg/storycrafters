@@ -7,8 +7,8 @@
                 <h1 class="titulo-grupo" th:text="${grupo.nombre}"></h1>
             </div>
         </div>
-        <div class="col-sm text-right text-uppercase align-self-end codigo-acceso" th:if="${idUsuarioActual eq grupo.usuario.id}">
-            <span>Código de Acceso: </span>
+        <div class="col-sm text-right  align-self-end codigo-acceso" th:if="${idUsuarioActual eq grupo.usuario.id}">
+            <span class="text-uppercase">Código de Acceso: </span>
             <span class="font-weight-bold" id="codigo-acceso" th:text="${grupo.codigoAcceso}"></span>
             <i class="fa-regular fa-copy ml-2" id="copy-icon" style="cursor: pointer;"></i>
         </div>
