@@ -47,8 +47,7 @@ public class AuthController {
 
     @PostMapping("/registro/save")
     public ResponseEntity<String> registration(@Valid @ModelAttribute("user") UserRegisterDto userRegisterDto,
-                                               BindingResult result,
-                                               Model model) {
+                                               BindingResult result) {
         Optional<Usuario> usuarioOptional = userService.findUserByEmail(userRegisterDto.getEmail());
 
         if (usuarioOptional.isPresent()) {
