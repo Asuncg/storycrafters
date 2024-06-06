@@ -11,8 +11,37 @@ function togglePassword(id) {
         toggleIcon.classList.add("bi-eye");
     }
 }
+document.addEventListener("DOMContentLoaded", function() {
+document.getElementById("registrationForm").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-document.addEventListener("DOMContentLoaded", function () {
+    var formData = new FormData(this);
+
+    fetch("/registro/save", {
+        method: "POST",
+        body: formData
+    })
+        .then(function(response) {
+            if (response.ok) {
+                $('#registroExitosoModal').modal('show');
+                return;
+            } else if (response.status === 409) {
+                $('#usuarioExistenteModal').modal('show');
+                return;
+            } else if (response.status === 400) {
+                $('#errorValidacionModal').modal('show');
+                return;
+            } else {
+                $('#errorRegistroModal').modal('show');
+                return;
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+        });
+});
+
+
     var firstNameInput = document.getElementById("firstName");
     var lastNameInput = document.getElementById("lastName");
     var emailInput = document.getElementById("email");
@@ -86,11 +115,4 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("toggleConfirmPassword").addEventListener("click", function() {
         togglePassword('confirmPassword');
     });
-
-    const successAlert = document.querySelector(".alert.alert-info");
-    if (successAlert && successAlert.textContent.includes("Te has registrado correctamente")) {
-        setTimeout(function() {
-            window.location.href = "/login";
-        }, 3000);
-    }
 });

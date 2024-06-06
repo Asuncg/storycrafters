@@ -4,11 +4,12 @@ import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.exceptions.AvatarNotFoundException;
 import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
-import es.asun.StoryCrafters.service.AvatarService;
 import es.asun.StoryCrafters.service.UserService;
 import es.asun.StoryCrafters.utils.AuthUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,33 +46,31 @@ public class AuthController {
     }
 
     @PostMapping("/registro/save")
-    public String registration(@Valid @ModelAttribute("user") UserRegisterDto userRegisterDto,
-                               BindingResult result,
-                               Model model) {
+    public ResponseEntity<String> registration(@Valid @ModelAttribute("user") UserRegisterDto userRegisterDto,
+                                               BindingResult result,
+                                               Model model) {
         Optional<Usuario> usuarioOptional = userService.findUserByEmail(userRegisterDto.getEmail());
 
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
 
             if (usuario.getEmail() != null && !usuario.getEmail().isEmpty()) {
-                result.rejectValue("email", null,
-                        "There is already an account registered with the same email");
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("There is already an account registered with the same email");
             }
         }
 
         if (result.hasErrors()) {
-            model.addAttribute("user", userRegisterDto);
-            return "redirect:/registro?error";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation error");
         }
 
         try {
             userService.saveUser(userRegisterDto);
         } catch (AvatarNotFoundException e) {
-            model.addAttribute("user", userRegisterDto);
-            return "redirect:/registro?error";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving user");
         }
 
-        return "redirect:/registro?success";
+        return ResponseEntity.ok("Registration successful");
     }
 
     @GetMapping("/recuperar-password")

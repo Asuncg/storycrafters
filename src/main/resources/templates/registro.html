@@ -104,10 +104,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="registroExitosoModalLabel">¡Registro exitoso!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-                Te has registrado correctamente. Haz clic en el botón para ir al inicio de sesión.
+                ¡Te has registrado correctamente!
             </div>
             <div class="modal-footer">
                 <a href="/login" class="btn btn-primary">Ir al inicio de sesión</a>
@@ -116,6 +118,56 @@
     </div>
 </div>
 
+<!-- Modal de usuario existente -->
+<div class="modal fade" id="usuarioExistenteModal" tabindex="-1" aria-labelledby="usuarioExistenteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="usuarioExistenteModalLabel">Error de registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Este correo electrónico ya está registrado. Por favor, intente con otro correo electrónico.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de error de validación -->
+<div class="modal fade" id="errorValidacionModal" tabindex="-1" aria-labelledby="errorValidacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorValidacionModalLabel">Error de validación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Por favor, complete todos los campos correctamente.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de error de registro -->
+<div class="modal fade" id="errorRegistroModal" tabindex="-1" aria-labelledby="errorRegistroModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorRegistroModalLabel">Error de registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Ha ocurrido un error durante el registro. Por favor, inténtelo de nuevo más tarde.
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/popper.js"></script>
