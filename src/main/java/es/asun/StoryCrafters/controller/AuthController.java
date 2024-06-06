@@ -18,12 +18,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
+/**
+ * Controlador de autenticación para manejar el registro, inicio de sesión y recuperación de contraseñas de usuarios.
+ */
 @Controller
 @SessionAttributes({"DataUser"})
 public class AuthController {
+
     @Autowired
     private UserService userService;
 
+    /**
+     * Muestra la página de inicio.
+     *
+     * @param model el modelo para la vista
+     * @return el nombre de la vista de inicio
+     */
     @GetMapping(value = {"/", "/index"})
     public String home(Model model) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
@@ -33,11 +43,22 @@ public class AuthController {
         return "index";
     }
 
+    /**
+     * Muestra la página de inicio de sesión.
+     *
+     * @return el nombre de la vista de inicio de sesión
+     */
     @GetMapping(value = {"/login"})
     public String login() {
         return "login";
     }
 
+    /**
+     * Muestra el formulario de registro de usuarios.
+     *
+     * @param model el modelo para la vista
+     * @return el nombre de la vista de registro
+     */
     @GetMapping(value = {"/registro"})
     public String showRegistrationForm(Model model) {
         UserRegisterDto user = new UserRegisterDto();
@@ -45,6 +66,13 @@ public class AuthController {
         return "registro";
     }
 
+    /**
+     * Procesa el registro de un nuevo usuario.
+     *
+     * @param userRegisterDto el DTO con los datos del usuario a registrar
+     * @param result los resultados de la validación
+     * @return una respuesta HTTP indicando el resultado del registro
+     */
     @PostMapping("/registro/save")
     public ResponseEntity<String> registration(@Valid @ModelAttribute("user") UserRegisterDto userRegisterDto,
                                                BindingResult result) {
@@ -72,11 +100,23 @@ public class AuthController {
         return ResponseEntity.ok("Registration successful");
     }
 
+    /**
+     * Muestra la página para recuperar la contraseña.
+     *
+     * @return el nombre de la vista de recuperación de contraseña
+     */
     @GetMapping("/recuperar-password")
     public String showForgotPasswordPage() {
         return "recuperar-password";
     }
 
+    /**
+     * Procesa la solicitud de recuperación de contraseña.
+     *
+     * @param email el email del usuario que quiere recuperar la contraseña
+     * @param redirectAttributes los atributos para redireccionar
+     * @return la redirección a la página de recuperación de contraseña
+     */
     @PostMapping("/recuperar-password")
     public String processForgotPassword(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
         boolean result = userService.processForgotPassword(email);
@@ -88,13 +128,27 @@ public class AuthController {
         return "redirect:/recuperar-password";
     }
 
-
+    /**
+     * Muestra la página para restablecer la contraseña.
+     *
+     * @param token el token para restablecer la contraseña
+     * @param model el modelo para la vista
+     * @return el nombre de la vista de restablecimiento de contraseña
+     */
     @GetMapping("/restablecer-password")
     public String showResetPasswordPage(@RequestParam("token") String token, Model model) {
         model.addAttribute("token", token);
         return "restablecer-password";
     }
 
+    /**
+     * Procesa el restablecimiento de la contraseña.
+     *
+     * @param token el token para restablecer la contraseña
+     * @param newPassword la nueva contraseña
+     * @param redirectAttributes los atributos para redireccionar
+     * @return la redirección a la página de restablecimiento de contraseña
+     */
     @PostMapping("/restablecer-password")
     public String processResetPassword(@RequestParam("token") String token,
                                        @RequestParam("newPassword") String newPassword,
@@ -108,5 +162,3 @@ public class AuthController {
         return "redirect:/restablecer-password";
     }
 }
-
-

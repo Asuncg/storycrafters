@@ -13,9 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador para manejar las solicitudes relacionadas con los usuarios.
+ */
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -31,8 +35,14 @@ public class UserController {
     @Autowired
     private RelatoGrupoService relatoGrupoService;
 
-    @GetMapping(value= {"/profile"})
-    public String viewprofile(Model model) {
+    /**
+     * Muestra el perfil del usuario.
+     *
+     * @param model el modelo para la vista
+     * @return el nombre de la vista de perfil del usuario
+     */
+    @GetMapping(value = {"/profile"})
+    public String viewProfile(Model model) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
 
         List<Relato> listaRelatos = relatoService.findAllRelatosByUsuarioAndNotArchivado(usuario);
@@ -51,40 +61,61 @@ public class UserController {
         return "index";
     }
 
+    /**
+     * Muestra el formulario para editar el perfil del usuario.
+     *
+     * @param model el modelo para la vista
+     * @return el nombre de la vista de edición del perfil
+     */
     @GetMapping("/edit")
     public String showEditProfileForm(Model model) {
-
         model.addAttribute("content", "views/edit-profile");
         return "index";
     }
 
+    /**
+     * Procesa la edición del perfil del usuario.
+     *
+     * @param userDto el DTO con los datos actualizados del usuario
+     * @return la redirección a la vista de perfil del usuario
+     */
     @PostMapping("/profile/edit")
     public String editProfile(@ModelAttribute("user") UserUpdateDto userDto) {
         userService.updateUser(userDto);
-
         return "redirect:/user/profile";
     }
 
+    /**
+     * Muestra el formulario para editar el avatar del perfil del usuario.
+     *
+     * @param userDto el DTO con los datos del usuario
+     * @param model el modelo para la vista
+     * @return el nombre de la vista de galería de avatares
+     */
     @GetMapping("/profile/edit-avatar")
     public String editAvatarProfile(@ModelAttribute("user") UserUpdateDto userDto, Model model) {
         List<Avatar> listaAvatares = avatarService.findAllAvatars();
-
         model.addAttribute("content", "views/galeria-avatar");
         model.addAttribute("listavatares", listaAvatares);
         return "index";
     }
 
+    /**
+     * Procesa la actualización del avatar del perfil del usuario.
+     *
+     * @param model el modelo para la vista
+     * @param userDto el DTO con los datos del usuario
+     * @param selectedAvatarId el ID del avatar seleccionado
+     * @return la redirección a la vista de perfil del usuario o la vista de error en caso de fallo
+     */
     @PostMapping("/profile/update-avatar")
-    public String updateAvatarProfile(Model model,@ModelAttribute("user") UserUpdateDto userDto, @RequestParam("selectedAvatarId") Integer selectedAvatarId) {
+    public String updateAvatarProfile(Model model, @ModelAttribute("user") UserUpdateDto userDto, @RequestParam("selectedAvatarId") Integer selectedAvatarId) {
         Usuario usuario = AuthUtils.getAuthUser(userService);
-        Avatar avatar;
         try {
-            avatar  = avatarService.findAvatarById(Integer.parseInt(String.valueOf(selectedAvatarId)));
+            Avatar avatar = avatarService.findAvatarById(Integer.parseInt(String.valueOf(selectedAvatarId)));
             usuario.setAvatar(avatar);
             UserUpdateDto userUpdateDto = new UserUpdateDto(usuario);
-
             userService.updateUser(userUpdateDto);
-
             return "redirect:/user/profile";
         } catch (AvatarNotFoundException e) {
             model.addAttribute("content", Constantes.ERROR_VIEW);
