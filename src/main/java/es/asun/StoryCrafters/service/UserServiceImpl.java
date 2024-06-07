@@ -1,6 +1,5 @@
 package es.asun.StoryCrafters.service;
 
-
 import es.asun.StoryCrafters.entity.Avatar;
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.exceptions.AvatarNotFoundException;
@@ -14,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
-
+/**
+ * Implementación del servicio de gestión de usuarios.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -32,6 +33,10 @@ public class UserServiceImpl implements UserService {
         this.emailService = emailService;
     }
 
+    /**
+     * Guarda un nuevo usuario en la base de datos.
+     * @param userRegisterDto Los datos del usuario a guardar.
+     */
     @Override
     public void saveUser(UserRegisterDto userRegisterDto)  {
         Usuario usuario = new Usuario();
@@ -52,11 +57,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Busca un usuario por su dirección de correo electrónico.
+     * @param email La dirección de correo electrónico del usuario a buscar.
+     * @return El usuario encontrado, si existe.
+     */
     @Override
     public Optional<Usuario> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
+    /**
+     * Actualiza la información de un usuario.
+     * @param user Los datos actualizados del usuario.
+     */
     @Override
     public void updateUser(UserUpdateDto user) {
         updateValidation();
@@ -78,6 +92,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Busca un usuario por su ID.
+     * @param id El ID del usuario a buscar.
+     * @return El usuario encontrado.
+     * @throws UsuarioException Si el usuario no existe.
+     */
     @Override
     public Usuario findUserById(int id) throws UsuarioException {
         Optional<Usuario> usuarioOptional = userRepository.findById(id);
@@ -90,6 +110,11 @@ public class UserServiceImpl implements UserService {
     private void updateValidation() {
     }
 
+    /**
+     * Procesa la solicitud de restablecimiento de contraseña para un usuario.
+     * @param email La dirección de correo electrónico del usuario.
+     * @return True si se procesa correctamente, false si no se encuentra el usuario.
+     */
     public boolean processForgotPassword(String email) {
         Optional<Usuario> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -107,6 +132,12 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    /**
+     * Restablece la contraseña de un usuario utilizando un token de restablecimiento.
+     * @param token El token de restablecimiento de contraseña.
+     * @param newPassword La nueva contraseña del usuario.
+     * @return True si se restablece correctamente, false si el token no es válido.
+     */
     public boolean resetPassword(String token, String newPassword) {
         Optional<Usuario> userOptional = userRepository.findByResetToken(token);
         if (userOptional.isPresent()) {
@@ -119,6 +150,11 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    /**
+     * Encuentra un usuario por su token de restablecimiento de contraseña.
+     * @param resetToken El token de restablecimiento de contraseña.
+     * @return El usuario asociado al token, si existe.
+     */
     @Override
     public Optional<Usuario> encontrarUsuarioPorResetToken(String resetToken) {
         return userRepository.findByResetToken(resetToken);

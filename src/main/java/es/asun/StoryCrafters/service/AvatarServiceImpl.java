@@ -9,12 +9,24 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación del servicio de gestión de avatares.
+ */
 @Service
-public class AvatarServiceImpl implements AvatarService{
+public class AvatarServiceImpl implements AvatarService {
 
+    /**
+     * Implementación del servicio de gestión de avatares.
+     */
     @Autowired
     private AvatarRepository avatarRepository;
 
+    /**
+     * Busca un avatar por su identificador único.
+     * @param avatarId Identificador único del avatar.
+     * @return El avatar encontrado.
+     * @throws AvatarNotFoundException Si no se encuentra el avatar con el identificador dado.
+     */
     @Override
     public Avatar findAvatarById(int avatarId) throws AvatarNotFoundException {
         Optional<Avatar> avatarOptional = avatarRepository.findById(avatarId);
@@ -26,6 +38,10 @@ public class AvatarServiceImpl implements AvatarService{
         return avatarOptional.get();
     }
 
+    /**
+     * Obtiene todos los avatares disponibles.
+     * @return Lista de avatares.
+     */
     @Override
     public List<Avatar> findAllAvatars() {
         return avatarRepository.findAll();

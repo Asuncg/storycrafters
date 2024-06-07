@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
-
 public interface  RelatoGrupoRepository extends JpaRepository<RelatoGrupo, Integer> {
 
     List<RelatoGrupo> findByGrupoIs(Grupo grupo);
@@ -18,5 +17,7 @@ public interface  RelatoGrupoRepository extends JpaRepository<RelatoGrupo, Integ
     List<RelatoGrupo> findByGrupoAndEstadoOrderByFechaPublicacionDesc(Grupo grupo, int estado);
 
     List<RelatoGrupo> findByRelato_UsuarioAndEstadoEquals(Usuario usuario, int estado);
+
+    boolean existsRelatoGrupoByGrupoAndEstado(Grupo grupo, int estado);
 
 }

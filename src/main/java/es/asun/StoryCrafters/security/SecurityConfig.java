@@ -24,6 +24,12 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configura la cadena de filtros de seguridad para las solicitudes HTTP.
+     * @param http El objeto HttpSecurity para configurar la seguridad HTTP.
+     * @return La cadena de filtros de seguridad.
+     * @throws Exception Si ocurre un error durante la configuración.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -47,6 +53,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configura el proveedor de autenticación global.
+     * @param auth El objeto AuthenticationManagerBuilder para configurar el proveedor de autenticación.
+     * @throws Exception Si ocurre un error durante la configuración.
+     */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth

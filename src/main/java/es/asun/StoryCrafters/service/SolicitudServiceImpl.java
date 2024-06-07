@@ -11,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Implementación del servicio de gestión de solicitudes.
+ */
 @Service
 public class SolicitudServiceImpl implements SolicitudService {
 
@@ -24,11 +25,19 @@ public class SolicitudServiceImpl implements SolicitudService {
     @Autowired
     private GrupoService grupoService;
 
+    /**
+     * Elimina una solicitud de la base de datos.
+     * @param solicitud La solicitud a eliminar.
+     */
     @Override
     public void eliminarSolicitud(Solicitud solicitud) {
         solicitudRepository.delete(solicitud);
     }
 
+    /**
+     * Guarda una nueva solicitud en la base de datos si no existe una solicitud previa del mismo usuario para el mismo grupo.
+     * @param solicitud La solicitud a guardar.
+     */
     @Override
     @Transactional
     public void guardarSolicitud(Solicitud solicitud) {
@@ -38,16 +47,31 @@ public class SolicitudServiceImpl implements SolicitudService {
         }
     }
 
+    /**
+     * Busca todas las solicitudes de un grupo en particular.
+     * @param grupo El grupo del cual se quieren buscar las solicitudes.
+     * @return Una lista de todas las solicitudes del grupo.
+     */
     @Override
     public List<Solicitud> buscarSolicitudesPorGrupo(Grupo grupo) {
         return solicitudRepository.findByGrupo(grupo);
     }
 
+    /**
+     * Busca una solicitud por su ID.
+     * @param id El ID de la solicitud a buscar.
+     * @return La solicitud encontrada.
+     */
     @Override
     public Solicitud buscarSolicitudPorId(int id) {
         return solicitudRepository.findById(id);
     }
 
+    /**
+     * Acepta las solicitudes de ingreso de los usuarios al grupo.
+     * @param grupoId El ID del grupo al cual se aceptarán las solicitudes.
+     * @param solicitudIds Los IDs de las solicitudes a aceptar.
+     */
     @Transactional
     @Override
     public void aceptarSolicitudes(String grupoId, List<Integer> solicitudIds) {
@@ -69,6 +93,11 @@ public class SolicitudServiceImpl implements SolicitudService {
         }
     }
 
+    /**
+     * Elimina las solicitudes pendientes de un grupo.
+     * @param grupoId El ID del grupo del cual se eliminarán las solicitudes.
+     * @param solicitudIds Los IDs de las solicitudes a eliminar.
+     */
     @Override
     public void eliminarSolicitudes(String grupoId, List<Integer> solicitudIds) {
         for (Integer solicitudId : solicitudIds) {
@@ -77,11 +106,25 @@ public class SolicitudServiceImpl implements SolicitudService {
         }
     }
 
+    /**
+     * Busca una solicitud por grupo y usuario.
+     * @param grupo El grupo al cual pertenece la solicitud.
+     * @param usuario El usuario que ha enviado la solicitud.
+     * @return La solicitud encontrada.
+     */
     @Override
-    public Optional<Solicitud> buscarSolicitud(Grupo grupo, Usuario usuario) {
+    public Optional<Solicitud> buscarSolicitudPorGrupoYUsuario(Grupo grupo, Usuario usuario) {
         return solicitudRepository.findByGrupoAndUsuario(grupo, usuario);
     }
 
+    /**
+     * Ingresa a un usuario a un grupo mediante una invitación.
+     * @param usuario El usuario que recibió la invitación.
+     * @param codigoInvitacion El código de invitación del grupo.
+     * @throws SolicitudException Si ya se ha enviado una solicitud de ingreso para este grupo.
+     * @throws GrupoException Si hay un error al intentar ingresar al grupo.
+     * @throws UsuarioException Si el usuario no tiene una firma de autor configurada.
+     */
     @Override
     public void ingresarInvitacion(Usuario usuario, String codigoInvitacion) throws SolicitudException, GrupoException, UsuarioException {
         Optional<Grupo> grupoOptional = grupoService.findGrupoByCodigoAcceso(codigoInvitacion);
@@ -100,7 +143,7 @@ public class SolicitudServiceImpl implements SolicitudService {
             throw new UsuarioException("Debes tener una firma de Autor para poder publicar tus obras antes de entrar a un grupo. Configúrala en tu perfil!");
         }
 
-        Optional<Solicitud> solicitudOptional = this.buscarSolicitud(grupo, usuario);
+        Optional<Solicitud> solicitudOptional = this.buscarSolicitudPorGrupoYUsuario(grupo, usuario);
 
         if (solicitudOptional.isPresent()) {
             throw new SolicitudException("Ya has enviado una solicitud de ingreso para este grupo.");
@@ -110,5 +153,15 @@ public class SolicitudServiceImpl implements SolicitudService {
         solicitud.setGrupo(grupo);
         solicitud.setUsuario(usuario);
         this.guardarSolicitud(solicitud);
+    }
+
+    /**
+     * Verifica si existen solicitudes pendientes para un grupo.
+     * @param grupo El grupo del cual se quiere verificar la existencia de solicitudes pendientes.
+     * @return true si existen solicitudes pendientes, false en caso contrario.
+     */
+    @Override
+    public boolean existenSolicitudesPendientes(Grupo grupo) {
+        return solicitudRepository.existsSolicitudByGrupo(grupo);
     }
 }

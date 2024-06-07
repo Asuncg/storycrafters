@@ -4,6 +4,7 @@ import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.exceptions.CategoriaNotFoundException;
 import es.asun.StoryCrafters.exceptions.GrupoException;
 import es.asun.StoryCrafters.exceptions.RelatoException;
+import es.asun.StoryCrafters.exceptions.UsuarioException;
 import es.asun.StoryCrafters.model.RelatoDto;
 import es.asun.StoryCrafters.model.RelatoPreviewDto;
 import es.asun.StoryCrafters.service.*;
@@ -39,17 +40,20 @@ public class RelatoController {
 
     @GetMapping("/mis-relatos")
     public String misRelatos(Model model) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
+        try {
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+            List<RelatoPreviewDto> relatosDto = relatoService.findAllRelatoByUsuarioOrderByFecha(usuario);
 
-        List<RelatoPreviewDto> relatosDto = relatoService.findAllRelatoByUsuarioOrderByFecha(usuario);
+            List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
-        List<Categoria> listaCategorias = categoriaService.findAllCategories();
-
-        model.addAttribute("content", "views/relatos/mis-relatos");
-        model.addAttribute("currentPage", "misRelatos");
-        model.addAttribute("listaCategorias", listaCategorias);
-        model.addAttribute("relatos", relatosDto);
-        return Constantes.INDEX_VIEW;
+            model.addAttribute("content", "views/relatos/mis-relatos");
+            model.addAttribute("currentPage", "misRelatos");
+            model.addAttribute("listaCategorias", listaCategorias);
+            model.addAttribute("relatos", relatosDto);
+            return Constantes.INDEX_VIEW;
+        } catch (UsuarioException e) {
+            model.addAttribute("content", ERROR_VIEW);
+            return Constantes.INDEX_VIEW;        }
     }
 
     @GetMapping("/relatos/{id}")
@@ -72,7 +76,7 @@ public class RelatoController {
             model.addAttribute("relato", relato);
             model.addAttribute("content", "views/relatos/vista-relato");
             return Constantes.INDEX_VIEW;
-        } catch (RelatoException e) {
+        } catch (RelatoException | UsuarioException e) {
             model.addAttribute("content", ERROR_VIEW);
             return Constantes.INDEX_VIEW;
         }
@@ -91,23 +95,26 @@ public class RelatoController {
 
     @GetMapping("/nuevo-relato")
     public String nuevoRelato(Model model, @RequestParam("idImagenSeleccionada") int idImagenSeleccionada) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
+        try {
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+            String firma = usuario.getFirmaAutor();
+            List<Categoria> listaCategorias = categoriaService.findAllCategories();
 
-        String firma = usuario.getFirmaAutor();
-        List<Categoria> listaCategorias = categoriaService.findAllCategories();
+            Imagen imagen = imagenesService.findImageById(idImagenSeleccionada);
 
-        Imagen imagen = imagenesService.findImageById(idImagenSeleccionada);
+            if (imagen.getId() == 01) {
+                imagen.setUrl("");
+            }
 
-        if (imagen.getId() == 01) {
-            imagen.setUrl("");
+            model.addAttribute("content", "views/relatos/nuevo-relato");
+            model.addAttribute("categorias", listaCategorias);
+            model.addAttribute("firma", firma);
+            model.addAttribute("imagen", imagen);
+            model.addAttribute("relato", new RelatoDto());
+            return Constantes.INDEX_VIEW;
+        } catch (UsuarioException e) {
+            throw new RuntimeException(e);
         }
-
-        model.addAttribute("content", "views/relatos/nuevo-relato");
-        model.addAttribute("categorias", listaCategorias);
-        model.addAttribute("firma", firma);
-        model.addAttribute("imagen", imagen);
-        model.addAttribute("relato", new RelatoDto());
-        return Constantes.INDEX_VIEW;
     }
 
     @GetMapping("/editar-relato/{id}")
@@ -132,7 +139,7 @@ public class RelatoController {
             model.addAttribute("categorias", categoriaService.findAllCategories());
             model.addAttribute("content", "views/relatos/editar-relato");
             return Constantes.INDEX_VIEW;
-        } catch (RelatoException e) {
+        } catch (RelatoException | UsuarioException e) {
             model.addAttribute("content", ERROR_VIEW);
             return Constantes.INDEX_VIEW;
         }
@@ -149,7 +156,7 @@ public class RelatoController {
                 relatoService.actualizarRelato(relatoDto);
                 return new ResponseEntity<>(relatoDto.getId(), HttpStatus.OK);
             }
-        } catch (CategoriaNotFoundException | RelatoException e) {
+        } catch (CategoriaNotFoundException | RelatoException | UsuarioException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
@@ -165,7 +172,7 @@ public class RelatoController {
         try {
             relatoService.archivarRelato(Integer.parseInt(id));
             return "redirect:/relato/mis-relatos";
-        } catch (RelatoException e) {
+        } catch (RelatoException | UsuarioException e) {
             model.addAttribute("content", ERROR_VIEW);
             return Constantes.INDEX_VIEW;
         }
@@ -209,7 +216,7 @@ public class RelatoController {
             }
 
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (GrupoException | RelatoException e) {
+        } catch (GrupoException | RelatoException | UsuarioException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

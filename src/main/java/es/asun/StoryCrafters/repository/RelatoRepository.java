@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
-
 public interface RelatoRepository extends JpaRepository<Relato, Integer> {
     List<Relato> findByUsuarioAndArchivadoFalse(Usuario usuario);
 

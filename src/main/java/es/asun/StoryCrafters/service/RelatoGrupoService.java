@@ -21,7 +21,7 @@ public interface RelatoGrupoService {
 
     Optional<RelatoGrupo> findRelatoGrupoByRelatoAndGrupo(Relato relato, Grupo grupo);
 
-    List<RelatoGrupo> buscarRelatosGrupo(Grupo grupo, int estado);
+    List<RelatoGrupo> buscarRelatosGrupoPorGrupoYEstado(Grupo grupo, int estado);
 
     void eliminarRelatoGrupo(int idrelato);
 
@@ -38,4 +38,6 @@ public interface RelatoGrupoService {
     List<RelatoGrupo> encontrarRelatosGrupoUsuario(Grupo grupo, int idUsuario) throws UsuarioException;
 
     List<RelatoGrupo> encontrarTodosRelatosGrupoPorUsuarioAprobados(Usuario usuario);
+
+    boolean existenRelatosGrupoPorEstado(Grupo grupo, int estado);
 }

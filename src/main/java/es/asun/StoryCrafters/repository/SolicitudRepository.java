@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
-
 public interface SolicitudRepository extends JpaRepository<Solicitud, Integer> {
 
     List<Solicitud> findByGrupo(Grupo grupo);
@@ -16,4 +15,6 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Integer> {
     Optional<Solicitud> findByGrupoAndUsuario(Grupo grupo, Usuario usuario);
 
     Solicitud findById(int id);
+
+    boolean existsSolicitudByGrupo(Grupo grupo);
 }

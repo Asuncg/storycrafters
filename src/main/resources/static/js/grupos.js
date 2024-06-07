@@ -1,5 +1,3 @@
-
-
 function setAprobado(aprobado) {
     document.getElementById('aprobado').value = aprobado;
 }

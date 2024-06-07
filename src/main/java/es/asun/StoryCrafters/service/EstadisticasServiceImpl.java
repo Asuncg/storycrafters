@@ -12,15 +12,23 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static es.asun.StoryCrafters.utils.Constantes.ESTADO_APROBADO;
 
+/**
+ * Implementación del servicio para calcular estadísticas de un grupo.
+ */
 @Service
 public class EstadisticasServiceImpl implements EstadisticasService{
 
     @Autowired
     private RelatoGrupoService relatoGrupoService;
+
+    /**
+     * Calcula las estadísticas de un grupo dado.
+     * @param grupo Grupo del que se calcularán las estadísticas.
+     * @return Objeto EstadisticasDto que contiene las estadísticas calculadas.
+     */
     @Override
     public EstadisticasDto calcularEstadisticasGrupo(Grupo grupo) {
         List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.findRelatoGrupoByGrupoIs(grupo);
@@ -38,6 +46,11 @@ public class EstadisticasServiceImpl implements EstadisticasService{
         return new EstadisticasDto(numeroUsuarios, numeroRelatosAprobados, relatosPorCategoria, relatosPorUsuario, relatosEnviadosUltimoMes);
     }
 
+    /**
+     * Calcula el número de relatos publicados en el último mes.
+     * @param listaRelatosGrupo Lista de relatos del grupo.
+     * @return Número de relatos publicados en el último mes.
+     */
     private int calcularRelatosPublicadosUltimoMes(List<RelatoGrupo> listaRelatosGrupo) {
         LocalDate haceUnMes = LocalDate.now().minusMonths(1);
         return (int) listaRelatosGrupo.stream()
@@ -45,6 +58,11 @@ public class EstadisticasServiceImpl implements EstadisticasService{
                 .count();
     }
 
+    /**
+     * Calcula la cantidad de relatos por usuario.
+     * @param listaRelatosGrupo Lista de relatos del grupo.
+     * @return Mapa que asigna a cada usuario la cantidad de relatos que ha publicado.
+     */
     private Map<String, Integer> calcularRelatosPorUsuario(List<RelatoGrupo> listaRelatosGrupo) {
         Map<String, Integer> relatosPorUsuario = new HashMap<>();
 
@@ -56,6 +74,11 @@ public class EstadisticasServiceImpl implements EstadisticasService{
         return relatosPorUsuario;
     }
 
+    /**
+     * Calcula la cantidad de relatos por categoría.
+     * @param listaRelatosGrupo Lista de relatos del grupo.
+     * @return Mapa que asigna a cada categoría la cantidad de relatos que contiene.
+     */
     private Map<String, Integer> calcularRelatosPorCategoria(List<RelatoGrupo> listaRelatosGrupo) {
         Map<String, Integer> relatosPorCategoria = new HashMap<>();
 
@@ -69,12 +92,22 @@ public class EstadisticasServiceImpl implements EstadisticasService{
         return relatosPorCategoria;
     }
 
+    /**
+     * Calcula el número de relatos aprobados.
+     * @param listaRelatosGrupo Lista de relatos del grupo.
+     * @return Número de relatos aprobados.
+     */
     private int calcularNumeroRelatosAprobados(List<RelatoGrupo> listaRelatosGrupo) {
         return (int) listaRelatosGrupo.stream()
                 .filter(relatoGrupo -> relatoGrupo.getEstado() == ESTADO_APROBADO)
                 .count();
     }
 
+    /**
+     * Calcula el número de usuarios en un grupo.
+     * @param grupo Grupo del que se calculará el número de usuarios.
+     * @return Número de usuarios en el grupo.
+     */
     private int calcularNumeroUsuarios(Grupo grupo) {
         return grupo.getUsuarios().size();
     }

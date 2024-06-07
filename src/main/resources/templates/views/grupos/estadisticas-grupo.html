@@ -31,7 +31,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold titulos-detalle text-uppercase mb-1">
-                                Numero de Usuarios:</div>
+                                Numero de Usuarios Activos:</div>
                             <div class="mb-0 font-weight-bold text-gray-800" th:text="${estadisticas.numeroUsuarios}"></div>
                         </div>
                         <div class="col-auto">
@@ -71,7 +71,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold titulos-detalle text-uppercase mb-1">
-                                Relatos por usuario:</div>
+                                Relatos por Autor:</div>
                             <div class="mb-0 font-weight-bold text-gray-800">
                                 <ul class="list-group">
                                     <li th:each="usuario : ${estadisticas.relatosPorUsuario}" class="list-group-item">

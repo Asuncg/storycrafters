@@ -2,6 +2,7 @@ package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.*;
 import es.asun.StoryCrafters.exceptions.AvatarNotFoundException;
+import es.asun.StoryCrafters.exceptions.UsuarioException;
 import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.*;
 import es.asun.StoryCrafters.utils.AuthUtils;
@@ -43,22 +44,25 @@ public class UserController {
      */
     @GetMapping(value = {"/profile"})
     public String viewProfile(Model model) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
+        try {
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+            List<Relato> listaRelatos = relatoService.findAllRelatosByUsuarioAndNotArchivado(usuario);
+            int numRelatos = listaRelatos.size();
 
-        List<Relato> listaRelatos = relatoService.findAllRelatosByUsuarioAndNotArchivado(usuario);
-        int numRelatos = listaRelatos.size();
+            List<Grupo> listaGrupos = grupoService.encontrarGruposContieneUsuario(usuario);
+            int numGrupos = listaGrupos.size();
 
-        List<Grupo> listaGrupos = grupoService.encontrarGruposContieneUsuario(usuario);
-        int numGrupos = listaGrupos.size();
+            List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.encontrarTodosRelatosGrupoPorUsuarioAprobados(usuario);
+            int numRelatosGrupo = listaRelatosGrupo.size();
 
-        List<RelatoGrupo> listaRelatosGrupo = relatoGrupoService.encontrarTodosRelatosGrupoPorUsuarioAprobados(usuario);
-        int numRelatosGrupo = listaRelatosGrupo.size();
-
-        model.addAttribute("content", "views/profile");
-        model.addAttribute("numRelatos", numRelatos);
-        model.addAttribute("numGrupos", numGrupos);
-        model.addAttribute("numRelatosGrupo", numRelatosGrupo);
-        return "index";
+            model.addAttribute("content", "views/profile");
+            model.addAttribute("numRelatos", numRelatos);
+            model.addAttribute("numGrupos", numGrupos);
+            model.addAttribute("numRelatosGrupo", numRelatosGrupo);
+            return "index";
+        } catch (UsuarioException e) {
+            model.addAttribute("content", Constantes.ERROR_VIEW);
+            return Constantes.INDEX_VIEW;        }
     }
 
     /**
@@ -110,14 +114,14 @@ public class UserController {
      */
     @PostMapping("/profile/update-avatar")
     public String updateAvatarProfile(Model model, @ModelAttribute("user") UserUpdateDto userDto, @RequestParam("selectedAvatarId") Integer selectedAvatarId) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
         try {
+            Usuario usuario = AuthUtils.getAuthUser(userService);
             Avatar avatar = avatarService.findAvatarById(Integer.parseInt(String.valueOf(selectedAvatarId)));
             usuario.setAvatar(avatar);
             UserUpdateDto userUpdateDto = new UserUpdateDto(usuario);
             userService.updateUser(userUpdateDto);
             return "redirect:/user/profile";
-        } catch (AvatarNotFoundException e) {
+        } catch (AvatarNotFoundException | UsuarioException e) {
             model.addAttribute("content", Constantes.ERROR_VIEW);
             return Constantes.INDEX_VIEW;
         }

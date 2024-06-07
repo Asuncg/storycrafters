@@ -21,16 +21,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <!-- Formulario para enviar las solicitudes seleccionadas -->
             <form th:action="@{/grupos/gestionar-solicitudes}" method="post">
-                <!-- Botones para aprobar y rechazar todas las solicitudes -->
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-success" name="accion" value="aceptar">Aceptar Seleccionadas</button>
-                    <button type="submit" class="btn btn-danger" name="accion" value="rechazar">Rechazar Seleccionadas</button>
+                    <button type="submit" class="btn btn-success" name="accion" value="aceptar">Aceptar Seleccionadas
+                    </button>
+                    <button type="submit" class="btn btn-danger" name="accion" value="rechazar">Rechazar Seleccionadas
+                    </button>
                     <input type="hidden" name="grupoId" th:value="${grupo.id}">
                 </div>
-
-                <!-- Encabezados de las columnas -->
                 <div class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-center">
                     <div class="col-sm-1 text-center">
                         <input type="checkbox" id="checkboxSeleccionarTodos" onchange="toggleSeleccionarTodos()">
@@ -39,25 +37,22 @@
                     <div class="col-sm-4 text-left">Apellidos</div>
                     <div class="col-sm-3">Opciones</div>
                 </div>
-                <!-- Solicitudes de usuarios-->
-                <div th:each="solicitud : ${solicitudesPendientes}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div th:each="solicitud : ${solicitudesPendientes}"
+                     class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="col-sm-1 text-center">
                         <input type="checkbox" name="solicitudIds" th:value="${solicitud.id}"/>
                     </div>
                     <div class="col-sm-4">
-                        <a href="#">
-                            <div th:text="${solicitud.usuario.firstName}"></div>
-                        </a>
+                        <div th:text="${solicitud.usuario.firstName}"></div>
                     </div>
                     <div class="col-sm-4">
-                        <a href="#">
-                            <div th:text="${solicitud.usuario.lastName}"></div>
-                        </a>
+                        <div th:text="${solicitud.usuario.lastName}"></div>
                     </div>
                     <div class="col-sm-3 text-center">
-                        <!-- Botones individuales para aprobar o rechazar -->
-                        <a type="button" class="btn btn-outline-success btn-sm" th:href="@{'/grupos/aceptar-solicitud/' + ${solicitud.id}}">Aceptar</a>
-                        <a type="button" class="btn btn-outline-danger btn-sm" th:href="@{'/grupos/rechazar-solicitud/' + ${solicitud.id}}">Rechazar</a>
+                        <a type="button" class="btn btn-outline-success btn-sm"
+                           th:href="@{'/grupos/aceptar-solicitud/' + ${solicitud.id}}">Aceptar</a>
+                        <a type="button" class="btn btn-outline-danger btn-sm"
+                           th:href="@{'/grupos/rechazar-solicitud/' + ${solicitud.id}}">Rechazar</a>
                     </div>
                 </div>
             </form>

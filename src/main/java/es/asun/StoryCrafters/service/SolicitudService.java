@@ -25,8 +25,10 @@ public interface SolicitudService {
 
     void eliminarSolicitudes(String grupoId, List<Integer> solicitudIds);
 
-    Optional<Solicitud> buscarSolicitud(Grupo grupo, Usuario usuario);
+    Optional<Solicitud> buscarSolicitudPorGrupoYUsuario(Grupo grupo, Usuario usuario);
 
     void ingresarInvitacion(Usuario usuario, String codigoInvitacion) throws GrupoException, UsuarioException;
+
+    boolean existenSolicitudesPendientes(Grupo grupo);
 
 }

@@ -1,7 +1,6 @@
 package es.asun.StoryCrafters.model;
 
 import es.asun.StoryCrafters.entity.Avatar;
-import es.asun.StoryCrafters.entity.Usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;

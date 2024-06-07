@@ -6,6 +6,9 @@ import javax.mail.internet.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servicio para enviar correos electrónicos.
+ */
 @Service
 public class EmailService {
 
@@ -15,6 +18,12 @@ public class EmailService {
     @Value("${spring.mail.password}")
     private String emailPassword;
 
+    /**
+     * Envía un correo electrónico.
+     * @param to Dirección de correo electrónico del destinatario.
+     * @param subject Asunto del correo electrónico.
+     * @param htmlContent Contenido HTML del correo electrónico.
+     */
     public void sendEmail(String to, String subject, String htmlContent) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -51,6 +60,14 @@ public class EmailService {
         }
     }
 
+    /**
+     * Envía una invitación a unirse a un grupo.
+     * @param to Dirección de correo electrónico del destinatario.
+     * @param codigoAcceso Código de acceso al grupo.
+     * @param descripcion Descripción del grupo.
+     * @param nombreGrupo Nombre del grupo.
+     * @param nombreGestor Nombre del gestor del grupo.
+     */
     public void enviarInvitacion(String to, String codigoAcceso, String descripcion, String nombreGrupo, String nombreGestor) {
         String asunto = "StoryCrafters - Invitación a grupo";
         String url = "https://storycrafters-production.up.railway.app/";

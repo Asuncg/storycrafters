@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
+/**
+ * Clase que genera códigos de ingreso únicos para grupos.
+ */
 @Component
 public class CodigoIngresoGenerator {
 
@@ -13,6 +16,12 @@ public class CodigoIngresoGenerator {
     private static final String CARACTERES = "abcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom random = new SecureRandom();
 
+    /**
+     * Genera un código de ingreso único para un grupo.
+     *
+     * @param grupoService El servicio de grupo para verificar si el código ya existe.
+     * @return El código de ingreso generado.
+     */
     public static String generarCodigoIngreso(GrupoService grupoService) {
         String codigo;
         do {

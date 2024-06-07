@@ -2,6 +2,7 @@ package es.asun.StoryCrafters.controller;
 
 import es.asun.StoryCrafters.entity.Usuario;
 import es.asun.StoryCrafters.exceptions.AvatarNotFoundException;
+import es.asun.StoryCrafters.exceptions.UsuarioException;
 import es.asun.StoryCrafters.model.UserRegisterDto;
 import es.asun.StoryCrafters.model.UserUpdateDto;
 import es.asun.StoryCrafters.service.UserService;
@@ -36,11 +37,15 @@ public class AuthController {
      */
     @GetMapping(value = {"/", "/index"})
     public String home(Model model) {
-        Usuario usuario = AuthUtils.getAuthUser(userService);
-        model.addAttribute("usuario", new UserUpdateDto(usuario));
-        model.addAttribute("currentPage", "home");
-        model.addAttribute("content", "views/home");
-        return "index";
+        try {
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+            model.addAttribute("usuario", new UserUpdateDto(usuario));
+            model.addAttribute("currentPage", "home");
+            model.addAttribute("content", "views/home");
+            return "index";
+        } catch (UsuarioException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -70,7 +75,7 @@ public class AuthController {
      * Procesa el registro de un nuevo usuario.
      *
      * @param userRegisterDto el DTO con los datos del usuario a registrar
-     * @param result los resultados de la validación
+     * @param result          los resultados de la validación
      * @return una respuesta HTTP indicando el resultado del registro
      */
     @PostMapping("/registro/save")
@@ -113,7 +118,7 @@ public class AuthController {
     /**
      * Procesa la solicitud de recuperación de contraseña.
      *
-     * @param email el email del usuario que quiere recuperar la contraseña
+     * @param email              el email del usuario que quiere recuperar la contraseña
      * @param redirectAttributes los atributos para redireccionar
      * @return la redirección a la página de recuperación de contraseña
      */
@@ -144,8 +149,8 @@ public class AuthController {
     /**
      * Procesa el restablecimiento de la contraseña.
      *
-     * @param token el token para restablecer la contraseña
-     * @param newPassword la nueva contraseña
+     * @param token              el token para restablecer la contraseña
+     * @param newPassword        la nueva contraseña
      * @param redirectAttributes los atributos para redireccionar
      * @return la redirección a la página de restablecimiento de contraseña
      */

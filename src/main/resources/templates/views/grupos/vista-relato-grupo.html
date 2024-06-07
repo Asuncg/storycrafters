@@ -57,7 +57,7 @@
                     <p class="font-weight-bold">Calificación: <span th:text="${relatoGrupo.calificacion}"></span></p>
 
                 </div>
-                <div class="col-md-12 mb-4" th:if="${idUsuarioActual eq relatoGrupo.usuario.id}">
+                <div class="col-md-12 mb-4" th:if="${idUsuarioActual eq relatoGrupo.usuario.id or idUsuarioActual eq grupo.usuario.id}">
                     <p class="font-weight-bold">Apuntes sobre la revisión: </p>
                     <div class="col-md-12 p-3 feedback">
                         <span th:text="${relatoGrupo.feedback}"></span>

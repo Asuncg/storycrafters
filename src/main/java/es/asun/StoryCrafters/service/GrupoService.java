@@ -16,7 +16,7 @@ public interface GrupoService {
 
     void crearGrupo(GrupoDto grupoDto);
 
-    String actualizarGrupo(String idGrupo, GrupoDto grupoDto) throws GrupoException;
+    String actualizarGrupo(String idGrupo, GrupoDto grupoDto) throws GrupoException, UsuarioException;
 
     List<Grupo> findAllGruposByUsuario(Usuario usuario);
 
