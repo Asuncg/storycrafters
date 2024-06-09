@@ -148,15 +148,17 @@ public class RelatoGrupoServiceImpl implements RelatoGrupoService {
 
     /**
      * Actualiza un RelatoGrupo con la información de un Relato dado.
+     *
      * @param relatoGrupo El RelatoGrupo a actualizar.
-     * @param relato El Relato con la información actualizada.
+     * @param relato      El Relato con la información actualizada.
+     * @param firmaAutor
      */
     @Override
-    public void actualizarRelatoGrupoEnviado(RelatoGrupo relatoGrupo, Relato relato) {
+    public void actualizarRelatoGrupoEnviado(RelatoGrupo relatoGrupo, Relato relato, String firmaAutor) {
         relatoGrupo.setRelato(relato);
         relatoGrupo.setTitulo(relato.getTitulo());
         relatoGrupo.setTexto(relato.getTexto());
-        relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
+        relatoGrupo.setFirmaAutor(firmaAutor);
         relatoGrupo.setImagen(relato.getImagen());
         relatoGrupo.setEstado(1);
         relatoGrupo.setFeedback("");
@@ -168,17 +170,19 @@ public class RelatoGrupoServiceImpl implements RelatoGrupoService {
 
     /**
      * Envía un nuevo RelatoGrupo asociado a un Grupo dado.
-     * @param relato El Relato asociado al RelatoGrupo.
-     * @param grupo El Grupo asociado al RelatoGrupo.
+     *
+     * @param relato     El Relato asociado al RelatoGrupo.
+     * @param grupo      El Grupo asociado al RelatoGrupo.
+     * @param firmaAutor
      */
     @Override
-    public void enviarNuevoRelatoGrupo(Relato relato, Grupo grupo) {
+    public void enviarNuevoRelatoGrupo(Relato relato, Grupo grupo, String firmaAutor) {
         RelatoGrupo relatoGrupo = new RelatoGrupo();
         relatoGrupo.setRelato(relato);
         relatoGrupo.setGrupo(grupo);
         relatoGrupo.setTitulo(relato.getTitulo());
         relatoGrupo.setTexto(relato.getTexto());
-        relatoGrupo.setFirmaAutor(relato.getFirmaAutor());
+        relatoGrupo.setFirmaAutor(firmaAutor);
         relatoGrupo.setImagen(relato.getImagen());
         relatoGrupo.setFechaModificacion(new Date());
         relatoGrupo.setCategorias(asociarCategorias(relato));

@@ -24,8 +24,7 @@
         <div class="col-sm-6">
             <a href="#" th:href="@{'/grupos/' + ${grupo.id} + '/usuario/'  + ${usuario.id} + '/relatos'}">
                 <img th:src="${usuario.avatar.url}" alt="Avatar" class="img-fluid m-2 rounded-circle">
-                <span th:text="${usuario.firmaAutor}"></span>
-                <hr class="mt-0 mb-2">
+                <span th:text="${usuario.firstName}"></span>
             </a>
         </div>
         <div class="col-sm-6">
@@ -38,6 +37,7 @@
             </div>
         </div>
     </div>
+    <hr class="mt-0 mb-2">
     <div class="col-md-12">
         <div th:if="${#lists.isEmpty(listaRelatosUsuario)}" class="col-sm-auto text-center" role="alert">
             <h2>Aquí no hay nada...</h2>
@@ -46,14 +46,19 @@
         <div th:if="${not #lists.isEmpty(listaRelatosUsuario)}" class="row" id="relatos"
              style="display: flex; flex-wrap: wrap;">
             <th:block th:each="relato : ${listaRelatosUsuario}">
-                <div class="col-md-4 mb-4" th:id="'relato-' + ${relato.id}">
+                <div class="col-md-3 mb-4" th:id="'relato-' + ${relato.id}">
                     <a th:href="@{'/grupos/' + ${relato.grupo.id} + '/relato/' + ${relato.id}}">
                         <div class="card card-relatos d-flex">
-                            <img class="card-img-top" th:src="${relato.imagen.url}" alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title"><a th:utext="${relato.titulo}"
-                                                          th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}"></a>
-                                </h5>
+                            <img class="card-img-top" th:src="${relato.imagen.id != 1} ? ${relato.imagen.url} : '/images/libro.svg'" alt="Card image cap">
+                            <div class="card-body px-2">
+                                <h6 class="card-title text-center mb-0">
+                                    <a th:utext="${relato.titulo}" th:href="@{'/grupos/ver-relato-grupo/' + ${relato.id}}"></a>
+                                </h6>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">Firmado: </small><small class="text-muted" th:text="${relato.firmaAutor}"></small>
+                                <br/>
+                                <small>Fecha de Publicación: </small><small class="text-muted text-center fechaPublicacion" th:text="${#dates.format(relato.fechaPublicacion, 'dd/MM/yyyy')}"></small>
                             </div>
                         </div>
                     </a>

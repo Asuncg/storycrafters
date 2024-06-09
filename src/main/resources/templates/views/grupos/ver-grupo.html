@@ -46,12 +46,15 @@
                     <a th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}">
                         <div class="card card-relatos d-flex">
                             <img class="card-img-top" th:src="${relato.imagen.id != 1} ? ${relato.imagen.url} : '/images/libro.svg'" alt="Card image cap">
-                            <div class="card-body">
-                                <h6 class="card-title text-center"><a th:utext="${relato.titulo}" th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}"></a></h6>
-                                <hr class="mt-0">
-                                <p class="card-text text-center"><small>Fecha de Publicación: </small><small class="text-muted text-center fechaPublicacion" th:text="${#dates.format(relato.fechaPublicacion, 'dd/MM/yyyy')}"></small></p>
+                            <div class="card-body px-2">
+                                <h6 class="card-title text-center mb-0"><a th:utext="${relato.titulo}" th:href="@{'/grupos/' + ${grupo.id} + '/relato/' + ${relato.id}}"></a></h6>
                                 <input type="hidden" class="categorias" th:each="categoria : ${relato.categorias}"
                                        th:value="${categoria.nombre}">
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">Firmado: </small><small class="text-muted" th:text="${relato.firmaAutor}"></small>
+                                <br/>
+                                <small>Fecha de Publicación: </small><small class="text-muted text-center fechaPublicacion" th:text="${#dates.format(relato.fechaPublicacion, 'dd/MM/yyyy')}"></small>
                             </div>
                         </div>
                     </a>

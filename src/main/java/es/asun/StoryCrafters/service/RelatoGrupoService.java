@@ -31,9 +31,9 @@ public interface RelatoGrupoService {
 
     RelatoGrupoDto encontrarRelatoGrupoPorId(int id);
 
-    void actualizarRelatoGrupoEnviado(RelatoGrupo relatoGrupo, Relato relato);
+    void actualizarRelatoGrupoEnviado(RelatoGrupo relatoGrupo, Relato relato, String firmaAutor);
 
-    void enviarNuevoRelatoGrupo(Relato relato, Grupo grupo);
+    void enviarNuevoRelatoGrupo(Relato relato, Grupo grupo, String firmaAutor);
 
     List<RelatoGrupo> encontrarRelatosGrupoUsuario(Grupo grupo, int idUsuario) throws UsuarioException;
 

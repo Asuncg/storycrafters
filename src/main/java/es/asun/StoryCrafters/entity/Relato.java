@@ -66,12 +66,6 @@ public class Relato {
     private List<Categoria> categorias;
 
     /**
-     * Firma del autor del relato.
-     */
-    @Column(name = "firmaAutor", length = 60)
-    private String firmaAutor;
-
-    /**
      * Fecha de creación del relato.
      */
     @Temporal(TemporalType.TIMESTAMP)

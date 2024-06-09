@@ -33,22 +33,26 @@
                     <div class="col-sm-1 text-center">
                         <input type="checkbox" id="checkboxSeleccionarTodos" onchange="toggleSeleccionarTodos()">
                     </div>
-                    <div class="col-sm-4 text-left">Nombre de usuario</div>
-                    <div class="col-sm-4 text-left">Apellidos</div>
-                    <div class="col-sm-3">Opciones</div>
+                    <div class="col-sm-3 text-left">Nombre de usuario</div>
+                    <div class="col-sm-3 text-left">Apellidos</div>
+                    <div class="col-sm-3 text-center">Firma de Autor</div>
+                    <div class="col-sm-2">Opciones</div>
                 </div>
                 <div th:each="solicitud : ${solicitudesPendientes}"
                      class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="col-sm-1 text-center">
                         <input type="checkbox" name="solicitudIds" th:value="${solicitud.id}"/>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div th:text="${solicitud.usuario.firstName}"></div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div th:text="${solicitud.usuario.lastName}"></div>
                     </div>
                     <div class="col-sm-3 text-center">
+                        <div th:text="${solicitud.usuario.firmaAutor}"></div>
+                    </div>
+                    <div class="col-sm-2 text-center">
                         <a type="button" class="btn btn-outline-success btn-sm"
                            th:href="@{'/grupos/aceptar-solicitud/' + ${solicitud.id}}">Aceptar</a>
                         <a type="button" class="btn btn-outline-danger btn-sm"

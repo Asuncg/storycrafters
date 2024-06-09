@@ -193,13 +193,13 @@ public class RelatoController {
             Grupo grupo = grupoService.findGrupoById(Integer.parseInt(idGrupo));
 
             Relato relato = relatoService.findRelatoByIdAndNotArchivado(Integer.parseInt(idRelato));
-            Usuario usuario = AuthUtils.getAuthUser(userService);
 
-            if (usuario.getFirmaAutor() == null || usuario.getFirmaAutor().isEmpty()) {
+            Usuario usuario = AuthUtils.getAuthUser(userService);
+            String firmaAutor = usuario.getFirmaAutor();
+
+            if (firmaAutor == null || firmaAutor.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-
-            relato.setFirmaAutor(usuario.getFirmaAutor());
 
             Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoByRelatoAndGrupo(relato, grupo);
             if (relatoGrupoOptional.isPresent()) {
@@ -209,9 +209,9 @@ public class RelatoController {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
 
-                relatoGrupoService.actualizarRelatoGrupoEnviado(relatoGrupo, relato);
+                relatoGrupoService.actualizarRelatoGrupoEnviado(relatoGrupo, relato, firmaAutor);
             } else {
-                relatoGrupoService.enviarNuevoRelatoGrupo(relato, grupo);
+                relatoGrupoService.enviarNuevoRelatoGrupo(relato, grupo, firmaAutor);
             }
 
             return new ResponseEntity<>(HttpStatus.OK);
