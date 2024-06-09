@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             Usuario user = userOptional.get();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setResetToken(null);  // Eliminar el token después de usarlo
+            user.setResetToken(null);
             userRepository.save(user);
             return true;
         }

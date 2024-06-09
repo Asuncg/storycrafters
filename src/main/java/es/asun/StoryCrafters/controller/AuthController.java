@@ -160,10 +160,10 @@ public class AuthController {
                                        RedirectAttributes redirectAttributes) {
         boolean result = userService.resetPassword(token, newPassword);
         if (result) {
-            redirectAttributes.addAttribute("success", true);
+            redirectAttributes.addFlashAttribute("passwordSuccess", true);
         } else {
-            redirectAttributes.addAttribute("error", true);
+            redirectAttributes.addFlashAttribute("passwordError", true);
         }
-        return "redirect:/restablecer-password";
+        return "redirect:/login";
     }
 }
