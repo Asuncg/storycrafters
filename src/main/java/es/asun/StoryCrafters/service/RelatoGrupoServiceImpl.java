@@ -168,12 +168,12 @@ public class RelatoGrupoServiceImpl implements RelatoGrupoService {
 
     /**
      * Envía un nuevo RelatoGrupo asociado a un Grupo dado.
-     * @param relatoGrupo El RelatoGrupo a enviar.
      * @param relato El Relato asociado al RelatoGrupo.
      * @param grupo El Grupo asociado al RelatoGrupo.
      */
     @Override
-    public void enviarNuevoRelatoGrupo(RelatoGrupo relatoGrupo, Relato relato, Grupo grupo) {
+    public void enviarNuevoRelatoGrupo(Relato relato, Grupo grupo) {
+        RelatoGrupo relatoGrupo = new RelatoGrupo();
         relatoGrupo.setRelato(relato);
         relatoGrupo.setGrupo(grupo);
         relatoGrupo.setTitulo(relato.getTitulo());

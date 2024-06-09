@@ -33,7 +33,7 @@ public interface RelatoGrupoService {
 
     void actualizarRelatoGrupoEnviado(RelatoGrupo relatoGrupo, Relato relato);
 
-    void enviarNuevoRelatoGrupo(RelatoGrupo relatoGrupo, Relato relato, Grupo grupo);
+    void enviarNuevoRelatoGrupo(Relato relato, Grupo grupo);
 
     List<RelatoGrupo> encontrarRelatosGrupoUsuario(Grupo grupo, int idUsuario) throws UsuarioException;
 

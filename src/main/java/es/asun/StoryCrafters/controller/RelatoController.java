@@ -53,7 +53,8 @@ public class RelatoController {
             return Constantes.INDEX_VIEW;
         } catch (UsuarioException e) {
             model.addAttribute("content", ERROR_VIEW);
-            return Constantes.INDEX_VIEW;        }
+            return Constantes.INDEX_VIEW;
+        }
     }
 
     @GetMapping("/relatos/{id}")
@@ -108,7 +109,7 @@ public class RelatoController {
 
             model.addAttribute("content", "views/relatos/nuevo-relato");
             model.addAttribute("categorias", listaCategorias);
-            model.addAttribute("firma", firma);
+//            model.addAttribute("firma", firma);
             model.addAttribute("imagen", imagen);
             model.addAttribute("relato", new RelatoDto());
             return Constantes.INDEX_VIEW;
@@ -134,7 +135,7 @@ public class RelatoController {
                 return Constantes.INDEX_VIEW;
             }
 
-            model.addAttribute("firma", usuario.getFirmaAutor());
+//            model.addAttribute("firma", usuario.getFirmaAutor());
             model.addAttribute("relato", relato);
             model.addAttribute("categorias", categoriaService.findAllCategories());
             model.addAttribute("content", "views/relatos/editar-relato");
@@ -192,16 +193,17 @@ public class RelatoController {
             Grupo grupo = grupoService.findGrupoById(Integer.parseInt(idGrupo));
 
             Relato relato = relatoService.findRelatoByIdAndNotArchivado(Integer.parseInt(idRelato));
+            Usuario usuario = AuthUtils.getAuthUser(userService);
 
-            if (relato.getFirmaAutor() == null || relato.getFirmaAutor().isEmpty()) {
+            if (usuario.getFirmaAutor() == null || usuario.getFirmaAutor().isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoByRelatoAndGrupo(relato, grupo);
+            relato.setFirmaAutor(usuario.getFirmaAutor());
 
+            Optional<RelatoGrupo> relatoGrupoOptional = relatoGrupoService.findRelatoGrupoByRelatoAndGrupo(relato, grupo);
             if (relatoGrupoOptional.isPresent()) {
                 RelatoGrupo relatoGrupo = relatoGrupoOptional.get();
-                Usuario usuario = AuthUtils.getAuthUser(userService);
 
                 if (relatoGrupo.getEstado() == 1 || relatoGrupo.getEstado() == 0 || usuario.getId() != relato.getUsuario().getId()) {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -209,10 +211,7 @@ public class RelatoController {
 
                 relatoGrupoService.actualizarRelatoGrupoEnviado(relatoGrupo, relato);
             } else {
-                RelatoGrupo relatoGrupo = new RelatoGrupo();
-
-
-                relatoGrupoService.enviarNuevoRelatoGrupo(relatoGrupo, relato, grupo);
+                relatoGrupoService.enviarNuevoRelatoGrupo(relato, grupo);
             }
 
             return new ResponseEntity<>(HttpStatus.OK);

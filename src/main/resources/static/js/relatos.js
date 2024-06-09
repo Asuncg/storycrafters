@@ -23,12 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     var textoCuento = document.getElementById('texto-relato');
     if (textoCuento) {
-        // Inicializa el contador con la longitud del texto actual
         var caracteresEscritos = textoCuento.textContent.length;
         document.getElementById('caracteres-escritos').textContent = caracteresEscritos;
 
         textoCuento.addEventListener('input', function () {
-            // Limitar la longitud del texto a 4000 caracteres
             if (this.textContent.length > 4000) {
                 this.textContent = this.textContent.substring(0, 4000);
                 alert('Has alcanzado el límite máximo de 4000 caracteres.');
